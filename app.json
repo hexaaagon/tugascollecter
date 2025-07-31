@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "tugascollecter",
+    "slug": "tugascollecter",
+    "description": "A mobile application for managing your school homework and tasks.",
+    "owner": "Hexaa",
+    "version": "1.0.0",
+    "platforms": ["android"],
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "tugascollecter",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/icon_white.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon_white.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/icon.png"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
