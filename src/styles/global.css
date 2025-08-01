@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    font-family: "DMSans_400Regular";
+  }
+
   :root {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
@@ -20,6 +24,10 @@
     --accent-foreground: 240 5.9% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
+    --warning: 48 96% 53%;
+    --warning-foreground: 26 83% 14%;
+    --success: 142 76% 36%;
+    --success-foreground: 355 100% 97%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
@@ -42,8 +50,74 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
+    --warning: 48 96% 53%;
+    --warning-foreground: 26 83% 14%;
+    --success: 142 76% 36%;
+    --success-foreground: 355 100% 97%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
+  }
+}
+
+@layer components {
+  /* Font family utilities */
+  .font-dm-sans {
+    font-family: "DMSans_400Regular";
+  }
+
+  .font-dm-sans-medium {
+    font-family: "DMSans_500Medium";
+  }
+
+  .font-dm-sans-semibold {
+    font-family: "DMSans_600SemiBold";
+  }
+
+  .font-dm-sans-bold {
+    font-family: "DMSans_700Bold";
+  }
+
+  /* Better font settings */
+  .text-base {
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.01em;
+  }
+
+  .text-sm {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.01em;
+  }
+
+  .text-xs {
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.02em;
+  }
+
+  .text-lg {
+    font-size: 18px;
+    line-height: 28px;
+    letter-spacing: 0.01em;
+  }
+
+  .text-xl {
+    font-size: 20px;
+    line-height: 28px;
+    letter-spacing: 0.01em;
+  }
+
+  .text-2xl {
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: 0.01em;
+  }
+}
+
+@layer utilities {
+  .space-y-3 > * + * {
+    margin-top: 12px;
   }
 }
