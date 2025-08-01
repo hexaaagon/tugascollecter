@@ -51,10 +51,12 @@ module.exports = {
         },
       },
       fontFamily: {
-        "dm-sans": ["DMSans_400Regular"],
-        "dm-sans-medium": ["DMSans_500Medium"],
-        "dm-sans-semibold": ["DMSans_600SemiBold"],
-        "dm-sans-bold": ["DMSans_700Bold"],
+        "bricolage-grotesque": ["Bricolage Grotesque", "sans-serif"],
+        "dm-sans": ["DM Sans", "sans-serif"],
+        "dm-mono": ["DM Mono", "monospace"],
+        "geist-sans": ["Geist", "sans-serif"],
+        "geist-mono": ["Geist Mono", "monospace"],
+        inter: ["Inter", "sans-serif"],
       },
       borderWidth: {
         hairline: hairlineWidth(),

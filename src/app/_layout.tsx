@@ -1,5 +1,6 @@
 import "@/styles/global.css";
 
+import * as React from "react";
 import {
   DarkTheme,
   DefaultTheme,
@@ -8,23 +9,50 @@ import {
 } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import * as React from "react";
-import { Appearance, Platform, View } from "react-native";
-import { NAV_THEME } from "@/lib/constants";
-import { useColorScheme } from "@/lib/useColorScheme";
-import { PortalHost } from "@rn-primitives/portal";
-import { ThemeToggle } from "@/components/toggle-theme";
-import { setAndroidNavigationBar } from "@/lib/android-navigation-bar";
+import * as SplashScreen from "expo-splash-screen";
+import { useFonts } from "expo-font";
 import {
-  useFonts,
   DMSans_400Regular,
   DMSans_500Medium,
   DMSans_600SemiBold,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
-import * as SplashScreen from "expo-splash-screen";
+import {
+  DMMono_400Regular,
+  DMMono_500Medium,
+} from "@expo-google-fonts/dm-mono";
+import {
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+} from "@expo-google-fonts/inter";
+import {
+  BricolageGrotesque_400Regular,
+  BricolageGrotesque_500Medium,
+  BricolageGrotesque_600SemiBold,
+  BricolageGrotesque_700Bold,
+} from "@expo-google-fonts/bricolage-grotesque";
+import {
+  Geist_400Regular,
+  Geist_500Medium,
+  Geist_600SemiBold,
+  Geist_700Bold,
+} from "@expo-google-fonts/geist";
+import {
+  GeistMono_400Regular,
+  GeistMono_500Medium,
+  GeistMono_600SemiBold,
+  GeistMono_700Bold,
+} from "@expo-google-fonts/geist-mono";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete
+import { Appearance, Platform, View } from "react-native";
+import { PortalHost } from "@rn-primitives/portal";
+import { NAV_THEME } from "@/lib/constants";
+import { useColorScheme } from "@/lib/useColorScheme";
+
+import { setAndroidNavigationBar } from "@/lib/android-navigation-bar";
+
 SplashScreen.preventAutoHideAsync();
 
 const LIGHT_THEME: Theme = {
@@ -48,15 +76,40 @@ const usePlatformSpecificSetup = Platform.select({
 });
 
 export default function RootLayout() {
-  usePlatformSpecificSetup();
-  const { isDarkColorScheme } = useColorScheme();
-
-  // Load fonts
   const [fontsLoaded] = useFonts({
-    DMSans_400Regular,
-    DMSans_500Medium,
-    DMSans_600SemiBold,
-    DMSans_700Bold,
+    // DM Sans family
+    "DM Sans": DMSans_400Regular,
+    "DM Sans Medium": DMSans_500Medium,
+    "DM Sans SemiBold": DMSans_600SemiBold,
+    "DM Sans Bold": DMSans_700Bold,
+
+    // DM Mono family
+    "DM Mono": DMMono_400Regular,
+    "DM Mono Medium": DMMono_500Medium,
+
+    // Inter family
+    Inter: Inter_400Regular,
+    "Inter Medium": Inter_500Medium,
+    "Inter SemiBold": Inter_600SemiBold,
+    "Inter Bold": Inter_700Bold,
+
+    // Bricolage Grotesque family
+    "Bricolage Grotesque": BricolageGrotesque_400Regular,
+    "Bricolage Grotesque Medium": BricolageGrotesque_500Medium,
+    "Bricolage Grotesque SemiBold": BricolageGrotesque_600SemiBold,
+    "Bricolage Grotesque Bold": BricolageGrotesque_700Bold,
+
+    // Geist family
+    Geist: Geist_400Regular,
+    "Geist Medium": Geist_500Medium,
+    "Geist SemiBold": Geist_600SemiBold,
+    "Geist Bold": Geist_700Bold,
+
+    // Geist Mono family
+    "Geist Mono": GeistMono_400Regular,
+    "Geist Mono Medium": GeistMono_500Medium,
+    "Geist Mono SemiBold": GeistMono_600SemiBold,
+    "Geist Mono Bold": GeistMono_700Bold,
   });
 
   React.useEffect(() => {
@@ -64,6 +117,9 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
+
+  usePlatformSpecificSetup();
+  const { isDarkColorScheme } = useColorScheme();
 
   if (!fontsLoaded) {
     return null;
@@ -92,7 +148,6 @@ const useIsomorphicLayoutEffect =
 
 function useSetWebBackgroundClassName() {
   useIsomorphicLayoutEffect(() => {
-    // Adds the background color to the html element to prevent white background on overscroll.
     document.documentElement.classList.add("bg-background");
   }, []);
 }
