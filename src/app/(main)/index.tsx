@@ -3,7 +3,7 @@ import { Text } from "@/components/ui/text";
 
 export default function Home() {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View className="min-h-screen flex-1 items-center justify-center">
       <Text>hello world!</Text>
     </View>
   );

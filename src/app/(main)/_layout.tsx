@@ -7,7 +7,6 @@ import {
 } from "@/components/drawer";
 import { useColorScheme } from "@/lib/useColorScheme";
 import { PanelLeft } from "lucide-react-native";
-import { View } from "@rn-primitives/slot";
 
 export default function Layout() {
   const { isDarkColorScheme } = useColorScheme();
@@ -17,7 +16,7 @@ export default function Layout() {
       <Stack
         screenOptions={{
           headerLeft: () => (
-            <DrawerTrigger className="p-3 mr-2">
+            <DrawerTrigger className="mr-2 p-3">
               <PanelLeft
                 size={18}
                 color={isDarkColorScheme ? "#ffffff" : "#000000"}
@@ -26,9 +25,8 @@ export default function Layout() {
           ),
           headerTitle: "Tugas Collecter",
           headerTitleStyle: {
-            fontSize: 18,
-            fontWeight: 500,
-            fontFamily: "Inter",
+            fontSize: 16,
+            fontFamily: "DM Sans",
           },
           headerStyle: {
             backgroundColor: isDarkColorScheme ? "#121212" : "#ffffff",

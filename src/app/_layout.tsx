@@ -127,7 +127,10 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+      <StatusBar
+        style={isDarkColorScheme ? "light" : "dark"}
+        translucent={false}
+      />
       <Stack>
         <Stack.Screen
           name="(main)"

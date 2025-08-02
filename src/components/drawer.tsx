@@ -137,12 +137,6 @@ export const defaultDrawerConfig: DrawerSection[] = [
         onPress: () =>
           Alert.alert("Statistics", "Navigate to statistics screen"),
       },
-    ],
-  },
-  {
-    id: "settings",
-    title: "Settings",
-    items: [
       {
         id: "settings",
         label: "Settings",
@@ -161,7 +155,7 @@ export const defaultDrawerConfig: DrawerSection[] = [
 
 // Context
 const DrawerContext = React.createContext<DrawerContextType | undefined>(
-  undefined
+  undefined,
 );
 
 // Hooks
@@ -183,12 +177,12 @@ export function useDrawerConfig() {
         prevConfig.map((section) => ({
           ...section,
           items: section.items.map((item) =>
-            item.id === itemId ? { ...item, ...updates } : item
+            item.id === itemId ? { ...item, ...updates } : item,
           ),
-        }))
+        })),
       );
     },
-    []
+    [],
   );
 
   const addItem = React.useCallback(
@@ -197,11 +191,11 @@ export function useDrawerConfig() {
         prevConfig.map((section) =>
           section.id === sectionId
             ? { ...section, items: [...section.items, item] }
-            : section
-        )
+            : section,
+        ),
       );
     },
-    []
+    [],
   );
 
   const removeItem = React.useCallback((itemId: string) => {
@@ -209,7 +203,7 @@ export function useDrawerConfig() {
       prevConfig.map((section) => ({
         ...section,
         items: section.items.filter((item) => item.id !== itemId),
-      }))
+      })),
     );
   }, []);
 
@@ -221,7 +215,7 @@ export function useDrawerConfig() {
           ...item,
           active: item.id === itemId,
         })),
-      }))
+      })),
     );
   }, []);
 
@@ -302,7 +296,7 @@ export function DrawerProvider({ children }: DrawerProviderProps) {
       closeDrawer,
       toggleDrawer,
     }),
-    [isOpen, openDrawer, closeDrawer, toggleDrawer]
+    [isOpen, openDrawer, closeDrawer, toggleDrawer],
   );
 
   return (
@@ -454,9 +448,7 @@ export function CustomDrawerContent({
   footer,
   onItemPress,
 }: CustomDrawerContentProps) {
-  const { isDarkColorScheme } = useColorScheme();
   const { config, setActiveItem } = useDrawerConfig();
-  const insets = useSafeAreaInsets();
 
   const handleItemPress = (item: DrawerMenuItem) => {
     // Set the item as active
@@ -477,18 +469,12 @@ export function CustomDrawerContent({
     <React.Fragment key={section.id}>
       {section.title && index > 0 && (
         <>
-          <DrawerSeparator
-            style={{
-              backgroundColor: "#333333",
-              marginVertical: 12,
-            }}
-          />
           <Text
             style={{
               fontSize: 12,
               fontWeight: "600",
               color: "#888888",
-              marginBottom: 8,
+              marginTop: 12,
               marginLeft: 12,
               textTransform: "uppercase",
               letterSpacing: 0.5,
@@ -496,6 +482,12 @@ export function CustomDrawerContent({
           >
             {section.title}
           </Text>
+          <DrawerSeparator
+            style={{
+              backgroundColor: "#333333",
+              marginVertical: 12,
+            }}
+          />
         </>
       )}
       {section.items.map((item) => renderItem(item))}
@@ -515,12 +507,12 @@ export function CustomDrawerContent({
           backgroundColor: item.active ? "#2a2a2a" : "transparent",
           marginRight: 8,
           marginLeft: 2,
-          borderRadius: 8,
+          borderRadius: 100,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <IconComponent
-            size={20}
+            size={16}
             color="#ffffff"
             style={{ marginRight: 12 }}
           />
@@ -556,12 +548,9 @@ export function CustomDrawerContent({
           source={require("@/assets/images/icon.svg")}
           style={{ width: 32, height: 32, borderRadius: 20 }}
         />
-        <View>
-          <Text className="text-3xl font-bricolage-grotesque">
+        <View className="flex-1 flex-col">
+          <Text className="font-bricolage-grotesque text-3xl">
             Tugas Collecter
-          </Text>
-          <Text className="text-gray-400 mt-1 text-lg truncate mr-8 leading-[18px]">
-            Manage your school homework and tasks.
           </Text>
         </View>
       </DrawerHeader>
