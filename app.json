@@ -22,7 +22,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/icon_white.png",
+        "foregroundImage": "./src/assets/images/icon_black.png",
         "backgroundColor": "#ffffff"
       },
       "package": "sh.hexaa.tugascollecter"
