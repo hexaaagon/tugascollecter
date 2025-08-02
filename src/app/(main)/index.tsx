@@ -2,6 +2,7 @@ import { View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner-native";
+import { getGreeting } from "@/lib/greeting";
 
 export default function Home() {
   const testToast = () => {
@@ -11,11 +12,9 @@ export default function Home() {
   };
 
   return (
-    <View className="min-h-screen flex-1 items-center justify-center gap-4 pt-10">
-      <Text>hello world!</Text>
-      <Button onPress={testToast}>
-        <Text>Test Toast</Text>
-      </Button>
+    <View className="mx-8 mt-6 min-h-screen flex-1">
+      <Text className="text-2xl font-semibold">{getGreeting()}</Text>
+      <View className=""></View>
     </View>
   );
 }

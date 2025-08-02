@@ -729,7 +729,7 @@ export function CustomDrawerContent({
     <DrawerContent
       style={{
         backgroundColor: isDarkColorScheme ? "#121212" : "#ffffff",
-        paddingTop: insets.top,
+        paddingTop: insets.top + 16,
       }}
     >
       <DrawerHeader
@@ -741,11 +741,11 @@ export function CustomDrawerContent({
       >
         <Image
           source={require("@/assets/images/icon.svg")}
-          style={{ width: 32, height: 32, borderRadius: 20 }}
+          style={{ width: 28, height: 28, borderRadius: 20 }}
         />
         <View className="flex-1 flex-col">
           <Text
-            className="font-bricolage-grotesque text-3xl"
+            className="font-bricolage-grotesque text-xl"
             style={{
               color: isDarkColorScheme ? "#ffffff" : "#000000",
             }}

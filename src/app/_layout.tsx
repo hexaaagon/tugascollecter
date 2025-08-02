@@ -242,7 +242,7 @@ export default function RootLayout() {
           pointerEvents: "none",
         }}
       >
-        <Toaster position="top-center" richColors />
+        <Toaster position="bottom-center" richColors />
       </View>
     </GestureHandlerRootView>
   );
