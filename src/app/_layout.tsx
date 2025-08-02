@@ -46,12 +46,23 @@ import {
   GeistMono_700Bold,
 } from "@expo-google-fonts/geist-mono";
 
-import { Appearance, Platform, View } from "react-native";
+import {
+  Appearance,
+  Platform,
+  View,
+  BackHandler,
+  AppState,
+} from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PortalHost } from "@rn-primitives/portal";
 import { NAV_THEME } from "@/lib/constants";
 import { useColorScheme } from "@/lib/useColorScheme";
 
 import { setAndroidNavigationBar } from "@/lib/android-navigation-bar";
+import { Toaster } from "sonner-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { router, usePathname } from "expo-router";
+import { toast } from "sonner-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -112,11 +123,89 @@ export default function RootLayout() {
     "Geist Mono Bold": GeistMono_700Bold,
   });
 
+  const pathname = usePathname();
+  const backPressCountRef = React.useRef(0);
+  const exitTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+
   React.useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
+
+  // Reset back press state when app comes to foreground
+  React.useEffect(() => {
+    const handleAppStateChange = (nextAppState: string) => {
+      if (nextAppState === "active") {
+        // App came to foreground, reset back press state
+        backPressCountRef.current = 0;
+        if (exitTimeoutRef.current) {
+          clearTimeout(exitTimeoutRef.current);
+          exitTimeoutRef.current = null;
+        }
+      }
+    };
+
+    const subscription = AppState.addEventListener(
+      "change",
+      handleAppStateChange,
+    );
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
+
+  // Android back button handler
+  React.useEffect(() => {
+    if (Platform.OS !== "android") return;
+
+    const handleBackPress = () => {
+      const isOnHome =
+        pathname === "/" || pathname === "/(main)" || pathname === "/(main)/";
+
+      if (!isOnHome) {
+        // If not on home, navigate to home
+        router.push("/");
+        return true; // Prevent default back action
+      } else {
+        // On home screen - handle double tap to exit
+        if (backPressCountRef.current === 0) {
+          backPressCountRef.current = 1;
+          toast("Press back again to exit", {
+            description: "Tap back once more to close the app",
+          });
+
+          // Reset counter after 2 seconds
+          exitTimeoutRef.current = setTimeout(() => {
+            backPressCountRef.current = 0;
+          }, 2000);
+
+          return true; // Prevent default back action
+        } else {
+          // Second press - allow app to exit
+          if (exitTimeoutRef.current) {
+            clearTimeout(exitTimeoutRef.current);
+          }
+          return false; // Allow default back action (exit app)
+        }
+      }
+    };
+
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBackPress,
+    );
+
+    return () => {
+      subscription.remove();
+      if (exitTimeoutRef.current) {
+        clearTimeout(exitTimeoutRef.current);
+      }
+    };
+  }, [pathname]);
 
   usePlatformSpecificSetup();
   const { isDarkColorScheme } = useColorScheme();
@@ -126,21 +215,36 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar
-        style={isDarkColorScheme ? "light" : "dark"}
-        translucent={false}
-      />
-      <Stack>
-        <Stack.Screen
-          name="(main)"
-          options={{
-            headerShown: false,
-          }}
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+        <StatusBar
+          style={isDarkColorScheme ? "light" : "dark"}
+          translucent={false}
         />
-      </Stack>
-      <PortalHost />
-    </ThemeProvider>
+        <Stack>
+          <Stack.Screen
+            name="(main)"
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack>
+        <PortalHost />
+      </ThemeProvider>
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 10000,
+          pointerEvents: "none",
+        }}
+      >
+        <Toaster position="top-center" richColors />
+      </View>
+    </GestureHandlerRootView>
   );
 }
 
@@ -156,9 +260,10 @@ function useSetWebBackgroundClassName() {
 }
 
 function useSetAndroidNavigationBar() {
+  const { isDarkColorScheme } = useColorScheme();
   React.useLayoutEffect(() => {
-    setAndroidNavigationBar(Appearance.getColorScheme() ?? "light");
-  }, []);
+    setAndroidNavigationBar(isDarkColorScheme ? "dark" : "light");
+  }, [isDarkColorScheme]);
 }
 
 function noop() {}
