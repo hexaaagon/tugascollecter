@@ -1,6 +1,7 @@
 import { useColorScheme as useNativewindColorScheme } from "nativewind";
 import { useColorScheme as useSystemColorScheme } from "react-native";
 import { useState, useEffect } from "react";
+import { storage } from "./storage";
 
 type ColorSchemeType = "light" | "dark" | "system";
 
@@ -11,7 +12,15 @@ export function useColorScheme() {
   const [userPreference, setUserPreference] =
     useState<ColorSchemeType>("system");
 
-  // Determine the actual color scheme based on user preference
+  useEffect(() => {
+    const loadThemePreference = async () => {
+      const storedTheme = await storage.getThemePreference();
+      setUserPreference(storedTheme);
+    };
+
+    loadThemePreference();
+  }, []);
+
   const getEffectiveColorScheme = (preference: ColorSchemeType) => {
     if (preference === "system") {
       return systemColorScheme || "dark";
@@ -19,7 +28,6 @@ export function useColorScheme() {
     return preference;
   };
 
-  // Update NativeWind when system changes or user preference changes
   useEffect(() => {
     const effectiveScheme = getEffectiveColorScheme(userPreference);
     if (effectiveScheme !== colorScheme) {
@@ -34,6 +42,7 @@ export function useColorScheme() {
 
   const setColorScheme = (newScheme: ColorSchemeType) => {
     setUserPreference(newScheme);
+    storage.setThemePreference(newScheme);
     const effectiveScheme = getEffectiveColorScheme(newScheme);
     setNativeWindColorScheme(effectiveScheme);
   };

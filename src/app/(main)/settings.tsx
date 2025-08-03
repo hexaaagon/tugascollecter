@@ -30,6 +30,7 @@ import { toast } from "sonner-native";
 import { Text } from "@/components/ui/text";
 import { Card } from "@/components/ui/card";
 import { useColorScheme } from "@/lib/useColorScheme";
+import { storage, UserPreferences, DEFAULT_PREFERENCES } from "@/lib/storage";
 
 interface SettingsItemProps {
   icon: React.ReactNode;
@@ -161,16 +162,26 @@ export default function SettingsScreen() {
   } = useColorScheme();
   const insets = useSafeAreaInsets();
 
-  const [preferences, setPreferences] = React.useState({
-    notifications: false,
-    autoSync: false,
-    soundEffects: false,
-    hapticFeedback: false,
-  });
+  const [preferences, setPreferences] =
+    React.useState<UserPreferences>(DEFAULT_PREFERENCES);
 
-  const handlePreferenceChange = (key: keyof typeof preferences) => {
+  // Load preferences from AsyncStorage on component mount
+  React.useEffect(() => {
+    const loadPreferences = async () => {
+      const storedPreferences = await storage.getPreferences();
+      setPreferences(storedPreferences);
+    };
+
+    loadPreferences();
+  }, []);
+
+  const handlePreferenceChange = (key: keyof UserPreferences) => {
     return (value: boolean) => {
-      setPreferences((prev) => ({ ...prev, [key]: value }));
+      setPreferences((prev) => {
+        const newPreferences = { ...prev, [key]: value };
+        storage.setPreferences(newPreferences);
+        return newPreferences;
+      });
     };
   };
 
@@ -203,6 +214,28 @@ export default function SettingsScreen() {
         },
       },
     ]);
+  };
+
+  const handleResetSettings = () => {
+    Alert.alert(
+      "Reset Settings",
+      "This will reset all your preferences to default values. This action cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Reset",
+          style: "destructive",
+          onPress: async () => {
+            await storage.clearAllUserData();
+            setPreferences(DEFAULT_PREFERENCES);
+            setColorScheme("system");
+            toast.success("Settings Reset", {
+              description: "All preferences have been reset to default values",
+            });
+          },
+        },
+      ],
+    );
   };
 
   const handleRateApp = () => {
@@ -382,6 +415,18 @@ export default function SettingsScreen() {
               description: "Opening privacy policy...",
             })
           }
+        />
+        <View
+          className="mx-4 h-px"
+          style={{
+            backgroundColor: isDarkColorScheme ? "#374151" : "#e5e7eb",
+          }}
+        />
+        <SettingsItem
+          icon={<Settings size={24} color="#ef4444" />}
+          title="Reset Settings"
+          description="Reset all preferences to default values"
+          onPress={handleResetSettings}
         />
       </SettingsSection>
 
