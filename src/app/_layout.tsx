@@ -56,7 +56,7 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PortalHost } from "@rn-primitives/portal";
 import { NAV_THEME } from "@/lib/constants";
-import { useColorScheme } from "@/lib/useColorScheme";
+import { useColorScheme, ColorSchemeProvider } from "@/lib/useColorScheme";
 
 import { setAndroidNavigationBar } from "@/lib/android-navigation-bar";
 import { Toaster } from "sonner-native";
@@ -87,6 +87,14 @@ const usePlatformSpecificSetup = Platform.select({
 });
 
 export default function RootLayout() {
+  return (
+    <ColorSchemeProvider>
+      <RootLayoutContent />
+    </ColorSchemeProvider>
+  );
+}
+
+function RootLayoutContent() {
   const [fontsLoaded] = useFonts({
     // DM Sans family
     "DM Sans": DMSans_400Regular,
@@ -217,10 +225,7 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-        <StatusBar
-          style={isDarkColorScheme ? "light" : "dark"}
-          translucent={false}
-        />
+        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
         <Stack>
           <Stack.Screen
             name="(main)"

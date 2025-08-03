@@ -332,10 +332,19 @@ export function DrawerProvider({ children }: DrawerProviderProps) {
   );
 }
 
-function DrawerOverlay({ translateX, backdropOpacity }: DrawerOverlayProps) {
+const DrawerOverlay = React.memo(function DrawerOverlay({
+  translateX,
+  backdropOpacity,
+}: DrawerOverlayProps) {
   const { isOpen, closeDrawer } = useDrawer();
   const { isDarkColorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
+
+  // Memoize background color to prevent recalculation
+  const backgroundColor = React.useMemo(
+    () => (isDarkColorScheme ? "#121212" : "#ffffff"),
+    [isDarkColorScheme],
+  );
 
   if (!isOpen) return null;
 
@@ -349,7 +358,7 @@ function DrawerOverlay({ translateX, backdropOpacity }: DrawerOverlayProps) {
         style={[
           styles.drawer,
           {
-            backgroundColor: isDarkColorScheme ? "#121212" : "#ffffff",
+            backgroundColor,
             transform: [{ translateX }],
             paddingBottom: insets.bottom,
           },
@@ -374,7 +383,7 @@ function DrawerOverlay({ translateX, backdropOpacity }: DrawerOverlayProps) {
       </Animated.View>
     </View>
   );
-}
+});
 
 export function DrawerContent({
   children,
@@ -464,7 +473,7 @@ export function DrawerSeparator({ className, style }: DrawerSeparatorProps) {
   );
 }
 
-export function DrawerFooter({
+export const DrawerFooter = React.memo(function DrawerFooter({
   isSignedIn = false,
   user,
   onSignIn,
@@ -472,7 +481,20 @@ export function DrawerFooter({
 }: DrawerFooterProps) {
   const { isDarkColorScheme } = useColorScheme();
 
-  const handleCloudSync = () => {
+  // Memoize colors to prevent recalculation on every render
+  const colors = React.useMemo(
+    () => ({
+      borderColor: isDarkColorScheme ? "#333333" : "#e5e7eb",
+      backgroundColor: isDarkColorScheme ? "#121212" : "#ffffff",
+      buttonBackground: isDarkColorScheme ? "#1f2937" : "#f3f4f6",
+      textColor: isDarkColorScheme ? "#ffffff" : "#000000",
+      mutedTextColor: isDarkColorScheme ? "#9ca3af" : "#6b7280",
+      iconButtonBackground: isDarkColorScheme ? "#374151" : "#d1d5db",
+    }),
+    [isDarkColorScheme],
+  );
+
+  const handleCloudSync = React.useCallback(() => {
     if (isSignedIn) {
       toast.info("Cloud Sync Not Ready - Coming soon in a future update");
     } else {
@@ -483,7 +505,7 @@ export function DrawerFooter({
         onTurnOnCloudChanges();
       }
     }
-  };
+  }, [isSignedIn, onTurnOnCloudChanges]);
 
   if (isSignedIn && user) {
     // Signed in state - show user info and cloud sync status
@@ -492,8 +514,8 @@ export function DrawerFooter({
         style={{
           padding: 16,
           borderTopWidth: 1,
-          borderTopColor: isDarkColorScheme ? "#333333" : "#e5e7eb",
-          backgroundColor: isDarkColorScheme ? "#121212" : "#ffffff",
+          borderTopColor: colors.borderColor,
+          backgroundColor: colors.backgroundColor,
         }}
       >
         <TouchableOpacity
@@ -502,7 +524,7 @@ export function DrawerFooter({
             flexDirection: "row",
             alignItems: "center",
             padding: 12,
-            backgroundColor: isDarkColorScheme ? "#1f2937" : "#f3f4f6",
+            backgroundColor: colors.buttonBackground,
             borderRadius: 12,
             marginBottom: 12,
           }}
@@ -512,7 +534,7 @@ export function DrawerFooter({
             <AvatarFallback>
               <Text
                 className="font-semibold"
-                style={{ color: isDarkColorScheme ? "#ffffff" : "#000000" }}
+                style={{ color: colors.textColor }}
               >
                 {user.name.charAt(0).toUpperCase()}
               </Text>
@@ -521,14 +543,11 @@ export function DrawerFooter({
           <View className="flex-1">
             <Text
               className="text-sm font-medium"
-              style={{ color: isDarkColorScheme ? "#ffffff" : "#000000" }}
+              style={{ color: colors.textColor }}
             >
               {user.name}
             </Text>
-            <Text
-              className="text-xs"
-              style={{ color: isDarkColorScheme ? "#9ca3af" : "#6b7280" }}
-            >
+            <Text className="text-xs" style={{ color: colors.mutedTextColor }}>
               {user.email}
             </Text>
           </View>
@@ -565,8 +584,8 @@ export function DrawerFooter({
       style={{
         padding: 16,
         borderTopWidth: 1,
-        borderTopColor: isDarkColorScheme ? "#333333" : "#e5e7eb",
-        backgroundColor: isDarkColorScheme ? "#121212" : "#ffffff",
+        borderTopColor: colors.borderColor,
+        backgroundColor: colors.backgroundColor,
       }}
     >
       <TouchableOpacity
@@ -575,7 +594,7 @@ export function DrawerFooter({
           flexDirection: "row",
           alignItems: "center",
           padding: 16,
-          backgroundColor: isDarkColorScheme ? "#1f2937" : "#f3f4f6",
+          backgroundColor: colors.buttonBackground,
           borderRadius: 12,
           borderWidth: 2,
           borderColor: "#3b82f6",
@@ -587,37 +606,31 @@ export function DrawerFooter({
             width: 40,
             height: 40,
             borderRadius: 20,
-            backgroundColor: isDarkColorScheme ? "#374151" : "#d1d5db",
+            backgroundColor: colors.iconButtonBackground,
             alignItems: "center",
             justifyContent: "center",
             marginRight: 12,
           }}
         >
-          <CloudOff
-            size={20}
-            color={isDarkColorScheme ? "#9ca3af" : "#6b7280"}
-          />
+          <CloudOff size={20} color={colors.mutedTextColor} />
         </View>
         <View className="flex-1">
           <Text
             className="text-sm font-medium"
-            style={{ color: isDarkColorScheme ? "#ffffff" : "#000000" }}
+            style={{ color: colors.textColor }}
           >
             Turn on Cloud Changes
           </Text>
-          <Text
-            className="text-xs"
-            style={{ color: isDarkColorScheme ? "#9ca3af" : "#6b7280" }}
-          >
+          <Text className="text-xs" style={{ color: colors.mutedTextColor }}>
             Sync tasks across devices
           </Text>
         </View>
       </TouchableOpacity>
     </View>
   );
-}
+});
 
-export function CustomDrawerContent({
+export const CustomDrawerContent = React.memo(function CustomDrawerContent({
   footer,
   onItemPress,
 }: CustomDrawerContentProps) {
@@ -625,6 +638,20 @@ export function CustomDrawerContent({
   const { isDarkColorScheme } = useColorScheme();
   const { config, setActiveItem } = useDrawerConfig();
   const pathname = usePathname();
+
+  // Memoize colors to prevent recalculation on every render
+  const colors = React.useMemo(
+    () => ({
+      sectionTitle: isDarkColorScheme ? "#888888" : "#6b7280",
+      separatorBackground: isDarkColorScheme ? "#333333" : "#e5e7eb",
+      activeItemBackground: isDarkColorScheme ? "#2a2a2a" : "#e5e7eb",
+      iconColor: isDarkColorScheme ? "#ffffff" : "#000000",
+      textColor: isDarkColorScheme ? "#ffffff" : "#000000",
+      contentBackground: isDarkColorScheme ? "#121212" : "#ffffff",
+      borderColor: isDarkColorScheme ? "#333333" : "#e5e7eb",
+    }),
+    [isDarkColorScheme],
+  );
 
   // Update active item based on current pathname
   React.useEffect(() => {
@@ -640,103 +667,115 @@ export function CustomDrawerContent({
     setActiveItem(activeItemId);
   }, [pathname, setActiveItem]);
 
-  const handleItemPress = (item: DrawerMenuItem) => {
-    // Set the item as active
-    setActiveItem(item.id);
+  const handleItemPress = React.useCallback(
+    (item: DrawerMenuItem) => {
+      // Set the item as active
+      setActiveItem(item.id);
 
-    // Call custom onItemPress if provided
-    if (onItemPress) {
-      onItemPress(item);
-    }
+      // Call custom onItemPress if provided
+      if (onItemPress) {
+        onItemPress(item);
+      }
 
-    // Call the item's onPress if it exists
-    if (item.onPress) {
-      item.onPress();
-    }
-  };
-
-  const renderSection = (section: DrawerSection, index: number) => (
-    <React.Fragment key={section.id}>
-      {section.title && index > 0 && (
-        <>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: "600",
-              color: isDarkColorScheme ? "#888888" : "#6b7280",
-              marginTop: 12,
-              marginLeft: 12,
-              textTransform: "uppercase",
-              letterSpacing: 0.5,
-            }}
-          >
-            {section.title}
-          </Text>
-          <DrawerSeparator
-            style={{
-              backgroundColor: isDarkColorScheme ? "#333333" : "#e5e7eb",
-              marginVertical: 12,
-            }}
-          />
-        </>
-      )}
-      {section.items.map((item) => renderItem(item))}
-    </React.Fragment>
+      // Call the item's onPress if it exists
+      if (item.onPress) {
+        item.onPress();
+      }
+    },
+    [setActiveItem, onItemPress],
   );
 
-  const renderItem = (item: DrawerMenuItem) => {
-    const IconComponent = item.icon;
+  const renderItem = React.useCallback(
+    (item: DrawerMenuItem) => {
+      const IconComponent = item.icon;
 
-    return (
-      <DrawerItem
-        key={item.id}
-        active={item.active}
-        disabled={item.disabled}
-        onPress={() => handleItemPress(item)}
-        style={{
-          backgroundColor: item.active
-            ? isDarkColorScheme
-              ? "#2a2a2a"
-              : "#e5e7eb"
-            : "transparent",
-          marginRight: 8,
-          marginLeft: 2,
-          borderRadius: 100,
-        }}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <IconComponent
-            size={16}
-            color={isDarkColorScheme ? "#ffffff" : "#000000"}
-            style={{ marginRight: 12 }}
-          />
-          <Text
-            style={{
-              color: isDarkColorScheme ? "#ffffff" : "#000000",
-              fontSize: 16,
-              fontWeight: item.active ? "600" : "400",
-              opacity: item.disabled ? 0.5 : 1,
-            }}
-          >
-            {item.label}
-          </Text>
-        </View>
-      </DrawerItem>
-    );
-  };
+      return (
+        <DrawerItem
+          key={item.id}
+          active={item.active}
+          disabled={item.disabled}
+          onPress={() => handleItemPress(item)}
+          style={{
+            backgroundColor: item.active
+              ? colors.activeItemBackground
+              : "transparent",
+            marginRight: 8,
+            marginLeft: 2,
+            borderRadius: 100,
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <IconComponent
+              size={16}
+              color={colors.iconColor}
+              style={{ marginRight: 12 }}
+            />
+            <Text
+              style={{
+                color: colors.textColor,
+                fontSize: 16,
+                fontWeight: item.active ? "600" : "400",
+                opacity: item.disabled ? 0.5 : 1,
+              }}
+            >
+              {item.label}
+            </Text>
+          </View>
+        </DrawerItem>
+      );
+    },
+    [
+      colors.activeItemBackground,
+      colors.iconColor,
+      colors.textColor,
+      handleItemPress,
+    ],
+  );
+
+  const renderSection = React.useCallback(
+    (section: DrawerSection, index: number) => (
+      <React.Fragment key={section.id}>
+        {section.title && index > 0 && (
+          <>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "600",
+                color: colors.sectionTitle,
+                marginTop: 12,
+                marginLeft: 12,
+                textTransform: "uppercase",
+                letterSpacing: 0.5,
+              }}
+            >
+              {section.title}
+            </Text>
+            <DrawerSeparator
+              style={{
+                backgroundColor: colors.separatorBackground,
+                marginVertical: 12,
+              }}
+            />
+          </>
+        )}
+        {section.items.map((item) => renderItem(item))}
+      </React.Fragment>
+    ),
+    [colors.sectionTitle, colors.separatorBackground, renderItem],
+  );
 
   return (
     <DrawerContent
       style={{
-        backgroundColor: isDarkColorScheme ? "#121212" : "#ffffff",
+        backgroundColor: colors.contentBackground,
         paddingTop: insets.top + 16,
       }}
     >
       <DrawerHeader
         className="flex flex-row items-center gap-4"
         style={{
-          borderBottomColor: isDarkColorScheme ? "#333333" : "#e5e7eb",
-          backgroundColor: isDarkColorScheme ? "#121212" : "#ffffff",
+          borderBottomColor: colors.borderColor,
+          backgroundColor: colors.contentBackground,
         }}
       >
         <Image
@@ -747,7 +786,7 @@ export function CustomDrawerContent({
           <Text
             className="font-bricolage-grotesque text-xl"
             style={{
-              color: isDarkColorScheme ? "#ffffff" : "#000000",
+              color: colors.textColor,
             }}
           >
             Tugas Collecter
@@ -762,8 +801,9 @@ export function CustomDrawerContent({
       <DrawerFooter />
     </DrawerContent>
   );
-}
+});
 
+// Styles
 // Styles
 const styles = StyleSheet.create({
   backdrop: {

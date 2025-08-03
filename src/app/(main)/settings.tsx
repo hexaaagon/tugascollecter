@@ -29,6 +29,7 @@ import {
 import { toast } from "sonner-native";
 import { Text } from "@/components/ui/text";
 import { Card } from "@/components/ui/card";
+import { SettingsSeparator } from "@/components/ui/settings-separator";
 import { useColorScheme } from "@/lib/useColorScheme";
 import { storage, UserPreferences, DEFAULT_PREFERENCES } from "@/lib/storage";
 
@@ -55,66 +56,50 @@ interface SettingsSwitchProps {
   onValueChange: (value: boolean) => void;
 }
 
-const SettingsItem: React.FC<SettingsItemProps> = ({
-  icon,
-  title,
-  description,
-  onPress,
-  rightElement,
-  showChevron = true,
-}) => {
-  const { isDarkColorScheme } = useColorScheme();
+const SettingsItem: React.FC<SettingsItemProps> = React.memo(
+  ({ icon, title, description, onPress, rightElement, showChevron = true }) => {
+    const { isDarkColorScheme } = useColorScheme();
 
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      className="flex-row items-center px-4 py-4"
-      style={{
-        backgroundColor: isDarkColorScheme ? "#1f2937" : "#ffffff",
-      }}
-    >
-      <View className="mr-3">{icon}</View>
-      <View className="flex-1">
-        <Text className="text-base font-medium text-foreground">{title}</Text>
-        {description && (
-          <Text className="mt-1 text-sm text-muted-foreground">
-            {description}
-          </Text>
-        )}
-      </View>
-      {rightElement && <View className="mr-2">{rightElement}</View>}
-      {showChevron && !rightElement && (
-        <ChevronRight
-          size={20}
-          color={isDarkColorScheme ? "#9ca3af" : "#6b7280"}
-        />
-      )}
-    </TouchableOpacity>
-  );
-};
+    const chevronColor = React.useMemo(
+      () => (isDarkColorScheme ? "#9ca3af" : "#6b7280"),
+      [isDarkColorScheme],
+    );
 
-const SettingsSection: React.FC<SettingsSectionProps> = ({
-  title,
-  children,
-}) => {
-  const { isDarkColorScheme } = useColorScheme();
-
-  return (
-    <View className="mb-6">
-      <Text className="mb-3 px-4 text-lg font-semibold text-foreground">
-        {title}
-      </Text>
-      <Card
-        className="mx-4"
-        style={{
-          backgroundColor: isDarkColorScheme ? "#1f2937" : "#ffffff",
-        }}
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        className="flex-row items-center bg-card px-4 py-4"
       >
-        {children}
-      </Card>
-    </View>
-  );
-};
+        <View className="mr-3">{icon}</View>
+        <View className="flex-1">
+          <Text className="text-base font-medium text-foreground">{title}</Text>
+          {description && (
+            <Text className="mt-1 text-sm text-muted-foreground">
+              {description}
+            </Text>
+          )}
+        </View>
+        {rightElement && <View className="mr-2">{rightElement}</View>}
+        {showChevron && !rightElement && (
+          <ChevronRight size={20} color={chevronColor} />
+        )}
+      </TouchableOpacity>
+    );
+  },
+);
+
+const SettingsSection: React.FC<SettingsSectionProps> = React.memo(
+  ({ title, children }) => {
+    return (
+      <View className="mb-6">
+        <Text className="mb-3 px-4 text-lg font-semibold text-foreground">
+          {title}
+        </Text>
+        <Card className="mx-4 bg-card">{children}</Card>
+      </View>
+    );
+  },
+);
 
 const SettingsSwitch: React.FC<SettingsSwitchProps> = ({
   icon,
@@ -256,8 +241,14 @@ export default function SettingsScreen() {
     );
   };
 
-  const iconColor = isDarkColorScheme ? "#ffffff" : "#000000";
-  const mutedIconColor = isDarkColorScheme ? "#9ca3af" : "#6b7280";
+  const iconColor = React.useMemo(
+    () => (isDarkColorScheme ? "#ffffff" : "#000000"),
+    [isDarkColorScheme],
+  );
+  const mutedIconColor = React.useMemo(
+    () => (isDarkColorScheme ? "#9ca3af" : "#6b7280"),
+    [isDarkColorScheme],
+  );
 
   return (
     <ScrollView
@@ -275,12 +266,7 @@ export default function SettingsScreen() {
           description="Sign in to sync your data across devices"
           onPress={handleCloudSync}
         />
-        <View
-          className="mx-4 h-px"
-          style={{
-            backgroundColor: isDarkColorScheme ? "#374151" : "#e5e7eb",
-          }}
-        />
+        <SettingsSeparator />
         <SettingsItem
           icon={<Globe size={24} color={mutedIconColor} />}
           title="Cloud Sync"
@@ -299,12 +285,7 @@ export default function SettingsScreen() {
           onValueChange={handlePreferenceChange("notifications")}
           disabled
         />
-        <View
-          className="mx-4 h-px"
-          style={{
-            backgroundColor: isDarkColorScheme ? "#374151" : "#e5e7eb",
-          }}
-        />
+        <SettingsSeparator />
         <SettingsItem
           icon={
             userPreference === "system" ? (

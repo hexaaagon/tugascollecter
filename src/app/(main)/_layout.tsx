@@ -14,25 +14,49 @@ import { PanelLeft, List, ArrowUpDown, CloudOff } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { toast } from "sonner-native";
 
-export default function Layout() {
-  const { isDarkColorScheme } = useColorScheme();
+// Move CustomHeader outside as a separate component to avoid recreation
+const CustomHeader = React.memo(function CustomHeader({
+  colors,
+  pathname,
+}: {
+  colors: {
+    headerBackground: string;
+    iconColor: string;
+    searchBackground: string;
+    searchTextColor: string;
+    mutedIconColor: string;
+  };
+  pathname: string;
+}) {
+  // Memoize event handlers within the component
+  const handleSearchPress = React.useCallback(() => {
+    toast.info("Search feature coming soon!");
+  }, []);
 
-  const pathname = usePathname();
+  const handleListPress = React.useCallback(() => {
+    toast.warning("Feature Coming Soon!");
+  }, []);
 
-  const insets = useSafeAreaInsets();
-  const CustomHeader = () => (
+  const handleSortPress = React.useCallback(() => {
+    toast.warning("Feature Coming Soon!");
+  }, []);
+
+  const handleCloudPress = React.useCallback(() => {
+    toast.warning("Cloud Sync Coming Soon", {
+      description: "Sync features will be available in a future update",
+    });
+  }, []);
+
+  return (
     <View
       className="mx-5 flex-row items-center justify-between rounded-full px-5 py-1.5"
       style={{
-        backgroundColor: isDarkColorScheme ? "#1f1f1f" : "#ffffff",
+        backgroundColor: colors.headerBackground,
       }}
     >
       {/* Left - Hamburger Menu */}
       <DrawerTrigger className="mr-1 py-2 pr-2">
-        <PanelLeft
-          size={16}
-          color={isDarkColorScheme ? "#ffffff" : "#000000"}
-        />
+        <PanelLeft size={16} color={colors.iconColor} />
       </DrawerTrigger>
 
       {/* Center - Search Button */}
@@ -41,23 +65,22 @@ export default function Layout() {
           <Button
             variant="ghost"
             size="sm"
-            className="h-9 flex-1 items-center justify-start"
+            className="h-9 flex-1 items-start justify-start"
             style={{
-              backgroundColor: isDarkColorScheme ? "#2d2d2d" : "#f5f5f5",
+              backgroundColor: colors.searchBackground,
               borderRadius: 20,
             }}
-            onPress={() => {
-              toast.info("Search feature coming soon!");
-            }}
+            onPress={handleSearchPress}
           >
-            <View className="flex-1 justify-center">
+            <View className="ml-1.5 flex-1 justify-center">
               <Text
                 style={{
-                  color: isDarkColorScheme ? "#9ca3af" : "#6b7280",
+                  color: colors.searchTextColor,
                   textAlign: "left",
+                  fontSize: 12,
                 }}
               >
-                Search your notes
+                Search your homework
               </Text>
             </View>
           </Button>
@@ -66,39 +89,19 @@ export default function Layout() {
 
       {/* Right - Action Icons */}
       <View className="flex-row items-center">
-        <TouchableOpacity
-          className="mr-1 p-2"
-          onPress={() => {
-            toast.warning("Feature Coming Soon!");
-          }}
-        >
-          <List size={18} color={isDarkColorScheme ? "#ffffff" : "#000000"} />
+        <TouchableOpacity className="mr-1 p-2" onPress={handleListPress}>
+          <List size={18} color={colors.iconColor} />
         </TouchableOpacity>
 
-        <TouchableOpacity
-          className="mr-2 p-2"
-          onPress={() => {
-            toast.warning("Feature Coming Soon!");
-          }}
-        >
-          <ArrowUpDown
-            size={18}
-            color={isDarkColorScheme ? "#ffffff" : "#000000"}
-          />
+        <TouchableOpacity className="mr-2 p-2" onPress={handleSortPress}>
+          <ArrowUpDown size={18} color={colors.iconColor} />
         </TouchableOpacity>
 
         <TouchableOpacity
           className="rounded-full bg-gray-400/30 p-2"
-          onPress={() => {
-            toast.warning("Cloud Sync Coming Soon", {
-              description: "Sync features will be available in a future update",
-            });
-          }}
+          onPress={handleCloudPress}
         >
-          <CloudOff
-            size={18}
-            color={isDarkColorScheme ? "#9ca3af" : "#6b7280"}
-          />
+          <CloudOff size={18} color={colors.mutedIconColor} />
         </TouchableOpacity>
 
         {/*
@@ -113,6 +116,24 @@ export default function Layout() {
         */}
       </View>
     </View>
+  );
+});
+
+export default function Layout() {
+  const { isDarkColorScheme } = useColorScheme();
+  const pathname = usePathname();
+  const insets = useSafeAreaInsets();
+
+  // Memoize colors to prevent recalculation on every render
+  const colors = React.useMemo(
+    () => ({
+      headerBackground: isDarkColorScheme ? "#1f1f1f" : "#f7f7f7",
+      iconColor: isDarkColorScheme ? "#ffffff" : "#000000",
+      searchBackground: isDarkColorScheme ? "#2d2d2d" : "#e3e3e3",
+      searchTextColor: isDarkColorScheme ? "#9ca3af" : "#6b7280",
+      mutedIconColor: isDarkColorScheme ? "#9ca3af" : "#6b7280",
+    }),
+    [isDarkColorScheme],
   );
 
   return (
@@ -130,7 +151,7 @@ export default function Layout() {
                 elevation: 2,
               }}
             >
-              <CustomHeader />
+              <CustomHeader colors={colors} pathname={pathname} />
             </View>
           ),
         }}
