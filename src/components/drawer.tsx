@@ -126,6 +126,15 @@ iconWithClassName(Cloud);
 iconWithClassName(CloudOff);
 iconWithClassName(User);
 
+// Helper function to create onPress handler from route
+const createRouteHandler = (route: string) => {
+  return () => {
+    // Convert route to router.push compatible format
+    const normalizedRoute = route === "/(main)/" ? "/(main)" : route;
+    router.push(normalizedRoute as any);
+  };
+};
+
 // Default drawer configuration
 export const defaultDrawerConfig: DrawerSection[] = [
   {
@@ -135,41 +144,36 @@ export const defaultDrawerConfig: DrawerSection[] = [
         id: "home",
         label: "Home",
         icon: Home,
-        route: "/(main)/",
-        active: true,
-        onPress: () => router.push("/"),
+        route: "/",
+        onPress: createRouteHandler("/(main)/"),
       },
       {
         id: "tasks",
         label: "Tasks",
+        route: "/tasks",
         icon: CheckSquare,
-        onPress: () => Alert.alert("Tasks", "Navigate to tasks screen"),
+        onPress: createRouteHandler("/(main)/tasks"),
       },
       {
         id: "calendar",
         label: "Calendar",
+        route: "/calendar",
         icon: Calendar,
-        onPress: () => Alert.alert("Calendar", "Navigate to calendar screen"),
+        onPress: createRouteHandler("/(main)/calendar"),
       },
       {
         id: "statistics",
         label: "Statistics",
+        route: "/statistics",
         icon: BarChart3,
-        onPress: () =>
-          Alert.alert("Statistics", "Navigate to statistics screen"),
+        onPress: createRouteHandler("/(main)/statistics"),
       },
       {
         id: "settings",
         label: "Settings",
+        route: "/settings",
         icon: Settings,
-        route: "/(main)/settings",
-        onPress: () => router.push("/(main)/settings"),
-      },
-      {
-        id: "about",
-        label: "About",
-        icon: Info,
-        onPress: () => Alert.alert("About", "Navigate to about screen"),
+        onPress: createRouteHandler("/(main)/settings"),
       },
     ],
   },
@@ -657,12 +661,25 @@ export const CustomDrawerContent = React.memo(function CustomDrawerContent({
   React.useEffect(() => {
     let activeItemId = "home"; // default
 
-    if (pathname === "/" || pathname === "/(main)" || pathname === "/(main)/") {
-      activeItemId = "home";
-    } else if (pathname === "/settings" || pathname === "/(main)/settings") {
-      activeItemId = "settings";
+    // Find the active item by matching the pathname with route properties
+    for (const section of config) {
+      for (const item of section.items) {
+        if (item.route) {
+          // Handle different route patterns
+          if (
+            pathname === item.route ||
+            (item.route === "/(main)/" &&
+              (pathname === "/" ||
+                pathname === "/(main)" ||
+                pathname === "/(main)/"))
+          ) {
+            activeItemId = item.id;
+            break;
+          }
+        }
+      }
+      if (activeItemId !== "home") break; // Found active item, exit outer loop
     }
-    // Add more routes as needed
 
     setActiveItem(activeItemId);
   }, [pathname, setActiveItem]);

@@ -60,7 +60,7 @@ const CustomHeader = React.memo(function CustomHeader({
       </DrawerTrigger>
 
       {/* Center - Search Button */}
-      {pathname !== "/settings" && (
+      {(pathname === "/" || pathname.startsWith("/tasks")) && (
         <View className="mx-2 flex-1">
           <Button
             variant="ghost"

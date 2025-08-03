@@ -1,11 +1,10 @@
 import { View } from "react-native";
 import { Text } from "@/components/ui/text";
-import { getGreeting } from "@/lib/greeting";
 
 export default function Home() {
   return (
     <View className="mx-8 mt-6 min-h-screen flex-1">
-      <Text className="text-2xl font-semibold">{getGreeting()}</Text>
+      <Text className="text-2xl font-semibold">Tasks</Text>
     </View>
   );
 }

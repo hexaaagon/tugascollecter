@@ -201,28 +201,6 @@ export default function SettingsScreen() {
     ]);
   };
 
-  const handleResetSettings = () => {
-    Alert.alert(
-      "Reset Settings",
-      "This will reset all your preferences to default values. This action cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Reset",
-          style: "destructive",
-          onPress: async () => {
-            await storage.clearAllUserData();
-            setPreferences(DEFAULT_PREFERENCES);
-            setColorScheme("system");
-            toast.success("Settings Reset", {
-              description: "All preferences have been reset to default values",
-            });
-          },
-        },
-      ],
-    );
-  };
-
   const handleRateApp = () => {
     Alert.alert(
       "Rate App",
@@ -402,12 +380,6 @@ export default function SettingsScreen() {
           style={{
             backgroundColor: isDarkColorScheme ? "#374151" : "#e5e7eb",
           }}
-        />
-        <SettingsItem
-          icon={<Settings size={24} color="#ef4444" />}
-          title="Reset Settings"
-          description="Reset all preferences to default values"
-          onPress={handleResetSettings}
         />
       </SettingsSection>
 
