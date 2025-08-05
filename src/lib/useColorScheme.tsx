@@ -8,6 +8,7 @@ import {
   ReactNode,
 } from "react";
 import { storage } from "./storage";
+import { setAndroidNavigationBar } from "./android-navigation-bar";
 
 type ColorSchemeType = "light" | "dark" | "system";
 
@@ -69,6 +70,9 @@ export function ColorSchemeProvider({ children }: ColorSchemeProviderProps) {
         setNativeWindColorScheme(effectiveScheme);
       });
     }
+
+    // Update Android navigation bar with opacity effect
+    setAndroidNavigationBar(effectiveScheme);
   }, [userPreference, systemColorScheme, isInitialized]);
 
   useEffect(() => {
@@ -79,6 +83,9 @@ export function ColorSchemeProvider({ children }: ColorSchemeProviderProps) {
         setNativeWindColorScheme(effectiveScheme);
       });
     }
+
+    // Update Android navigation bar with opacity effect
+    setAndroidNavigationBar(effectiveScheme);
   }, [colorScheme]);
 
   const setColorScheme = async (newScheme: ColorSchemeType) => {
@@ -89,6 +96,9 @@ export function ColorSchemeProvider({ children }: ColorSchemeProviderProps) {
     requestAnimationFrame(() => {
       setNativeWindColorScheme(effectiveScheme);
     });
+
+    // Update Android navigation bar with opacity effect
+    setAndroidNavigationBar(effectiveScheme);
 
     try {
       await storage.setThemePreference(newScheme);

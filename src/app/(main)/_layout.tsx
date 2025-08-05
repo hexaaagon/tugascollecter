@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Animated } from "react-native";
 import { Stack, usePathname } from "expo-router";
 import {
   DrawerProvider,
@@ -13,11 +13,28 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PanelLeft, List, ArrowUpDown, CloudOff } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { toast } from "sonner-native";
+import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { NavigationBarOverlay } from "@/components/navigation-bar-overlay";
 
-// Move CustomHeader outside as a separate component to avoid recreation
+// Context to share scroll handler
+const ScrollContext = React.createContext<{
+  handleScroll: (event: any) => void;
+  headerTranslateY: Animated.Value;
+} | null>(null);
+
+export const useScroll = () => {
+  const context = React.useContext(ScrollContext);
+  if (!context) {
+    throw new Error("useScroll must be used within ScrollProvider");
+  }
+  return context;
+};
+
 const CustomHeader = React.memo(function CustomHeader({
   colors,
   pathname,
+  insets,
+  translateY,
 }: {
   colors: {
     headerBackground: string;
@@ -27,6 +44,8 @@ const CustomHeader = React.memo(function CustomHeader({
     mutedIconColor: string;
   };
   pathname: string;
+  insets: any;
+  translateY: Animated.Value;
 }) {
   // Memoize event handlers within the component
   const handleSearchPress = React.useCallback(() => {
@@ -48,63 +67,81 @@ const CustomHeader = React.memo(function CustomHeader({
   }, []);
 
   return (
-    <View
-      className="mx-5 flex-row items-center justify-between rounded-full px-5 py-1.5"
+    <Animated.View
       style={{
-        backgroundColor: colors.headerBackground,
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        paddingTop: insets.top + 12,
+        paddingBottom: 12,
+        transform: [{ translateY }],
       }}
     >
-      {/* Left - Hamburger Menu */}
-      <DrawerTrigger className="mr-1 py-2 pr-2">
-        <PanelLeft size={16} color={colors.iconColor} />
-      </DrawerTrigger>
+      <View
+        className="mx-5 flex-row items-center justify-between rounded-full px-5 py-1.5"
+        style={{
+          backgroundColor: colors.headerBackground,
+          // Add shadow back to the rounded container
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.1,
+          shadowRadius: 2,
+          elevation: 2,
+        }}
+      >
+        {/* Left - Hamburger Menu */}
+        <DrawerTrigger className="mr-1 py-2 pr-2">
+          <PanelLeft size={16} color={colors.iconColor} />
+        </DrawerTrigger>
 
-      {/* Center - Search Button */}
-      {(pathname === "/" || pathname.startsWith("/tasks")) && (
-        <View className="mx-2 flex-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-9 flex-1 items-start justify-start"
-            style={{
-              backgroundColor: colors.searchBackground,
-              borderRadius: 20,
-            }}
-            onPress={handleSearchPress}
+        {/* Center - Search Button */}
+        {(pathname === "/" || pathname.startsWith("/tasks")) && (
+          <View className="mx-2 flex-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-9 flex-1 items-start justify-start"
+              style={{
+                backgroundColor: colors.searchBackground,
+                borderRadius: 20,
+              }}
+              onPress={handleSearchPress}
+            >
+              <View className="ml-1.5 flex-1 justify-center">
+                <Text
+                  style={{
+                    color: colors.searchTextColor,
+                    textAlign: "left",
+                    fontSize: 12,
+                  }}
+                >
+                  Search your homework
+                </Text>
+              </View>
+            </Button>
+          </View>
+        )}
+
+        {/* Right - Action Icons */}
+        <View className="flex-row items-center">
+          <TouchableOpacity className="mr-1 p-2" onPress={handleListPress}>
+            <List size={18} color={colors.iconColor} />
+          </TouchableOpacity>
+
+          <TouchableOpacity className="mr-2 p-2" onPress={handleSortPress}>
+            <ArrowUpDown size={18} color={colors.iconColor} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="rounded-full bg-gray-400/30 p-2"
+            onPress={handleCloudPress}
           >
-            <View className="ml-1.5 flex-1 justify-center">
-              <Text
-                style={{
-                  color: colors.searchTextColor,
-                  textAlign: "left",
-                  fontSize: 12,
-                }}
-              >
-                Search your homework
-              </Text>
-            </View>
-          </Button>
-        </View>
-      )}
+            <CloudOff size={18} color={colors.mutedIconColor} />
+          </TouchableOpacity>
 
-      {/* Right - Action Icons */}
-      <View className="flex-row items-center">
-        <TouchableOpacity className="mr-1 p-2" onPress={handleListPress}>
-          <List size={18} color={colors.iconColor} />
-        </TouchableOpacity>
-
-        <TouchableOpacity className="mr-2 p-2" onPress={handleSortPress}>
-          <ArrowUpDown size={18} color={colors.iconColor} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          className="rounded-full bg-gray-400/30 p-2"
-          onPress={handleCloudPress}
-        >
-          <CloudOff size={18} color={colors.mutedIconColor} />
-        </TouchableOpacity>
-
-        {/*
+          {/*
         <Avatar alt="User Avatar" className="h-8 w-8">
           <AvatarImage source={{ uri: "https://github.com/shadcn.png" }} />
           <AvatarFallback>
@@ -114,8 +151,9 @@ const CustomHeader = React.memo(function CustomHeader({
           </AvatarFallback>
         </Avatar>
         */}
+        </View>
       </View>
-    </View>
+    </Animated.View>
   );
 });
 
@@ -123,6 +161,37 @@ export default function Layout() {
   const { isDarkColorScheme } = useColorScheme();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
+
+  // Animated value for header transform
+  const headerTranslateY = React.useRef(new Animated.Value(0)).current;
+  const [isHeaderHidden, setIsHeaderHidden] = React.useState(false);
+
+  // Use the scroll position hook to handle header visibility
+  const handleScroll = useScrollPosition(
+    ({ prevPos, currPos }) => {
+      const isScrollingDown = currPos.y > prevPos.y;
+      const isScrollingUp = currPos.y < prevPos.y;
+      const shouldHide = isScrollingDown && currPos.y > 50 && !isHeaderHidden;
+      const shouldShow = isScrollingUp && isHeaderHidden;
+
+      if (shouldHide) {
+        setIsHeaderHidden(true);
+        Animated.timing(headerTranslateY, {
+          toValue: -(insets.top + 60), // Header height approximation
+          duration: 200,
+          useNativeDriver: true,
+        }).start();
+      } else if (shouldShow) {
+        setIsHeaderHidden(false);
+        Animated.timing(headerTranslateY, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }).start();
+      }
+    },
+    [isHeaderHidden, insets.top],
+  );
 
   // Memoize colors to prevent recalculation on every render
   const colors = React.useMemo(
@@ -138,26 +207,25 @@ export default function Layout() {
 
   return (
     <DrawerProvider>
-      <Stack
-        screenOptions={{
-          header: () => (
-            <View
-              style={{
-                paddingTop: insets.top + 8,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: 0.1,
-                shadowRadius: 2,
-                elevation: 2,
-              }}
-            >
-              <CustomHeader colors={colors} pathname={pathname} />
-            </View>
-          ),
-        }}
-      ></Stack>
+      <ScrollContext.Provider value={{ handleScroll, headerTranslateY }}>
+        {/* Custom positioned header */}
+        <CustomHeader
+          colors={colors}
+          pathname={pathname}
+          insets={insets}
+          translateY={headerTranslateY}
+        />
 
-      <CustomDrawerContent />
+        <Stack
+          screenOptions={{
+            headerShown: false, // Hide default header since we have our own
+          }}
+        />
+
+        <NavigationBarOverlay />
+
+        <CustomDrawerContent />
+      </ScrollContext.Provider>
     </DrawerProvider>
   );
 }
