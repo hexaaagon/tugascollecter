@@ -9,14 +9,12 @@ import {
 import { useColorScheme } from "@/lib/useColorScheme";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PanelLeft, List, ArrowUpDown, CloudOff } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { toast } from "sonner-native";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { NavigationBarOverlay } from "@/components/navigation-bar-overlay";
 
-// Context to share scroll handler
 const ScrollContext = React.createContext<{
   handleScroll: (event: any) => void;
   headerTranslateY: Animated.Value;
@@ -47,7 +45,6 @@ const CustomHeader = React.memo(function CustomHeader({
   insets: any;
   translateY: Animated.Value;
 }) {
-  // Memoize event handlers within the component
   const handleSearchPress = React.useCallback(() => {
     toast.info("Search feature coming soon!");
   }, []);
@@ -83,7 +80,6 @@ const CustomHeader = React.memo(function CustomHeader({
         className="mx-5 flex-row items-center justify-between rounded-full px-5 py-1.5"
         style={{
           backgroundColor: colors.headerBackground,
-          // Add shadow back to the rounded container
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 1 },
           shadowOpacity: 0.1,
@@ -91,12 +87,10 @@ const CustomHeader = React.memo(function CustomHeader({
           elevation: 2,
         }}
       >
-        {/* Left - Hamburger Menu */}
         <DrawerTrigger className="mr-1 py-2 pr-2">
           <PanelLeft size={16} color={colors.iconColor} />
         </DrawerTrigger>
 
-        {/* Center - Search Button */}
         {(pathname === "/" || pathname.startsWith("/tasks")) && (
           <View className="mx-2 flex-1">
             <Button
@@ -124,7 +118,6 @@ const CustomHeader = React.memo(function CustomHeader({
           </View>
         )}
 
-        {/* Right - Action Icons */}
         <View className="flex-row items-center">
           <TouchableOpacity className="mr-1 p-2" onPress={handleListPress}>
             <List size={18} color={colors.iconColor} />
@@ -142,15 +135,15 @@ const CustomHeader = React.memo(function CustomHeader({
           </TouchableOpacity>
 
           {/*
-        <Avatar alt="User Avatar" className="h-8 w-8">
-          <AvatarImage source={{ uri: "https://github.com/shadcn.png" }} />
-          <AvatarFallback>
-            <View className="h-full w-full items-center justify-center rounded-full bg-blue-500">
-              <View className="h-4 w-4 rounded-full bg-white" />
-            </View>
-          </AvatarFallback>
-        </Avatar>
-        */}
+            <Avatar alt="User Avatar" className="h-8 w-8">
+              <AvatarImage source={{ uri: "https://github.com/shadcn.png" }} />
+              <AvatarFallback>
+                <View className="h-full w-full items-center justify-center rounded-full bg-blue-500">
+                  <View className="h-4 w-4 rounded-full bg-white" />
+                </View>
+              </AvatarFallback>
+            </Avatar>
+          */}
         </View>
       </View>
     </Animated.View>
@@ -162,11 +155,9 @@ export default function Layout() {
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
 
-  // Animated value for header transform
   const headerTranslateY = React.useRef(new Animated.Value(0)).current;
   const [isHeaderHidden, setIsHeaderHidden] = React.useState(false);
 
-  // Use the scroll position hook to handle header visibility
   const handleScroll = useScrollPosition(
     ({ prevPos, currPos }) => {
       const isScrollingDown = currPos.y > prevPos.y;
@@ -177,7 +168,7 @@ export default function Layout() {
       if (shouldHide) {
         setIsHeaderHidden(true);
         Animated.timing(headerTranslateY, {
-          toValue: -(insets.top + 60), // Header height approximation
+          toValue: -(insets.top + 60),
           duration: 200,
           useNativeDriver: true,
         }).start();
@@ -193,7 +184,6 @@ export default function Layout() {
     [isHeaderHidden, insets.top],
   );
 
-  // Memoize colors to prevent recalculation on every render
   const colors = React.useMemo(
     () => ({
       headerBackground: isDarkColorScheme ? "#1f1f1f" : "#f7f7f7",
@@ -208,7 +198,6 @@ export default function Layout() {
   return (
     <DrawerProvider>
       <ScrollContext.Provider value={{ handleScroll, headerTranslateY }}>
-        {/* Custom positioned header */}
         <CustomHeader
           colors={colors}
           pathname={pathname}
@@ -218,7 +207,7 @@ export default function Layout() {
 
         <Stack
           screenOptions={{
-            headerShown: false, // Hide default header since we have our own
+            headerShown: false,
           }}
         />
 

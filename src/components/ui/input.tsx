@@ -20,7 +20,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
         <TextInput
           ref={ref}
           className={cn(
-            "flex-1 font-dm-sans text-sm",
+            "flex-1 rounded-md bg-secondary p-2 px-4 font-dm-sans text-sm",
             isDarkColorScheme ? "text-white" : "text-black",
             className,
           )}

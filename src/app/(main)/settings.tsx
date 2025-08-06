@@ -25,13 +25,22 @@ import {
   Star,
   MessageSquare,
   ExternalLink,
+  BookOpen,
+  Trash2,
 } from "lucide-react-native";
 import { toast } from "sonner-native";
 import { Text } from "@/components/ui/text";
 import { Card } from "@/components/ui/card";
 import { SettingsSeparator } from "@/components/ui/settings-separator";
 import { useColorScheme } from "@/lib/useColorScheme";
-import { storage, UserPreferences, DEFAULT_PREFERENCES } from "@/lib/storage";
+import {
+  storage,
+  UserPreferences,
+  DEFAULT_PREFERENCES,
+  StorageManager,
+} from "@/lib/storage";
+import { ScrollableWrapper } from "@/components/scrollable-wrapper";
+import { router } from "expo-router";
 
 interface SettingsItemProps {
   icon: React.ReactNode;
@@ -95,7 +104,7 @@ const SettingsSection: React.FC<SettingsSectionProps> = React.memo(
         <Text className="mb-3 px-4 text-lg font-semibold text-foreground">
           {title}
         </Text>
-        <Card className="mx-4 bg-card">{children}</Card>
+        <Card className="mx-4">{children}</Card>
       </View>
     );
   },
@@ -145,12 +154,10 @@ export default function SettingsScreen() {
     setColorScheme,
     systemColorScheme,
   } = useColorScheme();
-  const insets = useSafeAreaInsets();
 
   const [preferences, setPreferences] =
     React.useState<UserPreferences>(DEFAULT_PREFERENCES);
 
-  // Load preferences from AsyncStorage on component mount
   React.useEffect(() => {
     const loadPreferences = async () => {
       const storedPreferences = await storage.getPreferences();
@@ -179,6 +186,30 @@ export default function SettingsScreen() {
 
   const handleCloudSync = () => {
     toast.info("Cloud Sync feature is under development.");
+  };
+
+  const handleClearAllData = () => {
+    Alert.alert(
+      "Clear All Data",
+      "This will permanently delete all your homework assignments and subjects. This action cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Clear All",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await StorageManager.saveHomework([]);
+              await StorageManager.saveSubjects([]);
+              toast.success("All data cleared successfully");
+            } catch (error) {
+              console.error("Error clearing data:", error);
+              toast.error("Failed to clear data");
+            }
+          },
+        },
+      ],
+    );
   };
 
   const handleExportData = () => {
@@ -223,20 +254,9 @@ export default function SettingsScreen() {
     () => (isDarkColorScheme ? "#ffffff" : "#000000"),
     [isDarkColorScheme],
   );
-  const mutedIconColor = React.useMemo(
-    () => (isDarkColorScheme ? "#9ca3af" : "#6b7280"),
-    [isDarkColorScheme],
-  );
 
   return (
-    <ScrollView
-      className="flex-1 bg-background"
-      contentContainerStyle={{
-        paddingTop: 20,
-        paddingBottom: insets.bottom + 20,
-      }}
-    >
-      {/* Account Section */}
+    <ScrollableWrapper className="flex-1">
       <SettingsSection title="Account">
         <SettingsItem
           icon={<User size={24} color={iconColor} />}
@@ -246,10 +266,28 @@ export default function SettingsScreen() {
         />
         <SettingsSeparator />
         <SettingsItem
-          icon={<Globe size={24} color={mutedIconColor} />}
+          icon={<Globe size={24} color={iconColor} />}
           title="Cloud Sync"
           description="Sync your tasks and preferences"
           onPress={handleCloudSync}
+        />
+      </SettingsSection>
+
+      <SettingsSection title="Homework Management">
+        <SettingsItem
+          icon={<BookOpen size={24} color={iconColor} />}
+          title="Manage Subjects"
+          description="Add, edit, or remove subjects"
+          onPress={() => router.push("/tasks")}
+          showChevron
+        />
+        <SettingsSeparator />
+        <SettingsItem
+          icon={<Trash2 size={24} color="#ef4444" />}
+          title="Clear All Data"
+          description="Permanently delete all homework and subjects"
+          onPress={handleClearAllData}
+          showChevron
         />
       </SettingsSection>
 
@@ -457,6 +495,6 @@ export default function SettingsScreen() {
           }
         />
       </SettingsSection>
-    </ScrollView>
+    </ScrollableWrapper>
   );
 }

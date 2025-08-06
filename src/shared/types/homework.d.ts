@@ -11,4 +11,6 @@ export type Homework = {
   status: "pending" | "in-progress" | "completed" | "overdue";
   attachments?: string[];
   tags?: string[];
+  completedAt?: string; // ISO 8601 format - when the task was completed
+  createdAt?: string; // ISO 8601 format - when the task was created
 };

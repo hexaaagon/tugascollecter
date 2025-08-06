@@ -155,18 +155,18 @@ export const defaultDrawerConfig: DrawerSection[] = [
         onPress: createRouteHandler("/(main)/tasks"),
       },
       {
-        id: "calendar",
-        label: "Calendar",
-        route: "/calendar",
-        icon: Calendar,
-        onPress: createRouteHandler("/(main)/calendar"),
-      },
-      {
         id: "statistics",
         label: "Statistics",
         route: "/statistics",
         icon: BarChart3,
         onPress: createRouteHandler("/(main)/statistics"),
+      },
+      {
+        id: "calendar",
+        label: "Calendar",
+        route: "/calendar",
+        icon: Calendar,
+        onPress: createRouteHandler("/(main)/calendar"),
       },
       {
         id: "settings",
