@@ -185,7 +185,7 @@ export default function Statistics() {
             <CardTitle>Overall Progress</CardTitle>
           </CardHeader>
           <CardContent>
-            <View className="space-y-4">
+            <View className="flex flex-col gap-4">
               <View>
                 <View className="mb-2 flex flex-row justify-between">
                   <Text className="text-sm">Completion Rate</Text>
@@ -235,7 +235,7 @@ export default function Statistics() {
             <CardTitle>Priority Distribution</CardTitle>
           </CardHeader>
           <CardContent>
-            <View className="space-y-3">
+            <View className="flex flex-col gap-4">
               <View>
                 <View className="mb-1 flex flex-row justify-between">
                   <Text className="text-sm">High Priority</Text>
@@ -295,13 +295,19 @@ export default function Statistics() {
               <CardTitle>Subject Performance</CardTitle>
             </CardHeader>
             <CardContent>
-              <View className="space-y-4">
+              <View className="flex flex-col gap-4">
                 {subjectStats.map((stat, index) => (
                   <View key={index}>
                     <View className="mb-2 flex flex-row justify-between">
-                      <Text className="text-sm font-medium">
-                        {stat.subject}
-                      </Text>
+                      <View className="flex flex-row items-center gap-2">
+                        <View
+                          className="h-2 w-2 rounded-full"
+                          style={{ backgroundColor: stat.color }}
+                        />
+                        <Text className="text-sm font-medium">
+                          {stat.subject}
+                        </Text>
+                      </View>
                       <Text className="text-sm text-muted-foreground">
                         {stat.completed}/{stat.total} (
                         {Math.round(stat.completionRate)}%)
@@ -360,7 +366,7 @@ export default function Statistics() {
               <CardTitle>Recent Achievements</CardTitle>
             </CardHeader>
             <CardContent>
-              <View className="space-y-3">
+              <View className="flex flex-col gap-2">
                 {recentCompletions.map((homework, index) => {
                   const subject = subjectData.find(
                     (s) => s.id === homework.subjectId,

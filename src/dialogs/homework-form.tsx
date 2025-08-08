@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { View, Alert, Modal, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StorageManager } from "@/lib/storage";
-import { HomeworkData, SubjectData } from "@/shared/types/storage";
+import {
+  HomeworkData,
+  SubjectData,
+  AttachmentData,
+} from "@/shared/types/storage";
+import { AttachmentManager } from "@/components/attachment-manager";
 import { X, Calendar, AlertCircle, BookOpen } from "lucide-react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
@@ -27,6 +32,7 @@ export function HomeworkForm({
   const [dueDate, setDueDate] = useState("");
   const [priority, setPriority] = useState<HomeworkData["priority"]>("medium");
   const [subjectId, setSubjectId] = useState("");
+  const [attachments, setAttachments] = useState<AttachmentData[]>([]);
   const [subjects, setSubjects] = useState<SubjectData[]>([]);
   const [loading, setLoading] = useState(false);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
@@ -50,6 +56,7 @@ export function HomeworkForm({
         setDueDate(editingHomework.dueDate || "");
         setPriority(editingHomework.priority);
         setSubjectId(editingHomework.subjectId);
+        setAttachments(editingHomework.attachments || []);
       } else {
         // Reset form for new homework
         setTitle("");
@@ -57,11 +64,12 @@ export function HomeworkForm({
         setDueDate("");
         setPriority("medium");
         setSubjectId("");
+        setAttachments([]);
       }
     }
   }, [visible, editingHomework]);
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     if (!title.trim()) {
       Alert.alert("Error", "Please enter a title for the homework");
       return;
@@ -84,6 +92,7 @@ export function HomeworkForm({
         priority,
         status: editingHomework?.status || "pending",
         subjectId: subjectId || subjects[0]?.id || "default",
+        attachments: attachments,
         tags: [],
         createdAt: editingHomework?.createdAt || new Date().toISOString(),
         completedAt: editingHomework?.completedAt,
@@ -103,9 +112,20 @@ export function HomeworkForm({
     } finally {
       setLoading(false);
     }
-  };
+  }, [
+    title,
+    subjectId,
+    subjects.length,
+    description,
+    dueDate,
+    priority,
+    attachments,
+    editingHomework,
+    onSave,
+    onClose,
+  ]);
 
-  const formatDateForInput = (dateString: string) => {
+  const formatDateForInput = useCallback((dateString: string) => {
     if (!dateString) return "";
     try {
       const date = new Date(dateString);
@@ -118,26 +138,29 @@ export function HomeworkForm({
     } catch {
       return "";
     }
-  };
+  }, []);
 
-  const showDatePicker = () => {
+  const showDatePicker = useCallback(() => {
     setDatePickerVisible(true);
-  };
+  }, []);
 
-  const hideDatePicker = () => {
+  const hideDatePicker = useCallback(() => {
     setDatePickerVisible(false);
-  };
+  }, []);
 
-  const handleDateConfirm = (date: Date) => {
-    setDueDate(date.toISOString());
-    hideDatePicker();
-  };
+  const handleDateConfirm = useCallback(
+    (date: Date) => {
+      setDueDate(date.toISOString());
+      hideDatePicker();
+    },
+    [hideDatePicker],
+  );
 
-  const handleDateChange = (value: string) => {
+  const handleDateChange = useCallback((value: string) => {
     setDueDate(value ? new Date(value).toISOString() : "");
-  };
+  }, []);
 
-  const getPriorityColor = (priority: HomeworkData["priority"]) => {
+  const getPriorityColor = useCallback((priority: HomeworkData["priority"]) => {
     switch (priority) {
       case "high":
         return "bg-red-500";
@@ -148,7 +171,7 @@ export function HomeworkForm({
       default:
         return "bg-gray-500";
     }
-  };
+  }, []);
 
   return (
     <Modal
@@ -282,6 +305,14 @@ export function HomeworkForm({
                   </Pressable>
                 ))}
               </View>
+            </View>
+
+            <View>
+              <AttachmentManager
+                attachments={attachments}
+                onAttachmentsChange={setAttachments}
+                homeworkId={editingHomework?.id}
+              />
             </View>
           </View>
 

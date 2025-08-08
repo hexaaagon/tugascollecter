@@ -95,6 +95,30 @@ export class StorageManager {
     await ExternalStorage.deleteAttachment(attachmentId);
   }
 
+  static async pickDocument(): Promise<AttachmentData | null> {
+    return await ExternalStorage.pickDocument();
+  }
+
+  static async pickImage(): Promise<AttachmentData | null> {
+    return await ExternalStorage.pickImage();
+  }
+
+  static async takePhoto(): Promise<AttachmentData | null> {
+    return await ExternalStorage.takePhoto();
+  }
+
+  static async getAttachmentUri(attachmentId: string): Promise<string | null> {
+    return await ExternalStorage.getAttachmentUri(attachmentId);
+  }
+
+  static async shareAttachment(attachmentId: string): Promise<void> {
+    await ExternalStorage.shareAttachment(attachmentId);
+  }
+
+  static async openWithExternalApp(attachmentId: string): Promise<void> {
+    await ExternalStorage.openWithExternalApp(attachmentId);
+  }
+
   static async exportData(): Promise<string> {
     const data = await UserDataStorage.exportUserData();
     return await ExternalStorage.exportData(data as ExportData);

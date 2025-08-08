@@ -1,12 +1,14 @@
-import { View, Pressable, Alert } from "react-native";
+import { View, Pressable, Alert, ActivityIndicator } from "react-native";
 import { Text } from "@/components/ui/text";
 import { ScrollableWrapper } from "@/components/scrollable-wrapper";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { HomeworkForm } from "@/components/homework-form";
+import { HomeworkForm } from "@/dialogs/homework-form";
 import { SubjectManager } from "@/components/subject-manager";
-import { useState, useEffect } from "react";
+import { AttachmentViewer } from "@/components/attachment-viewer";
+import { HomeworkDetailDialog } from "../../dialogs/homework-detail";
+import { useState, useEffect, Suspense, lazy } from "react";
 import { StorageManager } from "@/lib/storage";
 import { HomeworkData, SubjectData } from "@/shared/types/storage";
 import {
@@ -21,7 +23,26 @@ import {
   X,
   Edit,
   Settings,
+  Paperclip,
+  Loader2,
 } from "lucide-react-native";
+
+// Lazy load the attachment viewer for better performance
+const LazyAttachmentViewer = lazy(() =>
+  import("@/components/attachment-viewer").then((module) => ({
+    default: module.AttachmentViewer,
+  })),
+);
+
+// Loading fallback component for attachments
+const AttachmentLoadingFallback = () => (
+  <View className="mt-3 flex flex-row items-center gap-2 border-t border-border pt-3">
+    <ActivityIndicator size="small" color="#6b7280" />
+    <Text className="text-xs text-muted-foreground">
+      Loading attachments...
+    </Text>
+  </View>
+);
 
 type FilterType = "all" | "pending" | "in-progress" | "completed" | "overdue";
 type SortType = "dueDate" | "priority" | "subject" | "status";
@@ -30,11 +51,18 @@ export default function Tasks() {
   const [homeworkData, setHomeworkData] = useState<HomeworkData[]>([]);
   const [subjectData, setSubjectData] = useState<SubjectData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [attachmentLoading, setAttachmentLoading] = useState<Set<string>>(
+    new Set(),
+  );
   const [filter, setFilter] = useState<FilterType>("all");
   const [sortBy, setSortBy] = useState<SortType>("dueDate");
   const [showFilters, setShowFilters] = useState(false);
   const [showHomeworkForm, setShowHomeworkForm] = useState(false);
   const [showSubjectManager, setShowSubjectManager] = useState(false);
+  const [showHomeworkDetail, setShowHomeworkDetail] = useState(false);
+  const [selectedHomework, setSelectedHomework] = useState<HomeworkData | null>(
+    null,
+  );
   const [editingHomework, setEditingHomework] = useState<HomeworkData | null>(
     null,
   );
@@ -42,15 +70,43 @@ export default function Tasks() {
   useEffect(() => {
     const loadData = async () => {
       try {
+        setLoading(true);
+
+        // Load core data first (homework and subjects)
         const [homework, subjects] = await Promise.all([
           StorageManager.getHomework(),
           StorageManager.getSubjects(),
         ]);
+
+        // Set the basic data immediately
         setHomeworkData(homework);
         setSubjectData(subjects);
+
+        // Mark basic loading as complete
+        setLoading(false);
+
+        // Then load attachment metadata in background (don't block UI)
+        if (homework.length > 0) {
+          const homeworkWithAttachments = homework.filter(
+            (h) => h.attachments && h.attachments.length > 0,
+          );
+
+          // Pre-load attachment metadata for better UX
+          for (const hw of homeworkWithAttachments) {
+            setAttachmentLoading((prev) => new Set(prev).add(hw.id));
+
+            // Simulate async attachment loading (replace with actual logic if needed)
+            setTimeout(() => {
+              setAttachmentLoading((prev) => {
+                const newSet = new Set(prev);
+                newSet.delete(hw.id);
+                return newSet;
+              });
+            }, 500);
+          }
+        }
       } catch (error) {
         console.error("Error loading data:", error);
-      } finally {
         setLoading(false);
       }
     };
@@ -119,23 +175,8 @@ export default function Tasks() {
     }
   };
 
-  const deleteHomework = async (id: string) => {
-    Alert.alert("Delete Task", "Are you sure you want to delete this task?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await StorageManager.deleteHomework(id);
-            setHomeworkData((prev) => prev.filter((h) => h.id !== id));
-          } catch (error) {
-            console.error("Error deleting homework:", error);
-            Alert.alert("Error", "Failed to delete task");
-          }
-        },
-      },
-    ]);
+  const handleHomeworkDelete = (deletedId: string) => {
+    setHomeworkData((prev) => prev.filter((h) => h.id !== deletedId));
   };
 
   const handleHomeworkSave = (homework: HomeworkData) => {
@@ -161,6 +202,11 @@ export default function Tasks() {
   const editHomework = (homework: HomeworkData) => {
     setEditingHomework(homework);
     setShowHomeworkForm(true);
+  };
+
+  const viewHomeworkDetail = (homework: HomeworkData) => {
+    setSelectedHomework(homework);
+    setShowHomeworkDetail(true);
   };
 
   const getPriorityColor = (priority: HomeworkData["priority"]) => {
@@ -201,10 +247,87 @@ export default function Tasks() {
   if (loading) {
     return (
       <ScrollableWrapper className="flex-1">
-        <View className="mx-6 flex-1 items-center justify-center">
-          <Text className="text-lg text-muted-foreground">
-            Loading tasks...
-          </Text>
+        <View className="mx-6 flex-1 items-center justify-center space-y-4">
+          {/* Loading Animation */}
+          <View className="mb-6 items-center">
+            <View className="mb-4 rounded-full bg-primary/10 p-8">
+              <ActivityIndicator size="large" color="#6366f1" />
+            </View>
+            {/* Animated Loading Text */}
+            <View className="flex flex-row items-center space-x-2">
+              <Loader2 size={18} color="#6b7280" />
+              <Text className="text-lg font-medium text-foreground">
+                Loading Tasks
+              </Text>
+            </View>
+            <Text className="mt-2 text-center text-sm text-muted-foreground">
+              Fetching your homework assignments...
+            </Text>
+          </View>
+
+          {/* Loading Progress Indicators */}
+          <View className="w-full max-w-xs space-y-3">
+            <View className="flex flex-row items-center space-x-3">
+              <View className="h-2 w-2 animate-pulse rounded-full bg-primary" />
+              <Text className="text-xs text-muted-foreground">
+                Loading homework data
+              </Text>
+            </View>
+            <View className="flex flex-row items-center space-x-3">
+              <View className="h-2 w-2 animate-pulse rounded-full bg-primary/60" />
+              <Text className="text-xs text-muted-foreground">
+                Loading subjects
+              </Text>
+            </View>
+            <View className="flex flex-row items-center space-x-3">
+              <View className="h-2 w-2 animate-pulse rounded-full bg-primary/30" />
+              <Text className="text-xs text-muted-foreground">
+                Organizing tasks
+              </Text>
+            </View>
+          </View>
+
+          {/* Performance Tip */}
+          <View className="mt-4 rounded-lg bg-muted/20 p-3">
+            <Text className="text-center text-xs text-muted-foreground">
+              💡 Tasks with attachments will load progressively for better
+              performance
+            </Text>
+          </View>
+
+          {/* Loading skeleton cards */}
+          <View className="mt-8 w-full space-y-3">
+            {[1, 2, 3].map((i) => (
+              <Card key={i} className="opacity-50">
+                <CardContent className="p-4">
+                  <View className="space-y-3">
+                    {/* Title skeleton */}
+                    <View className="flex flex-row items-center space-x-2">
+                      <View className="h-3 w-3 animate-pulse rounded-full bg-muted" />
+                      <View className="h-4 flex-1 animate-pulse rounded bg-muted" />
+                      <View className="h-4 w-4 animate-pulse rounded bg-muted" />
+                    </View>
+
+                    {/* Description skeleton */}
+                    <View className="h-3 w-3/4 animate-pulse rounded bg-muted" />
+
+                    {/* Metadata skeleton */}
+                    <View className="flex flex-row space-x-4">
+                      <View className="h-3 w-16 animate-pulse rounded bg-muted" />
+                      <View className="h-3 w-20 animate-pulse rounded bg-muted" />
+                    </View>
+
+                    {/* Action buttons skeleton */}
+                    <View className="flex flex-row space-x-2">
+                      <View className="h-8 w-16 animate-pulse rounded bg-muted" />
+                      <View className="h-8 w-8 animate-pulse rounded bg-muted" />
+                      <View className="h-8 w-8 animate-pulse rounded bg-muted" />
+                    </View>
+                  </View>
+                </CardContent>
+              </Card>
+            ))}
+          </View>
         </View>
       </ScrollableWrapper>
     );
@@ -321,74 +444,83 @@ export default function Tasks() {
                 <Card key={homework.id}>
                   <CardContent className="p-4">
                     <View className="flex flex-row items-start justify-between">
-                      <View className="flex-1">
-                        <View className="mb-2 flex flex-row items-center gap-2">
-                          <View
-                            className={`h-3 w-3 rounded-full ${getPriorityColor(homework.priority)}`}
-                          />
-                          <Text className="flex-1 font-medium">
-                            {homework.title}
-                          </Text>
-                          {getStatusIcon(homework.status)}
-                        </View>
-
-                        {homework.description && (
-                          <Text className="mb-2 text-sm text-muted-foreground">
-                            {homework.description}
-                          </Text>
-                        )}
-
-                        <View className="mb-3 flex flex-row items-center gap-4">
-                          {subject && (
-                            <View className="flex flex-row items-center gap-1">
-                              <BookOpen size={12} color="#6b7280" />
-                              <View
-                                className="ml-1 h-2 w-2 rounded-full"
-                                style={{ backgroundColor: subject.color }}
-                              />
-                              <Text className="text-xs text-muted-foreground">
-                                {subject.name}
-                              </Text>
-                            </View>
-                          )}
-
-                          {homework.dueDate && (
-                            <View className="flex flex-row items-center gap-1">
-                              <Calendar size={12} color="#6b7280" />
-                              <Text
-                                className={`text-xs ${
-                                  daysUntilDue !== null && daysUntilDue <= 1
-                                    ? "text-red-500"
-                                    : "text-muted-foreground"
-                                }`}
-                              >
-                                {daysUntilDue === 0
-                                  ? "Due today"
-                                  : daysUntilDue === 1
-                                    ? "Due tomorrow"
-                                    : daysUntilDue && daysUntilDue > 0
-                                      ? `${daysUntilDue} days left`
-                                      : new Date(
-                                          homework.dueDate,
-                                        ).toLocaleDateString()}
-                              </Text>
-                            </View>
-                          )}
-                        </View>
-
-                        {homework.tags && homework.tags.length > 0 && (
-                          <View className="mb-3 flex flex-row flex-wrap gap-1">
-                            {homework.tags.map((tag) => (
-                              <Badge
-                                key={tag}
-                                variant="secondary"
-                                className="text-xs"
-                              >
-                                {tag}
-                              </Badge>
-                            ))}
+                      <Pressable
+                        className="flex-1"
+                        onPress={() => viewHomeworkDetail(homework)}
+                      >
+                        <View>
+                          <View className="mb-2 flex flex-row items-center gap-2">
+                            <View
+                              className={`h-3 w-3 rounded-full ${getPriorityColor(homework.priority)}`}
+                            />
+                            <Text className="flex-1 font-medium">
+                              {homework.title}
+                            </Text>
+                            {getStatusIcon(homework.status)}
                           </View>
-                        )}
+
+                          {homework.description && (
+                            <Text className="mb-2 text-sm text-muted-foreground">
+                              {homework.description.split("\n").length > 1
+                                ? `${homework.description.split("\n")[0]}...`
+                                : homework.description.length > 40
+                                  ? `${homework.description.slice(0, 40)}...`
+                                  : homework.description}
+                            </Text>
+                          )}
+
+                          <View className="mb-3 flex flex-row items-center gap-4">
+                            {subject && (
+                              <View className="flex flex-row items-center gap-1">
+                                <BookOpen size={12} color="#6b7280" />
+                                <View
+                                  className="ml-1 h-2 w-2 rounded-full"
+                                  style={{ backgroundColor: subject.color }}
+                                />
+                                <Text className="text-xs text-muted-foreground">
+                                  {subject.name}
+                                </Text>
+                              </View>
+                            )}
+
+                            {homework.dueDate && (
+                              <View className="flex flex-row items-center gap-1">
+                                <Calendar size={12} color="#6b7280" />
+                                <Text
+                                  className={`text-xs ${
+                                    daysUntilDue !== null && daysUntilDue <= 1
+                                      ? "text-red-500"
+                                      : "text-muted-foreground"
+                                  }`}
+                                >
+                                  {daysUntilDue === 0
+                                    ? "Due today"
+                                    : daysUntilDue === 1
+                                      ? "Due tomorrow"
+                                      : daysUntilDue && daysUntilDue > 0
+                                        ? `${daysUntilDue} days left`
+                                        : new Date(
+                                            homework.dueDate,
+                                          ).toLocaleDateString()}
+                                </Text>
+                              </View>
+                            )}
+                          </View>
+
+                          {homework.tags && homework.tags.length > 0 && (
+                            <View className="mb-3 flex flex-row flex-wrap gap-1">
+                              {homework.tags.map((tag) => (
+                                <Badge
+                                  key={tag}
+                                  variant="secondary"
+                                  className="text-xs"
+                                >
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </View>
+                          )}
+                        </View>
 
                         <View className="flex flex-row gap-2">
                           {homework.status !== "completed" && (
@@ -435,14 +567,37 @@ export default function Tasks() {
                           >
                             <Edit size={12} color="#6b7280" />
                           </Button>
-                          <Button
-                            size="sm"
-                            onPress={() => deleteHomework(homework.id)}
-                          >
-                            <X size={12} color="#ef4444" />
-                          </Button>
                         </View>
-                      </View>
+
+                        {homework.attachments &&
+                          homework.attachments.length > 0 && (
+                            <View className="mt-3 flex flex-row gap-2 border-t border-border pt-3">
+                              {attachmentLoading.has(homework.id) ? (
+                                <Suspense
+                                  fallback={<AttachmentLoadingFallback />}
+                                >
+                                  <View className="flex flex-row items-center gap-2">
+                                    <ActivityIndicator
+                                      size="small"
+                                      color="#6b7280"
+                                    />
+                                    <Text className="text-xs text-muted-foreground">
+                                      Loading attachments...
+                                    </Text>
+                                  </View>
+                                </Suspense>
+                              ) : (
+                                <>
+                                  <Paperclip color="white" size={12} />
+                                  <Text className="text-xs text-muted-foreground">
+                                    {homework.attachments.length} attachment
+                                    {homework.attachments.length > 1 ? "s" : ""}
+                                  </Text>
+                                </>
+                              )}
+                            </View>
+                          )}
+                      </Pressable>
                     </View>
                   </CardContent>
                 </Card>
@@ -483,6 +638,19 @@ export default function Tasks() {
         visible={showSubjectManager}
         onClose={() => setShowSubjectManager(false)}
         onUpdate={handleSubjectUpdate}
+      />
+
+      <HomeworkDetailDialog
+        visible={showHomeworkDetail}
+        homework={selectedHomework}
+        subjects={subjectData}
+        onClose={() => {
+          setShowHomeworkDetail(false);
+          setSelectedHomework(null);
+        }}
+        onEdit={editHomework}
+        onStatusUpdate={updateHomeworkStatus}
+        onDelete={handleHomeworkDelete}
       />
     </ScrollableWrapper>
   );

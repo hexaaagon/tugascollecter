@@ -1,6 +1,8 @@
 import * as FileSystem from "expo-file-system";
 import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
 import * as Sharing from "expo-sharing";
+import * as Linking from "expo-linking";
 import {
   AttachmentData,
   ExportData,
@@ -233,6 +235,100 @@ export class ExternalStorage {
     }
   }
 
+  static async pickImage(): Promise<AttachmentData | null> {
+    try {
+      // Request permission
+      const permissionResult =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (permissionResult.granted === false) {
+        throw new ExternalStorageError(
+          "Permission to access media library denied",
+          "PERMISSION_DENIED",
+        );
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+
+      if (result.canceled) {
+        return null;
+      }
+
+      const asset = result.assets[0];
+      const filename = asset.uri.split("/").pop() || `image_${Date.now()}.jpg`;
+      const extension = filename.split(".").pop() || "jpg";
+
+      const attachment: AttachmentData = {
+        id: `temp_${Date.now()}`,
+        name: filename,
+        type: "image",
+        uri: asset.uri,
+        size: asset.fileSize || 0,
+        mimeType: this.getMimeType(extension),
+        uploadedAt: new Date().toISOString(),
+      };
+
+      return attachment;
+    } catch (error) {
+      console.error("Error picking image:", error);
+      throw new ExternalStorageError(
+        "Failed to pick image",
+        "PICK_IMAGE_ERROR",
+      );
+    }
+  }
+
+  static async takePhoto(): Promise<AttachmentData | null> {
+    try {
+      // Request permission
+      const permissionResult =
+        await ImagePicker.requestCameraPermissionsAsync();
+
+      if (permissionResult.granted === false) {
+        throw new ExternalStorageError(
+          "Permission to access camera denied",
+          "PERMISSION_DENIED",
+        );
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+
+      if (result.canceled) {
+        return null;
+      }
+
+      const asset = result.assets[0];
+      const filename = `photo_${Date.now()}.jpg`;
+
+      const attachment: AttachmentData = {
+        id: `temp_${Date.now()}`,
+        name: filename,
+        type: "image",
+        uri: asset.uri,
+        size: asset.fileSize || 0,
+        mimeType: "image/jpeg",
+        uploadedAt: new Date().toISOString(),
+      };
+
+      return attachment;
+    } catch (error) {
+      console.error("Error taking photo:", error);
+      throw new ExternalStorageError(
+        "Failed to take photo",
+        "TAKE_PHOTO_ERROR",
+      );
+    }
+  }
+
   static async getStorageInfo(): Promise<{
     totalSize: number;
     attachmentsSize: number;
@@ -348,5 +444,153 @@ export class ExternalStorage {
     };
 
     return mimeTypes[extension.toLowerCase()] || "application/octet-stream";
+  }
+
+  static async shareAttachment(attachmentId: string): Promise<void> {
+    try {
+      const uri = await this.getAttachmentUri(attachmentId);
+      if (!uri) {
+        throw new ExternalStorageError(
+          "Attachment not found",
+          "FILE_NOT_FOUND",
+        );
+      }
+
+      const fileInfo = await FileSystem.getInfoAsync(uri);
+      if (!fileInfo.exists) {
+        throw new ExternalStorageError(
+          "Attachment file does not exist",
+          "FILE_NOT_FOUND",
+        );
+      }
+
+      const isAvailable = await Sharing.isAvailableAsync();
+      if (isAvailable) {
+        // Extract filename from the URI
+        const filename = uri.split("/").pop() || "attachment";
+        const extension = filename.split(".").pop() || "";
+        const mimeType = this.getMimeType(extension);
+
+        // Use UTI for better Android compatibility
+        await Sharing.shareAsync(uri, {
+          mimeType,
+          UTI: this.getUTI(extension),
+          dialogTitle: `Open ${filename}`,
+        });
+      } else {
+        throw new ExternalStorageError(
+          "Sharing is not available on this device",
+          "SHARING_NOT_AVAILABLE",
+        );
+      }
+    } catch (error) {
+      console.error("Error sharing attachment:", error);
+      throw new ExternalStorageError(
+        "Failed to share attachment",
+        "SHARE_ATTACHMENT_ERROR",
+      );
+    }
+  }
+
+  static async openWithExternalApp(attachmentId: string): Promise<void> {
+    try {
+      const uri = await this.getAttachmentUri(attachmentId);
+      if (!uri) {
+        throw new ExternalStorageError(
+          "Attachment not found",
+          "FILE_NOT_FOUND",
+        );
+      }
+
+      const fileInfo = await FileSystem.getInfoAsync(uri);
+      if (!fileInfo.exists) {
+        throw new ExternalStorageError(
+          "Attachment file does not exist",
+          "FILE_NOT_FOUND",
+        );
+      }
+
+      // Extract filename and get proper MIME type
+      const filename = uri.split("/").pop() || "attachment";
+      const extension = filename.split(".").pop() || "";
+      const mimeType = this.getMimeType(extension);
+
+      // Try to use Android's Intent system to open the file
+      try {
+        // For Android, we can try using file:// protocol with proper intent
+        const supported = await Linking.canOpenURL(uri);
+        if (supported) {
+          await Linking.openURL(uri);
+          return;
+        }
+      } catch (linkingError) {
+        console.log(
+          "Linking method failed, trying sharing method:",
+          linkingError,
+        );
+      }
+
+      // Fallback to sharing with intent to open
+      const isAvailable = await Sharing.isAvailableAsync();
+      if (isAvailable) {
+        await Sharing.shareAsync(uri, {
+          mimeType,
+          UTI: this.getUTI(extension),
+          dialogTitle: `Open ${filename}`,
+        });
+      } else {
+        throw new ExternalStorageError(
+          "No method available to open this file",
+          "OPEN_NOT_AVAILABLE",
+        );
+      }
+    } catch (error) {
+      console.error("Error opening with external app:", error);
+      throw new ExternalStorageError(
+        "Failed to open with external app",
+        "EXTERNAL_APP_ERROR",
+      );
+    }
+  }
+
+  private static getUTI(extension: string): string {
+    const utiTypes: Record<string, string> = {
+      // Images
+      jpg: "public.jpeg",
+      jpeg: "public.jpeg",
+      png: "public.png",
+      gif: "com.compuserve.gif",
+      bmp: "com.microsoft.bmp",
+      webp: "public.webp",
+
+      // Documents
+      pdf: "com.adobe.pdf",
+      doc: "com.microsoft.word.doc",
+      docx: "org.openxmlformats.wordprocessingml.document",
+      txt: "public.plain-text",
+      rtf: "public.rtf",
+
+      // Audio
+      mp3: "public.mp3",
+      wav: "com.microsoft.waveform-audio",
+      aac: "public.aac-audio",
+      m4a: "public.mpeg-4-audio",
+
+      // Video
+      mp4: "public.mpeg-4",
+      avi: "public.avi",
+      mov: "com.apple.quicktime-movie",
+      mkv: "org.matroska.mkv",
+
+      // Archives
+      zip: "public.zip-archive",
+      rar: "com.rarlab.rar-archive",
+      "7z": "org.7-zip.7-zip-archive",
+
+      // APK
+      apk: "application/vnd.android.package-archive",
+    };
+
+    return utiTypes[extension.toLowerCase()] || "public.data";
   }
 }

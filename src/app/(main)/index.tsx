@@ -53,10 +53,45 @@ export default function Home() {
   );
 
   const upcomingHomework = homeworkData
-    .filter((h) => h.dueDate && h.status !== "completed")
-    .sort(
-      (a, b) => new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime(),
-    )
+    .filter((h) => h.status !== "completed")
+    .sort((a, b) => {
+      const now = new Date();
+      const getDaysUntilDue = (date?: string) =>
+        date
+          ? Math.ceil(
+              (new Date(date).getTime() - now.getTime()) /
+                (1000 * 60 * 60 * 24),
+            )
+          : null;
+
+      const aDays = getDaysUntilDue(a.dueDate);
+      const bDays = getDaysUntilDue(b.dueDate);
+
+      // If either is due in <= 3 days, put it at the top
+      if (aDays !== null && aDays <= 3 && (bDays === null || bDays > 3))
+        return -1;
+      if (bDays !== null && bDays <= 3 && (aDays === null || aDays > 3))
+        return 1;
+      if (aDays !== null && bDays !== null && aDays <= 3 && bDays <= 3)
+        return aDays - bDays;
+
+      // 1. subject priority (high, medium, low)
+      const priorityOrder = { high: 0, medium: 1, low: 2 };
+      const aPriority = priorityOrder[a.priority] ?? 3;
+      const bPriority = priorityOrder[b.priority] ?? 3;
+      if (aPriority !== bPriority) return aPriority - bPriority;
+
+      // 2. unspecified deadline
+      if (a.dueDate === undefined && b.dueDate !== undefined) return -1;
+      if (b.dueDate === undefined && a.dueDate !== undefined) return 1;
+
+      // 3. date of the deadline
+      if (a.dueDate && b.dueDate) {
+        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      }
+
+      return 0;
+    })
     .slice(0, 3);
 
   if (loading) {
@@ -201,7 +236,7 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             {upcomingHomework.length > 0 ? (
-              <View className="space-y-3">
+              <View className="flex flex-col gap-3">
                 {upcomingHomework.map((homework) => {
                   const subject = subjectData.find(
                     (s) => s.id === homework.subjectId,
@@ -217,16 +252,19 @@ export default function Home() {
                   return (
                     <Pressable
                       key={homework.id}
-                      className="flex flex-row items-center justify-between rounded-lg border border-border p-3"
+                      className="relative flex flex-row items-center justify-between rounded-lg border border-border p-3"
                       onPress={() => router.push("/tasks")}
                     >
-                      <View className="flex-1">
-                        <Text className="font-medium">{homework.title}</Text>
-                        <Text className="text-xs text-muted-foreground">
-                          {subject?.name}
-                        </Text>
-                      </View>
-                      <View className="items-end">
+                      <View
+                        className={`absolute right-3 top-3 h-2 w-2 rounded-full ${
+                          homework.priority === "high"
+                            ? "bg-red-500"
+                            : homework.priority === "medium"
+                              ? "bg-yellow-500"
+                              : "bg-green-500"
+                        }`}
+                      />
+                      <View className="absolute bottom-3 right-3">
                         {daysUntilDue !== null && (
                           <Text
                             className={`text-xs font-medium ${
@@ -244,15 +282,20 @@ export default function Home() {
                                 : `${daysUntilDue} days left`}
                           </Text>
                         )}
-                        <View
-                          className={`mt-1 h-2 w-2 rounded-full ${
-                            homework.priority === "high"
-                              ? "bg-red-500"
-                              : homework.priority === "medium"
-                                ? "bg-yellow-500"
-                                : "bg-green-500"
-                          }`}
-                        />
+                      </View>
+                      <View className="flex-1">
+                        <Text className="font-medium">{homework.title}</Text>
+                        <View className="flex flex-row items-center gap-1.5">
+                          <View
+                            className="h-2 w-2 rounded-full"
+                            style={{
+                              backgroundColor: subject?.color || "#ccc",
+                            }}
+                          />
+                          <Text className="text-xs text-muted-foreground">
+                            {subject?.name}
+                          </Text>
+                        </View>
                       </View>
                     </Pressable>
                   );
