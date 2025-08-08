@@ -493,8 +493,8 @@ export default function SettingsScreen() {
         />
         <SettingsItem
           icon={<HelpCircle size={24} color={iconColor} />}
-          title="Help & Support"
-          description="Get help using the app"
+          title={t("helpAndSupport")}
+          description={t("helpAndSupportDescription")}
           onPress={() =>
             toast("Help Center", {
               description: "Opening help documentation...",

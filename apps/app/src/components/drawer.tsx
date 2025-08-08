@@ -29,6 +29,7 @@ import { cn } from "@/lib/utils";
 import { iconWithClassName } from "@/lib/icons/iconWithClassName";
 import { Image } from "expo-image";
 import { toast } from "sonner-native";
+import { useLanguage } from "@/lib/language";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const DRAWER_WIDTH = SCREEN_WIDTH * 0.8;
@@ -195,7 +196,61 @@ export const useDrawer = () => {
 
 // Hook for managing drawer configuration
 export function useDrawerConfig() {
-  const [config, setConfig] = React.useState(defaultDrawerConfig);
+  const { t, language } = useLanguage();
+
+  // Create config with translations
+  const defaultConfigWithTranslations: DrawerSection[] = React.useMemo(
+    () => [
+      {
+        id: "main",
+        items: [
+          {
+            id: "home",
+            label: t("home"),
+            icon: Home,
+            route: "/",
+            onPress: createRouteHandler("/(main)/"),
+          },
+          {
+            id: "tasks",
+            label: t("tasks"),
+            route: "/tasks",
+            icon: CheckSquare,
+            onPress: createRouteHandler("/(main)/tasks"),
+          },
+          {
+            id: "statistics",
+            label: t("statistics"),
+            route: "/statistics",
+            icon: BarChart3,
+            onPress: createRouteHandler("/(main)/statistics"),
+          },
+          {
+            id: "calendar",
+            label: t("calendar"),
+            route: "/calendar",
+            icon: Calendar,
+            onPress: createRouteHandler("/(main)/calendar"),
+          },
+          {
+            id: "settings",
+            label: t("settings"),
+            route: "/settings",
+            icon: Settings,
+            onPress: createRouteHandler("/(main)/settings"),
+          },
+        ],
+      },
+    ],
+    [t, language], // Add language dependency to force re-computation
+  );
+
+  const [config, setConfig] = React.useState(defaultConfigWithTranslations);
+
+  // Update config when translations change
+  React.useEffect(() => {
+    setConfig(defaultConfigWithTranslations);
+  }, [defaultConfigWithTranslations]);
 
   const updateItemStatus = React.useCallback(
     (itemId: string, updates: Partial<DrawerMenuItem>) => {
@@ -484,6 +539,7 @@ export const DrawerFooter = React.memo(function DrawerFooter({
   onTurnOnCloudChanges,
 }: DrawerFooterProps) {
   const { isDarkColorScheme } = useColorScheme();
+  const { t } = useLanguage();
 
   // Memoize colors to prevent recalculation on every render
   const colors = React.useMemo(
@@ -575,7 +631,7 @@ export const DrawerFooter = React.memo(function DrawerFooter({
             }}
           />
           <Text className="text-xs font-medium text-green-400">
-            Cloud sync enabled
+            {t("cloudSyncEnabled")}
           </Text>
         </View>
       </View>
@@ -623,10 +679,10 @@ export const DrawerFooter = React.memo(function DrawerFooter({
             className="text-sm font-medium"
             style={{ color: colors.textColor }}
           >
-            Turn on Cloud Changes
+            {t("turnOnCloudChanges")}
           </Text>
           <Text className="text-xs" style={{ color: colors.mutedTextColor }}>
-            Sync tasks across devices
+            {t("syncTasksAcrossDevices")}
           </Text>
         </View>
       </TouchableOpacity>
@@ -634,12 +690,13 @@ export const DrawerFooter = React.memo(function DrawerFooter({
   );
 });
 
-export const CustomDrawerContent = React.memo(function CustomDrawerContent({
+export function CustomDrawerContent({
   footer,
   onItemPress,
 }: CustomDrawerContentProps) {
   const insets = useSafeAreaInsets();
   const { isDarkColorScheme } = useColorScheme();
+  const { t, language } = useLanguage(); // Add language to force re-render
   const { config, setActiveItem } = useDrawerConfig();
   const pathname = usePathname();
 
@@ -806,7 +863,7 @@ export const CustomDrawerContent = React.memo(function CustomDrawerContent({
               color: colors.textColor,
             }}
           >
-            Tugas Collecter
+            {t("appName")}
           </Text>
         </View>
       </DrawerHeader>
@@ -818,7 +875,7 @@ export const CustomDrawerContent = React.memo(function CustomDrawerContent({
       <DrawerFooter />
     </DrawerContent>
   );
-});
+}
 
 // Styles
 // Styles

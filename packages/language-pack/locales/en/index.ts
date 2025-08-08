@@ -1,6 +1,9 @@
 import type { LanguageStrings } from "../../types";
 
 export const englishStrings: LanguageStrings = {
+  // App
+  appName: "Tugas Collecter",
+
   // General
   cancel: "Cancel",
   save: "Save",
@@ -33,6 +36,16 @@ export const englishStrings: LanguageStrings = {
   urgentTasks: "Urgent Tasks",
   overallProgress: "Overall Progress",
   viewAll: "View All",
+
+  // Dynamic strings with placeholders
+  youHaveTasksRemaining: "You have {{count}} tasks remaining",
+  readyToStartOrganizing: "Ready to start organizing your homework!",
+  dueTodayText: "Due today",
+  dueTomorrowText: "Due tomorrow",
+  daysLeftText: "{{days}} days left",
+  noDueDateText: "No due date",
+  loadingText: "Loading...",
+  dueLabel: "Due:",
 
   // Tasks Screen
   newHomework: "New Homework",
@@ -89,6 +102,8 @@ export const englishStrings: LanguageStrings = {
   appInfo: "App Info",
   about: "About",
   aboutDescription: "Version 1.0.0",
+  helpAndSupport: "Help & Support",
+  helpAndSupportDescription: "Get help and support for the app",
   rateApp: "Rate App",
   rateAppDescription: "Help us improve by rating the app",
   sendFeedback: "Send Feedback",
@@ -99,6 +114,11 @@ export const englishStrings: LanguageStrings = {
   // Language
   language: "Language",
   languageDescription: "Change the app language",
+
+  // Drawer
+  turnOnCloudChanges: "Turn on Cloud Changes",
+  syncTasksAcrossDevices: "Sync tasks across devices",
+  cloudSyncEnabled: "Cloud sync enabled",
 
   // Theme options
   themeOptions: {

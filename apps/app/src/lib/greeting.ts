@@ -1,4 +1,6 @@
-export function getGreeting(t: (key: string) => string) {
+export function getGreeting(
+  t: (key: string, replacements?: Record<string, string | number>) => string,
+) {
   const date = new Date();
   const hours = date.getHours();
 

@@ -100,7 +100,9 @@ export default function Home() {
     return (
       <ScrollableWrapper className="flex-1">
         <View className="mx-6 flex-1 items-center justify-center">
-          <Text className="text-lg text-muted-foreground">Loading...</Text>
+          <Text className="text-lg text-muted-foreground">
+            {t("loadingText")}
+          </Text>
         </View>
       </ScrollableWrapper>
     );
@@ -113,8 +115,10 @@ export default function Home() {
           <Text className="text-2xl font-bold text-foreground">{greeting}</Text>
           <Text className="text-sm text-muted-foreground">
             {stats.total > 0
-              ? `You have ${stats.pending + stats.inProgress} tasks remaining`
-              : "Ready to start organizing your homework!"}
+              ? t("youHaveTasksRemaining", {
+                  count: stats.pending + stats.inProgress,
+                })
+              : t("readyToStartOrganizing")}
           </Text>
         </View>
 
@@ -213,10 +217,10 @@ export default function Home() {
                       <View className="flex-1">
                         <Text className="font-medium">{homework.title}</Text>
                         <Text className="text-xs text-muted-foreground">
-                          {subject?.name} • Due:{" "}
+                          {subject?.name} • {t("dueLabel")}{" "}
                           {homework.dueDate
                             ? new Date(homework.dueDate).toLocaleDateString()
-                            : "No due date"}
+                            : t("noDueDateText")}
                         </Text>
                       </View>
                       <View className="h-3 w-3 rounded-full bg-red-500" />
@@ -284,10 +288,10 @@ export default function Home() {
                             }`}
                           >
                             {daysUntilDue === 0
-                              ? "Due today"
+                              ? t("dueTodayText")
                               : daysUntilDue === 1
-                                ? "Due tomorrow"
-                                : `${daysUntilDue} days left`}
+                                ? t("dueTomorrowText")
+                                : t("daysLeftText", { days: daysUntilDue })}
                           </Text>
                         )}
                       </View>

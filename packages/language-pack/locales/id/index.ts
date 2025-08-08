@@ -1,178 +1,200 @@
 import type { LanguageStrings } from "../../types";
 
-// TODO: Please translate these strings to Indonesian
 export const indonesianStrings: LanguageStrings = {
+  // App
+  appName: "Tugas Collecter",
+
   // General
-  cancel: "Cancel", // TODO: Translate to Indonesian
-  save: "Save", // TODO: Translate to Indonesian
-  edit: "Edit", // TODO: Translate to Indonesian
-  delete: "Delete", // TODO: Translate to Indonesian
-  search: "Search", // TODO: Translate to Indonesian
-  loading: "Loading", // TODO: Translate to Indonesian
-  error: "Error", // TODO: Translate to Indonesian
-  success: "Success", // TODO: Translate to Indonesian
+  cancel: "Batal",
+  save: "Simpan",
+  edit: "Edit",
+  delete: "Hapus",
+  search: "Cari",
+  loading: "Memuat",
+  error: "Error",
+  success: "Sukses",
 
   // Navigation
-  home: "Home", // TODO: Translate to Indonesian
-  tasks: "Tasks", // TODO: Translate to Indonesian
-  calendar: "Calendar", // TODO: Translate to Indonesian
-  statistics: "Statistics", // TODO: Translate to Indonesian
-  settings: "Settings", // TODO: Translate to Indonesian
+  home: "Home",
+  tasks: "Tugas",
+  calendar: "Kalender",
+  statistics: "Statistik",
+  settings: "Peraturan",
 
   // Home Screen
   greeting: {
-    morning: "Good Morning", // TODO: Translate to Indonesian
-    afternoon: "Good Afternoon", // TODO: Translate to Indonesian
-    evening: "Good Evening", // TODO: Translate to Indonesian
+    morning: "Selamat Pagi",
+    afternoon: "Selamat Siang",
+    evening: "Selamat Malam",
   },
-  todaysHomework: "Today's Homework", // TODO: Translate to Indonesian
-  upcomingTasks: "Upcoming Tasks", // TODO: Translate to Indonesian
-  completionRate: "Completion Rate", // TODO: Translate to Indonesian
-  addFirstTask: "Add Your First Task", // TODO: Translate to Indonesian
-  searchHomework: "Search your homework", // TODO: Translate to Indonesian
-  totalTasks: "Total Tasks", // TODO: Translate to Indonesian
-  urgentTasks: "Urgent Tasks", // TODO: Translate to Indonesian
-  overallProgress: "Overall Progress", // TODO: Translate to Indonesian
-  viewAll: "View All", // TODO: Translate to Indonesian
+  todaysHomework: "Tugas kamu hari ini",
+  upcomingTasks: "Tugas Mendatang",
+  completionRate: "Rasio Penyelesaian Tugas",
+  addFirstTask: "Tambahkan Tugas Pertama kamu",
+  searchHomework: "Cari tugas kamu",
+  totalTasks: "Semua Tugas",
+  urgentTasks: "Tugas Penting",
+  overallProgress: "Proses Keseluruhan",
+  viewAll: "Lihat Semua",
+
+  // Dynamic strings with placeholders
+  youHaveTasksRemaining: `Kamu punya {{count}} tugas yang belum selesai. ${["Semangat!", "Ayo selesaikan!", "Jangan lupa istirahat!"][Math.floor(Math.random() * 3)]}`,
+  readyToStartOrganizing: "Ayo mulai atur tugas kamu!",
+  dueTodayText: "Deadline hari ini",
+  dueTomorrowText: "Deadline besok",
+  daysLeftText: "{{days}} hari lagi",
+  noDueDateText: "Tidak ada deadline",
+  loadingText: "Sedang Memuat...",
+  dueLabel: "Deadline:",
 
   // Tasks Screen
-  newHomework: "New Homework", // TODO: Translate to Indonesian
-  editHomework: "Edit Homework", // TODO: Translate to Indonesian
-  homeworkTitle: "Title", // TODO: Translate to Indonesian
-  homeworkDescription: "Description", // TODO: Translate to Indonesian
-  subject: "Subject", // TODO: Translate to Indonesian
-  dueDate: "Due Date", // TODO: Translate to Indonesian
-  priority: "Priority", // TODO: Translate to Indonesian
-  selectDueDate: "Select due date", // TODO: Translate to Indonesian
-  enterTitle: "Enter homework title", // TODO: Translate to Indonesian
-  enterDescription: "Enter homework description (optional)", // TODO: Translate to Indonesian
-  selectSubject: "Select subject", // TODO: Translate to Indonesian
+  newHomework: "Buat Tugas",
+  editHomework: "Edit Tugas",
+  homeworkTitle: "Judul",
+  homeworkDescription: "Deskripsi",
+  subject: "Mata Pelajaran",
+  dueDate: "Tanggal Deadline",
+  priority: "Prioritas",
+  selectDueDate: "Pilih tanggal deadline kamu",
+  enterTitle: "Tuliskan judul tugas kamu",
+  enterDescription: "Tuliskan deskripsi tugas kamu (Opsional)",
+  selectSubject: "Pilih mata pelajaran kamu",
 
   // Priority levels
   priorityLevels: {
-    low: "Low", // TODO: Translate to Indonesian
-    medium: "Medium", // TODO: Translate to Indonesian
-    high: "High", // TODO: Translate to Indonesian
+    low: "Rendah",
+    medium: "Sedang",
+    high: "Tinggi",
   },
 
   // Status levels
   statusLevels: {
-    pending: "Pending", // TODO: Translate to Indonesian
-    inProgress: "In Progress", // TODO: Translate to Indonesian
-    completed: "Completed", // TODO: Translate to Indonesian
-    overdue: "Overdue", // TODO: Translate to Indonesian
+    pending: "Belum Dikerjakan",
+    inProgress: "Sedang Dikerjakan",
+    completed: "Selesai",
+    overdue: "Lewat Deadline",
   },
 
   // Settings Screen
-  account: "Account", // TODO: Translate to Indonesian
-  signIn: "Sign In", // TODO: Translate to Indonesian
-  signInDescription: "Sign in to sync your data across devices", // TODO: Translate to Indonesian
-  cloudSync: "Cloud Sync", // TODO: Translate to Indonesian
-  cloudSyncDescription: "Sync your tasks and preferences", // TODO: Translate to Indonesian
-  homeworkManagement: "Homework Management", // TODO: Translate to Indonesian
-  manageSubjects: "Manage Subjects", // TODO: Translate to Indonesian
-  manageSubjectsDescription: "Add, edit, or remove subjects", // TODO: Translate to Indonesian
-  clearAllData: "Clear All Data", // TODO: Translate to Indonesian
-  clearAllDataDescription: "Permanently delete all homework and subjects", // TODO: Translate to Indonesian
-  preferences: "Preferences", // TODO: Translate to Indonesian
-  notifications: "Notifications", // TODO: Translate to Indonesian
-  notificationsDescription: "Receive task reminders and updates", // TODO: Translate to Indonesian
-  theme: "Theme", // TODO: Translate to Indonesian
-  autoSync: "Auto Sync", // TODO: Translate to Indonesian
-  autoSyncDescription: "Automatically sync when connected to WiFi", // TODO: Translate to Indonesian
-  soundEffects: "Sound Effects", // TODO: Translate to Indonesian
-  soundEffectsDescription: "Play sounds for interactions", // TODO: Translate to Indonesian
-  hapticFeedback: "Haptic Feedback", // TODO: Translate to Indonesian
-  hapticFeedbackDescription: "Feel vibrations for touch interactions", // TODO: Translate to Indonesian
-  support: "Support", // TODO: Translate to Indonesian
-  privacyPolicy: "Privacy Policy", // TODO: Translate to Indonesian
-  privacyPolicyDescription: "Learn how we protect your data", // TODO: Translate to Indonesian
-  appInfo: "App Info", // TODO: Translate to Indonesian
-  about: "About", // TODO: Translate to Indonesian
-  aboutDescription: "Version 1.0.0", // TODO: Translate to Indonesian
-  rateApp: "Rate App", // TODO: Translate to Indonesian
-  rateAppDescription: "Help us improve by rating the app", // TODO: Translate to Indonesian
-  sendFeedback: "Send Feedback", // TODO: Translate to Indonesian
-  sendFeedbackDescription: "Share your thoughts and suggestions", // TODO: Translate to Indonesian
-  termsOfService: "Terms of Service", // TODO: Translate to Indonesian
-  termsOfServiceDescription: "Review our terms and conditions", // TODO: Translate to Indonesian
+  account: "Akun",
+  signIn: "Sign In",
+  signInDescription:
+    "Sign in agar data kamu tersinkronisasi di semua perangkat",
+  cloudSync: "Cloud Sync",
+  cloudSyncDescription: "Sinkronisasi tugas dan preferensi kamu",
+  homeworkManagement: "Manajemen Tugas",
+  manageSubjects: "Kelola Mata Pelajaran",
+  manageSubjectsDescription: "Tambahkan, edit, atau hapus mata pelajaran",
+  clearAllData: "Hapus Semua Data",
+  clearAllDataDescription:
+    "Hapus semua tugas dan mata pelajaran secara permanen",
+  preferences: "Preferensi",
+  notifications: "Notifikasi",
+  notificationsDescription: "Dapatkan pengingat dan update tugas",
+  theme: "Tema",
+  autoSync: "Auto Sinkronisasi",
+  autoSyncDescription: "Sinkronisasi otomatis saat terhubung ke WiFi",
+  soundEffects: "Efek Suara",
+  soundEffectsDescription: "Mainkan suara saat berinteraksi",
+  hapticFeedback: "Haptic Feedback",
+  hapticFeedbackDescription: "Rasakan getaran saat berinteraksi",
+  support: "Support",
+  privacyPolicy: "Privacy Policy",
+  privacyPolicyDescription: "Pelajari bagaimana kami melindungi data kamu",
+  appInfo: "Informasi Aplikasi",
+  about: "Tentang",
+  aboutDescription: "Version 1.0.0",
+  helpAndSupport: "Help & Support",
+  helpAndSupportDescription: "Cari bantuan dan dukungan untuk aplikasi",
+  rateApp: "Rate App",
+  rateAppDescription: "Bantu kami dengan memberikan rating di app store",
+  sendFeedback: "Kirim Feedback",
+  sendFeedbackDescription: "Bagikan pendapat dan saran kamu",
+  termsOfService: "Terms of Service",
+  termsOfServiceDescription: "Syarat dan Ketentuan kami",
 
   // Language
-  language: "Language", // TODO: Translate to Indonesian
-  languageDescription: "Change the app language", // TODO: Translate to Indonesian
+  language: "Bahasa",
+  languageDescription: "Ganti bahasa aplikasi",
+
+  // Drawer
+  turnOnCloudChanges: "Aktifkan Perubahan Cloud",
+  syncTasksAcrossDevices: "Sinkronisasi tugas di semua perangkat",
+  cloudSyncEnabled: "Sinkronisasi cloud diaktifkan",
 
   // Theme options
   themeOptions: {
-    system: "system", // TODO: Translate to Indonesian
-    light: "light", // TODO: Translate to Indonesian
-    dark: "dark", // TODO: Translate to Indonesian
-    followSystem: "Follow system", // TODO: Translate to Indonesian
-    darkTheme: "Dark theme", // TODO: Translate to Indonesian
-    lightTheme: "Light theme", // TODO: Translate to Indonesian
+    system: "sistem",
+    light: "terang",
+    dark: "gelap",
+    followSystem: "Ikuti tema sistem",
+    darkTheme: "Tema Gelap",
+    lightTheme: "Tema Terang",
   },
 
   // Subject Manager
-  subjects: "Subjects", // TODO: Translate to Indonesian
-  addSubject: "Add Subject", // TODO: Translate to Indonesian
-  editSubject: "Edit Subject", // TODO: Translate to Indonesian
-  subjectName: "Subject Name", // TODO: Translate to Indonesian
-  subjectColor: "Subject Color", // TODO: Translate to Indonesian
-  enterSubjectName: "Enter subject name", // TODO: Translate to Indonesian
-  selected: "Selected", // TODO: Translate to Indonesian
+  subjects: "Mata Pelajaran",
+  addSubject: "Tambahkan Mata Pelajaran",
+  editSubject: "Edit Mata Pelajaran",
+  subjectName: "Nama Mata Pelajaran",
+  subjectColor: "Warna Mata Pelajaran",
+  enterSubjectName: "Masukkan nama mata pelajaran",
+  selected: "Dipilih",
 
   // Homework Detail
-  attachments: "Attachments", // TODO: Translate to Indonesian
-  notes: "Notes", // TODO: Translate to Indonesian
-  createdOn: "Created on", // TODO: Translate to Indonesian
-  lastModified: "Last modified", // TODO: Translate to Indonesian
-  markAsCompleted: "Mark as Completed", // TODO: Translate to Indonesian
-  markAsInProgress: "Mark as In Progress", // TODO: Translate to Indonesian
+  attachments: "Lampiran Foto/Dokumen",
+  notes: "Catatan",
+  createdOn: "Dibuat pada",
+  lastModified: "Terakhir Diubah",
+  markAsCompleted: "Tandai sebagai Selesai",
+  markAsInProgress: "Tandai sebagai Sedang Dikerjakan",
 
   // Alerts and Messages
   alerts: {
     clearAllData: {
-      title: "Clear All Data", // TODO: Translate to Indonesian
+      title: "Hapus Semua Data",
       message:
-        "This will permanently delete all your homework and subjects. This action cannot be undone.", // TODO: Translate to Indonesian
-      confirm: "Clear All Data", // TODO: Translate to Indonesian
+        "Ini akan menghapus semua tugas dan mata pelajaran kamu secara permanen. Tindakan ini tidak dapat dibatalkan.",
+      confirm: "Hapus Semua Data",
     },
     importData: {
-      title: "Import Data", // TODO: Translate to Indonesian
-      message: "Select a backup file to import your data", // TODO: Translate to Indonesian
-      selectFile: "Select File", // TODO: Translate to Indonesian
+      title: "Import Data",
+      message: "Pilih file cadangan untuk mengimpor data kamu",
+      selectFile: "Pilih File yang kamu mau",
     },
     rateApp: {
-      title: "Rate App", // TODO: Translate to Indonesian
-      message: "Would you like to rate Tugas Collecter on the app store?", // TODO: Translate to Indonesian
-      notNow: "Not Now", // TODO: Translate to Indonesian
-      rate: "Rate App", // TODO: Translate to Indonesian
+      title: "Rate App",
+      message:
+        "Apakah kamu ingin memberikan rating untuk Tugas Collecter di Google Play Store?",
+      notNow: "Tidak untuk Sekarang",
+      rate: "Rate App",
     },
     aboutApp: {
-      title: "About Tugas Collecter", // TODO: Translate to Indonesian
+      title: "About Tugas Collecter",
     },
   },
 
   // Toast Messages
   toasts: {
     featureComingSoon: {
-      title: "Feature Coming Soon", // TODO: Translate to Indonesian
-      description: "Data import will be available in a future update", // TODO: Translate to Indonesian
+      title: "Fitur akan segera hadir",
+      description: "Import data akan tersedia di pembaruan mendatang",
     },
     thankYou: {
-      title: "Thank You!", // TODO: Translate to Indonesian
-      description: "Your feedback helps us improve the app", // TODO: Translate to Indonesian
+      title: "Terima Kasih!",
+      description: "Feedback kamu membantu kami meningkatkan aplikasi",
     },
     privacyPolicy: {
-      title: "Privacy Policy", // TODO: Translate to Indonesian
-      description: "Opening privacy policy...", // TODO: Translate to Indonesian
+      title: "Privacy Policy",
+      description: "Membuka halaman privacy policy...",
     },
     feedback: {
-      title: "Feedback", // TODO: Translate to Indonesian
-      description: "Opening feedback form...", // TODO: Translate to Indonesian
+      title: "Feedback",
+      description: "Membuka formulir feedback...",
     },
     termsOfService: {
-      title: "Terms of Service", // TODO: Translate to Indonesian
-      description: "Opening terms of service...", // TODO: Translate to Indonesian
+      title: "Terms of Service",
+      description: "Membuka halaman terms of service...",
     },
   },
 };

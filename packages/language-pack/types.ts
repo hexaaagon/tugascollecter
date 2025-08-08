@@ -1,6 +1,9 @@
 export type Language = "en" | "id";
 
 export interface LanguageStrings {
+  // App
+  appName: string;
+
   // General
   cancel: string;
   save: string;
@@ -33,6 +36,16 @@ export interface LanguageStrings {
   urgentTasks: string;
   overallProgress: string;
   viewAll: string;
+
+  // Dynamic strings with placeholders
+  youHaveTasksRemaining: string; // "You have {{count}} tasks remaining"
+  readyToStartOrganizing: string;
+  dueTodayText: string; // "Due today"
+  dueTomorrowText: string; // "Due tomorrow"
+  daysLeftText: string; // "{{days}} days left"
+  noDueDateText: string; // "No due date"
+  loadingText: string;
+  dueLabel: string; // "Due:"
 
   // Tasks Screen
   newHomework: string;
@@ -89,6 +102,8 @@ export interface LanguageStrings {
   appInfo: string;
   about: string;
   aboutDescription: string;
+  helpAndSupport: string;
+  helpAndSupportDescription: string;
   rateApp: string;
   rateAppDescription: string;
   sendFeedback: string;
@@ -99,6 +114,11 @@ export interface LanguageStrings {
   // Language
   language: string;
   languageDescription: string;
+
+  // Drawer
+  turnOnCloudChanges: string;
+  syncTasksAcrossDevices: string;
+  cloudSyncEnabled: string;
 
   // Theme options
   themeOptions: {

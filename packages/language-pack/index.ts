@@ -18,7 +18,10 @@ export function getCurrentLanguage(): Language {
   return currentLanguage;
 }
 
-export function t(key: string): any {
+export function t(
+  key: string,
+  replacements?: Record<string, string | number>
+): any {
   const keys = key.split(".");
   let result: any = translations[currentLanguage];
 
@@ -31,6 +34,13 @@ export function t(key: string): any {
       );
       return key;
     }
+  }
+
+  // Handle string replacements
+  if (typeof result === "string" && replacements) {
+    return result.replace(/\{\{(\w+)\}\}/g, (match, placeholder) => {
+      return replacements[placeholder]?.toString() ?? match;
+    });
   }
 
   return result;
