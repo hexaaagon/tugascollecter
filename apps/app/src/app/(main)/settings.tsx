@@ -28,6 +28,14 @@ import {
   BookOpen,
   Trash2,
 } from "lucide-react-native";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { toast } from "sonner-native";
 import { Text } from "@/components/ui/text";
 import { Card } from "@/components/ui/card";
@@ -41,6 +49,8 @@ import {
 } from "@/lib/storage";
 import { ScrollableWrapper } from "@/components/scrollable-wrapper";
 import { router } from "expo-router";
+import { useTranslation, useLanguage } from "@/lib/language";
+import type { Language } from "@tugascollecter/language-pack";
 
 interface SettingsItemProps {
   icon: React.ReactNode;
@@ -154,9 +164,12 @@ export default function SettingsScreen() {
     setColorScheme,
     systemColorScheme,
   } = useColorScheme();
+  const { t } = useTranslation();
+  const { language, setLanguage } = useLanguage();
 
   const [preferences, setPreferences] =
     React.useState<UserPreferences>(DEFAULT_PREFERENCES);
+  const [showLanguageDialog, setShowLanguageDialog] = React.useState(false);
 
   React.useEffect(() => {
     const loadPreferences = async () => {
@@ -184,18 +197,38 @@ export default function SettingsScreen() {
     setColorScheme(modes[nextIndex]);
   };
 
+  const handleLanguageChange = () => {
+    setShowLanguageDialog(true);
+  };
+
+  const selectLanguage = (selectedLanguage: Language) => {
+    setLanguage(selectedLanguage);
+    setShowLanguageDialog(false);
+  };
+
+  const getLanguageDisplayText = (lang: Language) => {
+    switch (lang) {
+      case "en":
+        return "🇺🇸 English";
+      case "id":
+        return "🇮🇩 Bahasa Indonesia";
+      default:
+        return lang;
+    }
+  };
+
   const handleCloudSync = () => {
     toast.info("Cloud Sync feature is under development.");
   };
 
   const handleClearAllData = () => {
     Alert.alert(
-      "Clear All Data",
-      "This will permanently delete all your homework assignments and subjects. This action cannot be undone.",
+      t("alerts.clearAllData.title"),
+      t("alerts.clearAllData.message"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("cancel"), style: "cancel" },
         {
-          text: "Clear All",
+          text: t("alerts.clearAllData.confirm"),
           style: "destructive",
           onPress: async () => {
             try {
@@ -219,13 +252,13 @@ export default function SettingsScreen() {
   };
 
   const handleImportData = () => {
-    Alert.alert("Import Data", "Select a backup file to import your data", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t("alerts.importData.title"), t("alerts.importData.message"), [
+      { text: t("cancel"), style: "cancel" },
       {
-        text: "Select File",
+        text: t("alerts.importData.selectFile"),
         onPress: () => {
-          toast.info("Feature Coming Soon", {
-            description: "Data import will be available in a future update",
+          toast.info(t("toasts.featureComingSoon.title"), {
+            description: t("toasts.featureComingSoon.description"),
           });
         },
       },
@@ -233,21 +266,17 @@ export default function SettingsScreen() {
   };
 
   const handleRateApp = () => {
-    Alert.alert(
-      "Rate App",
-      "Would you like to rate Tugas Collecter on the app store?",
-      [
-        { text: "Not Now", style: "cancel" },
-        {
-          text: "Rate App",
-          onPress: () => {
-            toast("Thank You!", {
-              description: "Your feedback helps us improve the app",
-            });
-          },
+    Alert.alert(t("alerts.rateApp.title"), t("alerts.rateApp.message"), [
+      { text: t("alerts.rateApp.notNow"), style: "cancel" },
+      {
+        text: t("alerts.rateApp.rate"),
+        onPress: () => {
+          toast(t("toasts.thankYou.title"), {
+            description: t("toasts.thankYou.description"),
+          });
         },
-      ],
-    );
+      },
+    ]);
   };
 
   const iconColor = React.useMemo(
@@ -257,46 +286,46 @@ export default function SettingsScreen() {
 
   return (
     <ScrollableWrapper className="flex-1">
-      <SettingsSection title="Account">
+      <SettingsSection title={t("account")}>
         <SettingsItem
           icon={<User size={24} color={iconColor} />}
-          title="Sign In"
-          description="Sign in to sync your data across devices"
+          title={t("signIn")}
+          description={t("signInDescription")}
           onPress={handleCloudSync}
         />
         <SettingsSeparator />
         <SettingsItem
           icon={<Globe size={24} color={iconColor} />}
-          title="Cloud Sync"
-          description="Sync your tasks and preferences"
+          title={t("cloudSync")}
+          description={t("cloudSyncDescription")}
           onPress={handleCloudSync}
         />
       </SettingsSection>
 
-      <SettingsSection title="Homework Management">
+      <SettingsSection title={t("homeworkManagement")}>
         <SettingsItem
           icon={<BookOpen size={24} color={iconColor} />}
-          title="Manage Subjects"
-          description="Add, edit, or remove subjects"
+          title={t("manageSubjects")}
+          description={t("manageSubjectsDescription")}
           onPress={() => router.push("/tasks")}
           showChevron
         />
         <SettingsSeparator />
         <SettingsItem
           icon={<Trash2 size={24} color="#ef4444" />}
-          title="Clear All Data"
-          description="Permanently delete all homework and subjects"
+          title={t("clearAllData")}
+          description={t("clearAllDataDescription")}
           onPress={handleClearAllData}
           showChevron
         />
       </SettingsSection>
 
       {/* Preferences Section */}
-      <SettingsSection title="Preferences">
+      <SettingsSection title={t("preferences")}>
         <SettingsSwitch
           icon={<Bell size={24} color={iconColor} />}
-          title="Notifications"
-          description="Receive task reminders and updates"
+          title={t("notifications")}
+          description={t("notificationsDescription")}
           value={preferences.notifications}
           onValueChange={handlePreferenceChange("notifications")}
           disabled
@@ -312,13 +341,13 @@ export default function SettingsScreen() {
               <Sun size={24} color={iconColor} />
             )
           }
-          title="Theme"
+          title={t("theme")}
           description={
             userPreference === "system"
-              ? `Follow system (currently ${systemColorScheme || "dark"})`
+              ? `${t("themeOptions.followSystem")} (currently ${systemColorScheme || "dark"})`
               : userPreference === "dark"
-                ? "Dark theme"
-                : "Light theme"
+                ? t("themeOptions.darkTheme")
+                : t("themeOptions.lightTheme")
           }
           onPress={handleThemeChange}
           rightElement={
@@ -339,10 +368,32 @@ export default function SettingsScreen() {
             backgroundColor: isDarkColorScheme ? "#374151" : "#e5e7eb",
           }}
         />
+        <SettingsItem
+          icon={<Globe size={24} color={iconColor} />}
+          title={t("language")}
+          description={t("languageDescription")}
+          onPress={handleLanguageChange}
+          rightElement={
+            <Text
+              style={{
+                color: isDarkColorScheme ? "#9ca3af" : "#6b7280",
+                fontSize: 14,
+              }}
+            >
+              {getLanguageDisplayText(language)}
+            </Text>
+          }
+        />
+        <View
+          className="mx-4 h-px"
+          style={{
+            backgroundColor: isDarkColorScheme ? "#374151" : "#e5e7eb",
+          }}
+        />
         <SettingsSwitch
           icon={<Download size={24} color={iconColor} />}
-          title="Auto Sync"
-          description="Automatically sync when connected to WiFi"
+          title={t("autoSync")}
+          description={t("autoSyncDescription")}
           value={preferences.autoSync}
           onValueChange={handlePreferenceChange("autoSync")}
           disabled
@@ -355,8 +406,8 @@ export default function SettingsScreen() {
         />
         <SettingsSwitch
           icon={<Smartphone size={24} color={iconColor} />}
-          title="Sound Effects"
-          description="Play sounds for interactions"
+          title={t("soundEffects")}
+          description={t("soundEffectsDescription")}
           value={preferences.soundEffects}
           onValueChange={handlePreferenceChange("soundEffects")}
           disabled
@@ -369,8 +420,8 @@ export default function SettingsScreen() {
         />
         <SettingsSwitch
           icon={<Palette size={24} color={iconColor} />}
-          title="Haptic Feedback"
-          description="Feel vibrations for touch interactions"
+          title={t("hapticFeedback")}
+          description={t("hapticFeedbackDescription")}
           value={preferences.hapticFeedback}
           onValueChange={handlePreferenceChange("hapticFeedback")}
           disabled
@@ -405,11 +456,11 @@ export default function SettingsScreen() {
         />
         <SettingsItem
           icon={<Shield size={24} color={iconColor} />}
-          title="Privacy Policy"
-          description="Learn how we protect your data"
+          title={t("privacyPolicy")}
+          description={t("privacyPolicyDescription")}
           onPress={() =>
-            toast("Privacy Policy", {
-              description: "Opening privacy policy...",
+            toast(t("toasts.privacyPolicy.title"), {
+              description: t("toasts.privacyPolicy.description"),
             })
           }
         />
@@ -422,14 +473,14 @@ export default function SettingsScreen() {
       </SettingsSection>
 
       {/* App Info Section */}
-      <SettingsSection title="App Info">
+      <SettingsSection title={t("appInfo")}>
         <SettingsItem
           icon={<Info size={24} color={iconColor} />}
-          title="About"
-          description="Version 1.0.0"
+          title={t("about")}
+          description={t("aboutDescription")}
           onPress={() =>
             Alert.alert(
-              "About Tugas Collecter",
+              t("alerts.aboutApp.title"),
               "A simple and efficient task management app to help you stay organized and productive.\n\nVersion: 1.0.0\nBuild: 2025.1",
             )
           }
@@ -458,8 +509,8 @@ export default function SettingsScreen() {
         />
         <SettingsItem
           icon={<Star size={24} color={iconColor} />}
-          title="Rate App"
-          description="Help us improve by rating the app"
+          title={t("rateApp")}
+          description={t("rateAppDescription")}
           onPress={handleRateApp}
         />
         <View
@@ -470,11 +521,11 @@ export default function SettingsScreen() {
         />
         <SettingsItem
           icon={<MessageSquare size={24} color={iconColor} />}
-          title="Send Feedback"
-          description="Share your thoughts and suggestions"
+          title={t("sendFeedback")}
+          description={t("sendFeedbackDescription")}
           onPress={() =>
-            toast("Feedback", {
-              description: "Opening feedback form...",
+            toast(t("toasts.feedback.title"), {
+              description: t("toasts.feedback.description"),
             })
           }
         />
@@ -486,15 +537,77 @@ export default function SettingsScreen() {
         />
         <SettingsItem
           icon={<ExternalLink size={24} color={iconColor} />}
-          title="Terms of Service"
-          description="Review our terms and conditions"
+          title={t("termsOfService")}
+          description={t("termsOfServiceDescription")}
           onPress={() =>
-            toast("Terms of Service", {
-              description: "Opening terms of service...",
+            toast(t("toasts.termsOfService.title"), {
+              description: t("toasts.termsOfService.description"),
             })
           }
         />
       </SettingsSection>
+
+      {/* Language Selection Dialog */}
+      <Dialog open={showLanguageDialog} onOpenChange={setShowLanguageDialog}>
+        <DialogContent className="mx-4">
+          <DialogHeader>
+            <DialogTitle className="text-center text-lg font-semibold">
+              🌍 {t("language")}
+            </DialogTitle>
+            <DialogDescription className="text-center text-sm text-muted-foreground">
+              {t("languageDescription")}
+            </DialogDescription>
+          </DialogHeader>
+
+          <View className="gap-2 py-4">
+            <TouchableOpacity
+              onPress={() => selectLanguage("en")}
+              className={`flex-row items-center justify-between rounded-lg border-2 p-4 ${
+                language === "en"
+                  ? "border-primary bg-primary/10"
+                  : "border-border bg-transparent"
+              }`}
+            >
+              <View className="flex-row items-center gap-3">
+                <Text className="text-2xl">🇺🇸</Text>
+                <Text
+                  className={`text-base font-medium ${
+                    language === "en" ? "text-primary" : "text-foreground"
+                  }`}
+                >
+                  English
+                </Text>
+              </View>
+              {language === "en" && (
+                <Text className="text-lg text-primary">✓</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => selectLanguage("id")}
+              className={`flex-row items-center justify-between rounded-lg border-2 p-4 ${
+                language === "id"
+                  ? "border-primary bg-primary/10"
+                  : "border-border bg-transparent"
+              }`}
+            >
+              <View className="flex-row items-center gap-3">
+                <Text className="text-2xl">🇮🇩</Text>
+                <Text
+                  className={`text-base font-medium ${
+                    language === "id" ? "text-primary" : "text-foreground"
+                  }`}
+                >
+                  Bahasa Indonesia
+                </Text>
+              </View>
+              {language === "id" && (
+                <Text className="text-lg text-primary">✓</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </DialogContent>
+      </Dialog>
     </ScrollableWrapper>
   );
 }

@@ -1,0 +1,13 @@
+{
+  "name": "@tugascollecter/language-pack",
+  "module": "index.ts",
+  "private": true,
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": ">=0.70.0",
+    "typescript": "^5"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}

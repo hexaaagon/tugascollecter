@@ -1,20 +1,16 @@
-export function getGreeting() {
+export function getGreeting(t: (key: string) => string) {
   const date = new Date();
   const hours = date.getHours();
 
-  let greeting: string;
-
   if (hours < 6) {
-    greeting = "Night";
+    return `${t("greeting.evening")}.`;
   } else if (hours < 12) {
-    greeting = "Morning";
+    return `${t("greeting.morning")}.`;
   } else if (hours < 17) {
-    greeting = "Afternoon";
+    return `${t("greeting.afternoon")}.`;
   } else if (hours < 21) {
-    greeting = "Evening";
+    return `${t("greeting.evening")}.`;
   } else {
-    greeting = "Night";
+    return `${t("greeting.evening")}.`;
   }
-
-  return `Good ${greeting}.`;
 }

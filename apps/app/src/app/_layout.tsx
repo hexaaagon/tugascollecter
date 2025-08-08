@@ -63,6 +63,7 @@ import { Toaster } from "sonner-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { router, usePathname } from "expo-router";
 import { toast } from "sonner-native";
+import { LanguageProvider } from "@/lib/language";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -88,9 +89,11 @@ const usePlatformSpecificSetup = Platform.select({
 
 export default function RootLayout() {
   return (
-    <ColorSchemeProvider>
-      <RootLayoutContent />
-    </ColorSchemeProvider>
+    <LanguageProvider>
+      <ColorSchemeProvider>
+        <RootLayoutContent />
+      </ColorSchemeProvider>
+    </LanguageProvider>
   );
 }
 

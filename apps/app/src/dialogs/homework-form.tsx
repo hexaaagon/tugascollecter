@@ -13,6 +13,7 @@ import {
 import { AttachmentManager } from "@/components/attachment-manager";
 import { X, Calendar, AlertCircle, BookOpen } from "lucide-react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { useTranslation } from "@/lib/language";
 
 interface HomeworkFormProps {
   visible: boolean;
@@ -36,6 +37,7 @@ export function HomeworkForm({
   const [subjects, setSubjects] = useState<SubjectData[]>([]);
   const [loading, setLoading] = useState(false);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const loadSubjects = async () => {
@@ -184,7 +186,7 @@ export function HomeworkForm({
         <View className="mx-6 flex-1">
           <View className="flex flex-row items-center justify-between py-4">
             <Text className="text-xl font-bold">
-              {editingHomework ? "Edit Homework" : "New Homework"}
+              {editingHomework ? t("editHomework") : t("newHomework")}
             </Text>
             <Button variant="ghost" size="icon" onPress={onClose}>
               <X size={20} />
@@ -193,21 +195,25 @@ export function HomeworkForm({
 
           <View className="flex flex-1 flex-col gap-4">
             <View>
-              <Text className="mb-2 text-sm font-medium">Title *</Text>
+              <Text className="mb-2 text-sm font-medium">
+                {t("homeworkTitle")} *
+              </Text>
               <Input
                 value={title}
                 onChangeText={setTitle}
-                placeholder="Enter homework title"
+                placeholder={t("enterTitle")}
                 className="w-full"
               />
             </View>
 
             <View>
-              <Text className="mb-2 text-sm font-medium">Description</Text>
+              <Text className="mb-2 text-sm font-medium">
+                {t("homeworkDescription")}
+              </Text>
               <Input
                 value={description}
                 onChangeText={setDescription}
-                placeholder="Enter homework description (optional)"
+                placeholder={t("enterDescription")}
                 multiline
                 numberOfLines={3}
                 className="w-full"
@@ -215,7 +221,7 @@ export function HomeworkForm({
             </View>
 
             <View>
-              <Text className="mb-2 text-sm font-medium">Subject</Text>
+              <Text className="mb-2 text-sm font-medium">{t("subject")}</Text>
               {subjects.length > 0 ? (
                 <View className="flex flex-col gap-2">
                   <View className="flex flex-row flex-wrap gap-2">
@@ -263,7 +269,7 @@ export function HomeworkForm({
             </View>
 
             <View>
-              <Text className="mb-2 text-sm font-medium">Due Date</Text>
+              <Text className="mb-2 text-sm font-medium">{t("dueDate")}</Text>
               <Pressable
                 onPress={showDatePicker}
                 className="flex flex-row items-center gap-2 rounded-lg border border-border bg-background px-3 py-3"
@@ -272,13 +278,13 @@ export function HomeworkForm({
                 <Text
                   className={`flex-1 ${dueDate ? "text-foreground" : "text-muted-foreground"}`}
                 >
-                  {dueDate ? formatDateForInput(dueDate) : "Select due date"}
+                  {dueDate ? formatDateForInput(dueDate) : t("selectDueDate")}
                 </Text>
               </Pressable>
             </View>
 
             <View>
-              <Text className="mb-2 text-sm font-medium">Priority</Text>
+              <Text className="mb-2 text-sm font-medium">{t("priority")}</Text>
               <View className="flex flex-row gap-2">
                 {(["low", "medium", "high"] as const).map((p) => (
                   <Pressable
@@ -300,7 +306,7 @@ export function HomeworkForm({
                           : "text-secondary-foreground"
                       }`}
                     >
-                      {p}
+                      {t(`priorityLevels.${p}`)}
                     </Text>
                   </Pressable>
                 ))}
@@ -318,14 +324,14 @@ export function HomeworkForm({
 
           <View className="flex flex-row gap-3 py-6">
             <Button variant="outline" className="flex-1" onPress={onClose}>
-              <Text>Cancel</Text>
+              <Text>{t("cancel")}</Text>
             </Button>
             <Button
               className="flex-1"
               onPress={handleSave}
               disabled={loading || !title.trim()}
             >
-              <Text>{loading ? "Saving..." : "Save"}</Text>
+              <Text>{loading ? "Saving..." : t("save")}</Text>
             </Button>
           </View>
         </View>

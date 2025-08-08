@@ -7,6 +7,7 @@ import {
   CustomDrawerContent,
 } from "@/components/drawer";
 import { useColorScheme } from "@/lib/useColorScheme";
+import { useTranslation } from "@/lib/language";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { PanelLeft, List, ArrowUpDown, CloudOff } from "lucide-react-native";
@@ -45,6 +46,8 @@ const CustomHeader = React.memo(function CustomHeader({
   insets: any;
   translateY: Animated.Value;
 }) {
+  const { t } = useTranslation();
+
   const handleSearchPress = React.useCallback(() => {
     toast.info("Search feature coming soon!");
   }, []);
@@ -111,7 +114,7 @@ const CustomHeader = React.memo(function CustomHeader({
                     fontSize: 12,
                   }}
                 >
-                  Search your homework
+                  {t("searchHomework")}
                 </Text>
               </View>
             </Button>

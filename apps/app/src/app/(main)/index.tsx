@@ -10,12 +10,14 @@ import { StorageManager } from "@/lib/storage";
 import { HomeworkData, SubjectData } from "@/shared/types/storage";
 import { router } from "expo-router";
 import { BookOpen, Calendar, Clock, TrendingUp } from "lucide-react-native";
+import { useTranslation } from "@/lib/language";
 
 export default function Home() {
   const [homeworkData, setHomeworkData] = useState<HomeworkData[]>([]);
   const [subjectData, setSubjectData] = useState<SubjectData[]>([]);
   const [loading, setLoading] = useState(true);
   const [greeting, setGreeting] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     const loadData = async () => {
@@ -26,7 +28,7 @@ export default function Home() {
         ]);
         setHomeworkData(homework);
         setSubjectData(subjects);
-        setGreeting(getGreeting());
+        setGreeting(getGreeting(t));
       } catch (error) {
         console.error("Error loading data:", error);
       } finally {
@@ -35,7 +37,7 @@ export default function Home() {
     };
 
     loadData();
-  }, []);
+  }, [t]);
   const stats = {
     total: homeworkData.length,
     completed: homeworkData.filter((h) => h.status === "completed").length,
@@ -124,7 +126,7 @@ export default function Home() {
                 <View>
                   <Text className="text-2xl font-bold">{stats.total}</Text>
                   <Text className="text-xs text-muted-foreground">
-                    Total Tasks
+                    {t("totalTasks")}
                   </Text>
                 </View>
               </View>
@@ -140,7 +142,7 @@ export default function Home() {
                     {Math.round(completionRate)}%
                   </Text>
                   <Text className="text-xs text-muted-foreground">
-                    Completed
+                    {t("statusLevels.completed")}
                   </Text>
                 </View>
               </View>
@@ -150,7 +152,7 @@ export default function Home() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Overall Progress</CardTitle>
+            <CardTitle>{t("overallProgress")}</CardTitle>
           </CardHeader>
           <CardContent>
             <Progress value={completionRate} className="mb-4" />
@@ -159,27 +161,33 @@ export default function Home() {
                 <Text className="text-lg font-semibold text-green-500">
                   {stats.completed}
                 </Text>
-                <Text className="text-xs text-muted-foreground">Completed</Text>
+                <Text className="text-xs text-muted-foreground">
+                  {t("statusLevels.completed")}
+                </Text>
               </View>
               <View className="items-center">
                 <Text className="text-lg font-semibold text-blue-500">
                   {stats.inProgress}
                 </Text>
                 <Text className="text-xs text-muted-foreground">
-                  In Progress
+                  {t("statusLevels.inProgress")}
                 </Text>
               </View>
               <View className="items-center">
                 <Text className="text-lg font-semibold text-yellow-500">
                   {stats.pending}
                 </Text>
-                <Text className="text-xs text-muted-foreground">Pending</Text>
+                <Text className="text-xs text-muted-foreground">
+                  {t("statusLevels.pending")}
+                </Text>
               </View>
               <View className="items-center">
                 <Text className="text-lg font-semibold text-red-500">
                   {stats.overdue}
                 </Text>
-                <Text className="text-xs text-muted-foreground">Overdue</Text>
+                <Text className="text-xs text-muted-foreground">
+                  {t("statusLevels.overdue")}
+                </Text>
               </View>
             </View>
           </CardContent>
@@ -188,7 +196,7 @@ export default function Home() {
         {urgentHomework.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-red-500">Urgent Tasks</CardTitle>
+              <CardTitle className="text-red-500">{t("urgentTasks")}</CardTitle>
             </CardHeader>
             <CardContent>
               <View className="space-y-3">
@@ -224,13 +232,13 @@ export default function Home() {
         <Card>
           <CardHeader>
             <View className="flex flex-row items-center justify-between">
-              <CardTitle>Upcoming Tasks</CardTitle>
+              <CardTitle>{t("upcomingTasks")}</CardTitle>
               <Button
                 variant="ghost"
                 size="sm"
                 onPress={() => router.push("/tasks")}
               >
-                <Text>View All</Text>
+                <Text>{t("viewAll")}</Text>
               </Button>
             </View>
           </CardHeader>
@@ -305,7 +313,7 @@ export default function Home() {
               <View className="items-center py-8">
                 <Calendar size={48} color="#6b7280" className="mb-2" />
                 <Text className="text-muted-foreground">
-                  Start by adding your first homework task!
+                  {t("addFirstTask")}!
                 </Text>
                 <Button
                   variant="outline"
@@ -313,7 +321,7 @@ export default function Home() {
                   className="mt-4"
                   onPress={() => router.push("/tasks")}
                 >
-                  <Text>Add Your First Task</Text>
+                  <Text>{t("addFirstTask")}</Text>
                 </Button>
               </View>
             )}
