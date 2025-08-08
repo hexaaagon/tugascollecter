@@ -20,13 +20,42 @@ export default function Home() {
   const { t } = useTranslation();
 
   useEffect(() => {
+    const updateOverdueTasks = (homeworkList: HomeworkData[]) => {
+      const now = new Date();
+      const updatedHomework = homeworkList.map((homework) => {
+        // Check if task is not completed and has a due date that has passed
+        if (
+          homework.status !== "completed" &&
+          homework.dueDate &&
+          new Date(homework.dueDate) < now &&
+          homework.status !== "overdue"
+        ) {
+          return { ...homework, status: "overdue" as const };
+        }
+        return homework;
+      });
+      return updatedHomework;
+    };
+
     const loadData = async () => {
       try {
         const [homework, subjects] = await Promise.all([
           StorageManager.getHomework(),
           StorageManager.getSubjects(),
         ]);
-        setHomeworkData(homework);
+
+        // Update overdue tasks
+        const updatedHomework = updateOverdueTasks(homework);
+
+        // Save updated homework if any changes were made
+        const hasChanges = updatedHomework.some(
+          (h, index) => h.status !== homework[index].status,
+        );
+        if (hasChanges) {
+          await StorageManager.saveHomework(updatedHomework);
+        }
+
+        setHomeworkData(updatedHomework);
         setSubjectData(subjects);
         setGreeting(getGreeting(t));
       } catch (error) {
@@ -55,7 +84,12 @@ export default function Home() {
   );
 
   const upcomingHomework = homeworkData
-    .filter((h) => h.status !== "completed")
+    .filter(
+      (h) =>
+        h.priority !== "high" &&
+        h.status !== "completed" &&
+        h.status !== "overdue",
+    )
     .sort((a, b) => {
       const now = new Date();
       const getDaysUntilDue = (date?: string) =>
@@ -203,27 +237,63 @@ export default function Home() {
               <CardTitle className="text-red-500">{t("urgentTasks")}</CardTitle>
             </CardHeader>
             <CardContent>
-              <View className="space-y-3">
+              <View className="flex flex-col gap-3">
                 {urgentHomework.slice(0, 3).map((homework) => {
                   const subject = subjectData.find(
                     (s) => s.id === homework.subjectId,
                   );
+                  const daysUntilDue = homework.dueDate
+                    ? Math.ceil(
+                        (new Date(homework.dueDate).getTime() -
+                          new Date().getTime()) /
+                          (1000 * 60 * 60 * 24),
+                      )
+                    : null;
                   return (
                     <Pressable
                       key={homework.id}
-                      className="flex flex-row items-center justify-between rounded-lg bg-secondary p-3"
+                      className="relative flex flex-row items-center justify-between rounded-lg bg-secondary p-3"
                       onPress={() => router.push("/tasks")}
                     >
+                      <View className="absolute right-3 top-3 h-2 w-2 rounded-full bg-red-500" />
                       <View className="flex-1">
                         <Text className="font-medium">{homework.title}</Text>
-                        <Text className="text-xs text-muted-foreground">
-                          {subject?.name} • {t("dueLabel")}{" "}
-                          {homework.dueDate
-                            ? new Date(homework.dueDate).toLocaleDateString()
-                            : t("noDueDateText")}
-                        </Text>
+                        <View className="flex flex-row items-center gap-1.5">
+                          <View
+                            className="h-2 w-2 rounded-full"
+                            style={{
+                              backgroundColor: subject?.color || "#ccc",
+                            }}
+                          />
+                          <Text className="text-xs text-muted-foreground">
+                            {subject?.name}
+                          </Text>
+                        </View>
                       </View>
-                      <View className="h-3 w-3 rounded-full bg-red-500" />
+                      <View className="absolute bottom-3 right-3">
+                        {daysUntilDue !== null && (
+                          <Text
+                            className={`text-xs font-medium ${
+                              daysUntilDue <= 1
+                                ? "text-red-500"
+                                : daysUntilDue <= 3
+                                  ? "text-yellow-500"
+                                  : "text-green-500"
+                            }`}
+                          >
+                            {daysUntilDue === 0
+                              ? t("dueTodayText")
+                              : daysUntilDue === 1
+                                ? t("dueTomorrowText")
+                                : t("daysLeftText", { days: daysUntilDue })}
+                          </Text>
+                        )}
+                        {!homework.dueDate && (
+                          <Text className="text-xs text-muted-foreground">
+                            {t("noDueDateText")}
+                          </Text>
+                        )}
+                      </View>
                     </Pressable>
                   );
                 })}
@@ -292,6 +362,11 @@ export default function Home() {
                               : daysUntilDue === 1
                                 ? t("dueTomorrowText")
                                 : t("daysLeftText", { days: daysUntilDue })}
+                          </Text>
+                        )}
+                        {!homework.dueDate && (
+                          <Text className="text-xs text-muted-foreground">
+                            {t("noDueDateText")}
                           </Text>
                         )}
                       </View>

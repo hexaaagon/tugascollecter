@@ -272,7 +272,7 @@ export function HomeworkForm({
               <Text className="mb-2 text-sm font-medium">{t("dueDate")}</Text>
               <Pressable
                 onPress={showDatePicker}
-                className="flex flex-row items-center gap-2 rounded-lg border border-border bg-background px-3 py-3"
+                className="flex flex-row items-center gap-2 rounded-lg border border-border bg-background px-3 py-4"
               >
                 <Calendar size={20} className="text-muted-foreground" />
                 <Text

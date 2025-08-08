@@ -36,6 +36,7 @@ import {
   Rewind,
 } from "lucide-react-native";
 import { useColorScheme } from "@/lib/useColorScheme";
+import { useLanguage } from "@/lib/language";
 
 interface HomeworkDetailDialogProps {
   visible: boolean;
@@ -65,6 +66,7 @@ export function HomeworkDetailDialog({
   );
 
   const { isDarkColorScheme } = useColorScheme();
+  const { t } = useLanguage();
 
   // Update local homework state when prop changes
   useEffect(() => {
@@ -130,10 +132,10 @@ export function HomeworkDetailDialog({
   };
 
   const deleteHomework = async (id: string) => {
-    Alert.alert("Delete Task", "Are you sure you want to delete this task?", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t("alerts.deleteTask.title"), t("alerts.deleteTask.message"), [
+      { text: t("cancel"), style: "cancel" },
       {
-        text: "Delete",
+        text: t("alerts.deleteTask.confirm"),
         style: "destructive",
         onPress: async () => {
           try {
@@ -142,7 +144,7 @@ export function HomeworkDetailDialog({
             onClose();
           } catch (error) {
             console.error("Error deleting homework:", error);
-            Alert.alert("Error", "Failed to delete task");
+            Alert.alert(t("error"), "Failed to delete task");
           }
         },
       },
@@ -169,7 +171,7 @@ export function HomeworkDetailDialog({
           <View className="mx-6 flex-1">
             {/* Header */}
             <View className="flex flex-row items-center justify-between border-b border-border py-4">
-              <Text className="text-xl font-bold">Task Details</Text>
+              <Text className="text-xl font-bold">{t("taskDetails")}</Text>
               <View className="flex flex-row gap-2">
                 {currentHomework && (
                   <Button
@@ -232,7 +234,9 @@ export function HomeworkDetailDialog({
                 {currentHomework.description && (
                   <Card>
                     <CardContent className="p-4">
-                      <Text className="mb-2 font-semibold">Description</Text>
+                      <Text className="mb-2 font-semibold">
+                        {t("description")}
+                      </Text>
                       <Text className="leading-6 text-muted-foreground">
                         {currentHomework.description}
                       </Text>
@@ -270,12 +274,12 @@ export function HomeworkDetailDialog({
                             }`}
                           >
                             {daysUntilDue === 0
-                              ? "Due today"
+                              ? t("dueTodayText")
                               : daysUntilDue === 1
-                                ? "Due tomorrow"
+                                ? t("dueTomorrowText")
                                 : daysUntilDue && daysUntilDue > 0
-                                  ? `Due in ${daysUntilDue} days`
-                                  : "Overdue"}
+                                  ? t("daysLeftText", { days: daysUntilDue })
+                                  : t("statusLevels.overdue")}
                           </Text>
                           <Text className="text-xs text-muted-foreground">
                             {new Date(
@@ -295,7 +299,8 @@ export function HomeworkDetailDialog({
                     <View className="flex flex-row items-center gap-3">
                       <AlertCircle size={16} color="#6b7280" />
                       <Text className="font-medium capitalize">
-                        {currentHomework.priority} Priority
+                        {t(`priorityLevels.${currentHomework.priority}`)}{" "}
+                        {t("priority")}
                       </Text>
                     </View>
                   </CardContent>
@@ -305,7 +310,7 @@ export function HomeworkDetailDialog({
                 {currentHomework.tags && currentHomework.tags.length > 0 && (
                   <Card className="mt-4">
                     <CardContent className="p-4">
-                      <Text className="mb-3 font-semibold">Tags</Text>
+                      <Text className="mb-3 font-semibold">{t("tags")}</Text>
                       <View className="flex flex-row flex-wrap gap-2">
                         {currentHomework.tags.map((tag) => (
                           <Badge
@@ -337,7 +342,9 @@ export function HomeworkDetailDialog({
                 {onStatusUpdate && (
                   <Card className="mt-4">
                     <CardContent className="p-4">
-                      <Text className="mb-3 font-semibold">Quick Actions</Text>
+                      <Text className="mb-3 font-semibold">
+                        {t("quickActions")}
+                      </Text>
                       <View className="flex flex-row flex-wrap gap-2">
                         {currentHomework.status !== "completed" && (
                           <>
@@ -353,7 +360,7 @@ export function HomeworkDetailDialog({
                                 }
                               >
                                 <PlayCircle size={16} color="#2563eb" />
-                                <Text>Start Task</Text>
+                                <Text>{t("startTask")}</Text>
                               </Button>
                             )}
                             <Button
@@ -366,7 +373,7 @@ export function HomeworkDetailDialog({
                               }
                             >
                               <CheckCircle2 size={16} color="#22c55e" />
-                              <Text>Mark Complete</Text>
+                              <Text>{t("markCompleted")}</Text>
                             </Button>
                           </>
                         )}
@@ -379,7 +386,7 @@ export function HomeworkDetailDialog({
                             }
                           >
                             <Rewind size={16} color="#6b7280" />
-                            <Text>Reopen Task</Text>
+                            <Text>{t("markPending")}</Text>
                           </Button>
                         )}
                       </View>

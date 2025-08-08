@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { useState, useEffect } from "react";
 import { StorageManager } from "@/lib/storage";
 import { HomeworkData, SubjectData } from "@/shared/types/storage";
+import { useLanguage } from "@/lib/language";
 import {
   TrendingUp,
   TrendingDown,
@@ -20,6 +21,7 @@ import {
 } from "lucide-react-native";
 
 export default function Statistics() {
+  const { t } = useLanguage();
   const [homeworkData, setHomeworkData] = useState<HomeworkData[]>([]);
   const [subjectData, setSubjectData] = useState<SubjectData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +50,7 @@ export default function Statistics() {
       <ScrollableWrapper className="flex-1">
         <View className="mx-6 flex-1 items-center justify-center">
           <Text className="text-lg text-muted-foreground">
-            Loading statistics...
+            {t("loadingStatistics")}
           </Text>
         </View>
       </ScrollableWrapper>
@@ -142,9 +144,9 @@ export default function Statistics() {
     <ScrollableWrapper className="flex-1">
       <View className="mx-6 flex flex-col gap-2 space-y-6 pb-6">
         <View className="pt-4">
-          <Text className="text-2xl font-bold">Statistics</Text>
+          <Text className="text-2xl font-bold">{t("statistics")}</Text>
           <Text className="text-sm text-muted-foreground">
-            Your homework performance overview
+            {t("yourHomeworkPerformanceOverview")}
           </Text>
         </View>
 
@@ -158,7 +160,7 @@ export default function Statistics() {
                     {Math.round(completionRate)}%
                   </Text>
                   <Text className="text-xs text-muted-foreground">
-                    Success Rate
+                    {t("successRate")}
                   </Text>
                 </View>
               </View>
@@ -173,7 +175,9 @@ export default function Statistics() {
                   <Text className="text-2xl font-bold">
                     {pendingTasks + inProgressTasks}
                   </Text>
-                  <Text className="text-xs text-muted-foreground">Active</Text>
+                  <Text className="text-xs text-muted-foreground">
+                    {t("active")}
+                  </Text>
                 </View>
               </View>
             </CardContent>
@@ -182,13 +186,13 @@ export default function Statistics() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Overall Progress</CardTitle>
+            <CardTitle>{t("overallProgress")}</CardTitle>
           </CardHeader>
           <CardContent>
             <View className="flex flex-col gap-4">
               <View>
                 <View className="mb-2 flex flex-row justify-between">
-                  <Text className="text-sm">Completion Rate</Text>
+                  <Text className="text-sm">{t("completionRate")}</Text>
                   <Text className="text-sm font-medium">
                     {Math.round(completionRate)}%
                   </Text>
@@ -202,7 +206,7 @@ export default function Statistics() {
                     {completedTasks}
                   </Text>
                   <Text className="text-xs text-muted-foreground">
-                    Completed
+                    {t("completed")}
                   </Text>
                 </View>
                 <View className="items-center">
@@ -210,20 +214,24 @@ export default function Statistics() {
                     {inProgressTasks}
                   </Text>
                   <Text className="text-xs text-muted-foreground">
-                    In Progress
+                    {t("inProgress")}
                   </Text>
                 </View>
                 <View className="items-center">
                   <Text className="text-lg font-semibold text-yellow-500">
                     {pendingTasks}
                   </Text>
-                  <Text className="text-xs text-muted-foreground">Pending</Text>
+                  <Text className="text-xs text-muted-foreground">
+                    {t("pending")}
+                  </Text>
                 </View>
                 <View className="items-center">
                   <Text className="text-lg font-semibold text-red-500">
                     {overdueTasks}
                   </Text>
-                  <Text className="text-xs text-muted-foreground">Overdue</Text>
+                  <Text className="text-xs text-muted-foreground">
+                    {t("overdue")}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -232,13 +240,13 @@ export default function Statistics() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Priority Distribution</CardTitle>
+            <CardTitle>{t("priorityDistribution")}</CardTitle>
           </CardHeader>
           <CardContent>
             <View className="flex flex-col gap-4">
               <View>
                 <View className="mb-1 flex flex-row justify-between">
-                  <Text className="text-sm">High Priority</Text>
+                  <Text className="text-sm">{t("highPriority")}</Text>
                   <Text className="text-sm font-medium">
                     {highPriorityTasks}
                   </Text>
@@ -254,7 +262,7 @@ export default function Statistics() {
 
               <View>
                 <View className="mb-1 flex flex-row justify-between">
-                  <Text className="text-sm">Medium Priority</Text>
+                  <Text className="text-sm">{t("mediumPriority")}</Text>
                   <Text className="text-sm font-medium">
                     {mediumPriorityTasks}
                   </Text>
@@ -272,7 +280,7 @@ export default function Statistics() {
 
               <View>
                 <View className="mb-1 flex flex-row justify-between">
-                  <Text className="text-sm">Low Priority</Text>
+                  <Text className="text-sm">{t("lowPriority")}</Text>
                   <Text className="text-sm font-medium">
                     {lowPriorityTasks}
                   </Text>
@@ -292,7 +300,7 @@ export default function Statistics() {
         {subjectStats.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle>Subject Performance</CardTitle>
+              <CardTitle>{t("subjectPerformance")}</CardTitle>
             </CardHeader>
             <CardContent>
               <View className="flex flex-col gap-4">
@@ -323,17 +331,17 @@ export default function Statistics() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Weekly Activity</CardTitle>
+            <CardTitle>{t("weeklyActivity")}</CardTitle>
           </CardHeader>
           <CardContent>
             {weeklyData.every((day) => day.completed === 0) ? (
               <View className="items-center py-8">
                 <Calendar size={32} color="#6b7280" className="mb-2" />
                 <Text className="text-center text-sm text-muted-foreground">
-                  Complete some homework to see
+                  {t("completeSomeHomework")}
                 </Text>
                 <Text className="text-center text-sm text-muted-foreground">
-                  your weekly activity pattern
+                  {t("yourWeeklyActivityPattern")}
                 </Text>
               </View>
             ) : (
@@ -363,7 +371,7 @@ export default function Statistics() {
         {recentCompletions.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle>Recent Achievements</CardTitle>
+              <CardTitle>{t("recentAchievements")}</CardTitle>
             </CardHeader>
             <CardContent>
               <View className="flex flex-col gap-2">
@@ -382,7 +390,7 @@ export default function Statistics() {
                           {homework.title}
                         </Text>
                         <Text className="text-xs text-muted-foreground">
-                          {subject?.name} • Completed
+                          {subject?.name} • {t("completed")}
                         </Text>
                       </View>
                     </View>

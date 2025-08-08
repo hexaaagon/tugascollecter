@@ -29,32 +29,79 @@ export const indonesianStrings: LanguageStrings = {
   },
   todaysHomework: "Tugas kamu hari ini",
   upcomingTasks: "Tugas Mendatang",
-  completionRate: "Rasio Penyelesaian Tugas",
   addFirstTask: "Tambahkan Tugas Pertama kamu",
   searchHomework: "Cari tugas kamu",
   totalTasks: "Semua Tugas",
   urgentTasks: "Tugas Penting",
-  overallProgress: "Proses Keseluruhan",
   viewAll: "Lihat Semua",
 
   // Dynamic strings with placeholders
-  youHaveTasksRemaining: `Kamu punya {{count}} tugas yang belum selesai. ${["Semangat!", "Ayo selesaikan!", "Jangan lupa istirahat!"][Math.floor(Math.random() * 3)]}`,
+  youHaveTasksRemaining: "Kamu punya {{count}} tugas yang belum selesai",
   readyToStartOrganizing: "Ayo mulai atur tugas kamu!",
   dueTodayText: "Deadline hari ini",
   dueTomorrowText: "Deadline besok",
   daysLeftText: "{{days}} hari lagi",
+  daysAfterDueText: "{{days}} hari yang lalu",
   noDueDateText: "Tidak ada deadline",
   loadingText: "Sedang Memuat...",
   dueLabel: "Deadline:",
 
-  // Tasks Screen
+  // Task Detail Dialog
+  taskDetails: "Detail Tugas",
+  description: "Deskripsi",
+  tags: "Tags",
+  quickActions: "Quick Actions",
+  startTask: "Kerjakan Tugas",
+  markCompleted: "Tandai Selesai",
+  markPending: "Tandai Belum Dikerjakan",
+  attachments: "Lampiran Foto/Dokumen",
+  loadingAttachments: "Memuat lampiran...",
+  priority: "Prioritas",
+
+  // Tasks Screen - Additional strings
+  tasksCount: "{{count}} dari {{total}} PR",
+  filterByStatus: "Filter berdasarkan Status",
+  sortBy: "Urutkan Berdasarkan",
+  noTasksFound: "Tidak ada PR ditemukan",
+  createYourFirstTask: "Buat PR Pertama kamu",
+  addTask: "Tambahkan Tugas",
+  loadingTasks: "Sedang memuat PR Kamu...",
+  completedTasks: "{{count}} Tugas Selesai",
+  fetchingHomeworkAssignments: "Mengambil informasi tugas PR kamu",
+  loadingHomeworkData: "Sedang memuat informasi PR kamu...",
+  loadingSubjects: "Sedang memuat informasi Pelajaran kamu...",
+  organizingTasks: "Mengelompokkan Tugas kamu...",
+  performanceTip:
+    "Tugas dengan Lampiran Foto/Dokumen akan memuat lebih lama agar performa aplikasi tetap optimal.",
+
+  // Common Actions
+  startWorking: "Mulai Kerjakan",
+  viewDetails: "Lihat Detail",
+
+  // Sort Options
+  sortOptions: {
+    dueDate: "Deadline",
+    priority: "Prioritas",
+    subject: "Mata Pelajaran",
+    status: "Status",
+  },
+
+  // Filter Options
+  filterOptions: {
+    all: "All",
+    pending: "Belum Dikerjakan",
+    inProgress: "Sedang Dikerjakan",
+    completed: "Selesai",
+    overdue: "Lewat Deadline",
+  },
+
+  // Homework Form
   newHomework: "Buat Tugas",
   editHomework: "Edit Tugas",
   homeworkTitle: "Judul",
   homeworkDescription: "Deskripsi",
   subject: "Mata Pelajaran",
   dueDate: "Tanggal Deadline",
-  priority: "Prioritas",
   selectDueDate: "Pilih tanggal deadline kamu",
   enterTitle: "Tuliskan judul tugas kamu",
   enterDescription: "Tuliskan deskripsi tugas kamu (Opsional)",
@@ -142,15 +189,19 @@ export const indonesianStrings: LanguageStrings = {
   selected: "Dipilih",
 
   // Homework Detail
-  attachments: "Lampiran Foto/Dokumen",
   notes: "Catatan",
   createdOn: "Dibuat pada",
   lastModified: "Terakhir Diubah",
-  markAsCompleted: "Tandai sebagai Selesai",
+  markAsCompleted: "Tandai sebagai Sudah Selesai",
   markAsInProgress: "Tandai sebagai Sedang Dikerjakan",
 
-  // Alerts and Messages
+  // Alert Messages
   alerts: {
+    deleteTask: {
+      title: "Hapus Tugas",
+      message: "Apakah kamu yakin ingin menghapus tugas ini?",
+      confirm: "Hapus",
+    },
     clearAllData: {
       title: "Hapus Semua Data",
       message:
@@ -197,4 +248,45 @@ export const indonesianStrings: LanguageStrings = {
       description: "Membuka halaman terms of service...",
     },
   },
+
+  // Statistics Screen
+  loadingStatistics: "Sedang Memuat Kemampuan kamu...",
+  yourHomeworkPerformanceOverview: "Ringkasan Kemampuan PR kamu",
+  successRate: "Tingkat Keberhasilan",
+  active: "aktif",
+  overallProgress: "Progress Keseluruhan",
+  completionRate: "Tingkat Penyelesaian",
+  completed: "Selesai",
+  inProgress: "Sedang Dikerjakan",
+  pending: "Pending",
+  overdue: "Lewat Deadline",
+  priorityDistribution: "Distribusi Prioritas",
+  highPriority: "Prioritas Tinggi",
+  mediumPriority: "Prioritas Sedang",
+  lowPriority: "Prioritas Rendah",
+  subjectPerformance: "Kinerja Mata Pelajaran",
+  weeklyActivity: "Aktivitas Mingguan",
+  completeSomeHomework:
+    "Kerjakan beberapa PR untuk melihat aktivitas mingguan kamu",
+  yourWeeklyActivityPattern: "Pola Aktivitas Mingguan kamu",
+  recentAchievements: "Pencapaian Terbaru",
+
+  // Calendar Screen
+  assignmentSchedulingAndSync: "Penjadwalan & Sinkronisasi Tugas",
+  comingSoon: "Dalam Tahap Pengembangan",
+  calendarSyncDescription:
+    "Sinkronisasi Kalender akan tersedia di pembaruan mendatang",
+  calendarSync: "Sinkronisasi Kalender",
+  automaticallySyncHomeworkDeadlines:
+    "Sinkronisasi deadline tugas secara otomatis",
+  smartReminders: "Pengingat Cerdas",
+  getNotifiedBeforeDueDates: "Dapatkan notifikasi sebelum deadline",
+  timeBlocking: "Time Blocking",
+  scheduleDedicatedStudyTime: "Jadwalkan waktu belajar khusus",
+  availableNow: "Fitur yang Tersedia Sekarang",
+  whileWePreparCalendarIntegration:
+    "Sambil kami mempersiapkan integrasi kalender, kamu bisa:",
+  viewUpcomingDeadlinesInTasks: "Lihat deadline mendatang di halaman Tugas",
+  trackProgressInStatistics: "Lacak progress di halaman Statistik",
+  organizeAssignmentsByPriority: "Atur tugas berdasarkan prioritas",
 };

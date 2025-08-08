@@ -29,12 +29,10 @@ export interface LanguageStrings {
   };
   todaysHomework: string;
   upcomingTasks: string;
-  completionRate: string;
   addFirstTask: string;
   searchHomework: string;
   totalTasks: string;
   urgentTasks: string;
-  overallProgress: string;
   viewAll: string;
 
   // Dynamic strings with placeholders
@@ -43,18 +41,66 @@ export interface LanguageStrings {
   dueTodayText: string; // "Due today"
   dueTomorrowText: string; // "Due tomorrow"
   daysLeftText: string; // "{{days}} days left"
+  daysAfterDueText: string; // "{{days}} days ago"
   noDueDateText: string; // "No due date"
   loadingText: string;
   dueLabel: string; // "Due:"
 
-  // Tasks Screen
+  // Task Detail Dialog
+  taskDetails: string;
+  description: string;
+  tags: string;
+  quickActions: string;
+  startTask: string;
+  markCompleted: string;
+  markPending: string;
+  attachments: string;
+  loadingAttachments: string;
+  priority: string;
+
+  // Tasks Screen - Additional strings
+  tasksCount: string; // "{{count}} of {{total}} tasks"
+  filterByStatus: string;
+  sortBy: string;
+  noTasksFound: string;
+  createYourFirstTask: string;
+  addTask: string;
+  loadingTasks: string;
+  completedTasks: string;
+  fetchingHomeworkAssignments: string;
+  loadingHomeworkData: string;
+  loadingSubjects: string;
+  organizingTasks: string;
+  performanceTip: string;
+
+  // Common Actions
+  startWorking: string;
+  viewDetails: string;
+
+  // Sort Options
+  sortOptions: {
+    dueDate: string;
+    priority: string;
+    subject: string;
+    status: string;
+  };
+
+  // Filter Options
+  filterOptions: {
+    all: string;
+    pending: string;
+    inProgress: string;
+    completed: string;
+    overdue: string;
+  };
+
+  // Homework Form
   newHomework: string;
   editHomework: string;
   homeworkTitle: string;
   homeworkDescription: string;
   subject: string;
   dueDate: string;
-  priority: string;
   selectDueDate: string;
   enterTitle: string;
   enterDescription: string;
@@ -140,15 +186,19 @@ export interface LanguageStrings {
   selected: string;
 
   // Homework Detail
-  attachments: string;
   notes: string;
   createdOn: string;
   lastModified: string;
   markAsCompleted: string;
   markAsInProgress: string;
 
-  // Alerts and Messages
+  // Alert Messages
   alerts: {
+    deleteTask: {
+      title: string;
+      message: string;
+      confirm: string;
+    };
     clearAllData: {
       title: string;
       message: string;
@@ -193,4 +243,41 @@ export interface LanguageStrings {
       description: string;
     };
   };
+
+  // Statistics Screen
+  loadingStatistics: string;
+  yourHomeworkPerformanceOverview: string;
+  successRate: string;
+  active: string;
+  overallProgress: string;
+  completionRate: string;
+  completed: string;
+  inProgress: string;
+  pending: string;
+  overdue: string;
+  priorityDistribution: string;
+  highPriority: string;
+  mediumPriority: string;
+  lowPriority: string;
+  subjectPerformance: string;
+  weeklyActivity: string;
+  completeSomeHomework: string;
+  yourWeeklyActivityPattern: string;
+  recentAchievements: string;
+
+  // Calendar Screen
+  assignmentSchedulingAndSync: string;
+  comingSoon: string;
+  calendarSyncDescription: string;
+  calendarSync: string;
+  automaticallySyncHomeworkDeadlines: string;
+  smartReminders: string;
+  getNotifiedBeforeDueDates: string;
+  timeBlocking: string;
+  scheduleDedicatedStudyTime: string;
+  availableNow: string;
+  whileWePreparCalendarIntegration: string;
+  viewUpcomingDeadlinesInTasks: string;
+  trackProgressInStatistics: string;
+  organizeAssignmentsByPriority: string;
 }

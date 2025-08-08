@@ -29,12 +29,10 @@ export const englishStrings: LanguageStrings = {
   },
   todaysHomework: "Today's Homework",
   upcomingTasks: "Upcoming Tasks",
-  completionRate: "Completion Rate",
   addFirstTask: "Add Your First Task",
   searchHomework: "Search your homework",
   totalTasks: "Total Tasks",
   urgentTasks: "Urgent Tasks",
-  overallProgress: "Overall Progress",
   viewAll: "View All",
 
   // Dynamic strings with placeholders
@@ -43,18 +41,66 @@ export const englishStrings: LanguageStrings = {
   dueTodayText: "Due today",
   dueTomorrowText: "Due tomorrow",
   daysLeftText: "{{days}} days left",
+  daysAfterDueText: "{{days}} days ago",
   noDueDateText: "No due date",
   loadingText: "Loading...",
   dueLabel: "Due:",
 
-  // Tasks Screen
+  // Task Detail Dialog
+  taskDetails: "Task Details",
+  description: "Description",
+  tags: "Tags",
+  quickActions: "Quick Actions",
+  startTask: "Start Task",
+  markCompleted: "Mark Completed",
+  markPending: "Mark Pending",
+  attachments: "Attachments",
+  loadingAttachments: "Loading attachments...",
+  priority: "Priority",
+
+  // Tasks Screen - Additional strings
+  tasksCount: "{{count}} of {{total}} tasks",
+  filterByStatus: "Filter by Status",
+  sortBy: "Sort by",
+  noTasksFound: "No tasks found",
+  createYourFirstTask: "Create your first task",
+  addTask: "Add Task",
+  loadingTasks: "Loading tasks...",
+  completedTasks: "{{count}} Completed Tasks",
+  fetchingHomeworkAssignments: "Fetching homework assignments",
+  loadingHomeworkData: "Loading homework data...",
+  loadingSubjects: "Loading subjects...",
+  organizingTasks: "Organizing tasks...",
+  performanceTip: "Performance tip",
+
+  // Common Actions
+  startWorking: "Start Working",
+  viewDetails: "View Details",
+
+  // Sort Options
+  sortOptions: {
+    dueDate: "Due Date",
+    priority: "Priority",
+    subject: "Subject",
+    status: "Status",
+  },
+
+  // Filter Options
+  filterOptions: {
+    all: "All",
+    pending: "Pending",
+    inProgress: "In Progress",
+    completed: "Completed",
+    overdue: "Overdue",
+  },
+
+  // Homework Form
   newHomework: "New Homework",
   editHomework: "Edit Homework",
   homeworkTitle: "Title",
   homeworkDescription: "Description",
   subject: "Subject",
   dueDate: "Due Date",
-  priority: "Priority",
   selectDueDate: "Select due date",
   enterTitle: "Enter homework title",
   enterDescription: "Enter homework description (optional)",
@@ -140,15 +186,19 @@ export const englishStrings: LanguageStrings = {
   selected: "Selected",
 
   // Homework Detail
-  attachments: "Attachments",
   notes: "Notes",
   createdOn: "Created on",
   lastModified: "Last modified",
   markAsCompleted: "Mark as Completed",
   markAsInProgress: "Mark as In Progress",
 
-  // Alerts and Messages
+  // Alert Messages
   alerts: {
+    deleteTask: {
+      title: "Delete Task",
+      message: "Are you sure you want to delete this task?",
+      confirm: "Delete",
+    },
     clearAllData: {
       title: "Clear All Data",
       message:
@@ -194,4 +244,41 @@ export const englishStrings: LanguageStrings = {
       description: "Opening terms of service...",
     },
   },
+
+  // Statistics Screen
+  loadingStatistics: "Loading statistics...",
+  yourHomeworkPerformanceOverview: "Your homework performance overview",
+  successRate: "Success Rate",
+  active: "active",
+  overallProgress: "Overall Progress",
+  completionRate: "Completion Rate",
+  completed: "Completed",
+  inProgress: "In Progress",
+  pending: "Pending",
+  overdue: "Overdue",
+  priorityDistribution: "Priority Distribution",
+  highPriority: "High Priority",
+  mediumPriority: "Medium Priority",
+  lowPriority: "Low Priority",
+  subjectPerformance: "Subject Performance",
+  weeklyActivity: "Weekly Activity",
+  completeSomeHomework: "Complete some homework to see your weekly activity",
+  yourWeeklyActivityPattern: "Your weekly activity pattern",
+  recentAchievements: "Recent Achievements",
+
+  // Calendar Screen
+  assignmentSchedulingAndSync: "Assignment Scheduling & Sync",
+  comingSoon: "Coming Soon",
+  calendarSyncDescription: "Calendar sync will be available in a future update",
+  calendarSync: "Calendar Sync",
+  automaticallySyncHomeworkDeadlines: "Automatically sync homework deadlines",
+  smartReminders: "Smart Reminders",
+  getNotifiedBeforeDueDates: "Get notified before due dates",
+  timeBlocking: "Time Blocking",
+  scheduleDedicatedStudyTime: "Schedule dedicated study time",
+  availableNow: "Available Now",
+  whileWePreparCalendarIntegration: "While we prepare calendar integration:",
+  viewUpcomingDeadlinesInTasks: "View upcoming deadlines in Tasks",
+  trackProgressInStatistics: "Track progress in Statistics",
+  organizeAssignmentsByPriority: "Organize assignments by priority",
 };
