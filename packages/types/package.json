@@ -1,0 +1,21 @@
+{
+  "name": "@tugascollecter/types",
+  "module": "index.ts",
+  "private": true,
+  "exports": {
+    ".": "./index.ts",
+    "./core": "./src/core.ts",
+    "./storage": "./src/storage.ts",
+    "./homework": "./src/homework.ts",
+    "./subject": "./src/subject.ts",
+    "./utils": "./src/utils.ts"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": ">=0.70.0",
+    "typescript": "^5"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}

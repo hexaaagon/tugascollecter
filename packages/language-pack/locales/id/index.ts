@@ -1,4 +1,4 @@
-import type { LanguageStrings } from "../../types";
+import type { LanguageStrings } from "../../shared/types";
 
 export const indonesianStrings: LanguageStrings = {
   // App

@@ -1,5 +1,5 @@
-export type { Language, LanguageStrings } from "./types";
-import type { Language, LanguageStrings } from "./types";
+export type { Language, LanguageStrings } from "./shared/types";
+import type { Language, LanguageStrings } from "./shared/types";
 import { englishStrings } from "./locales/en";
 import { indonesianStrings } from "./locales/id";
 
