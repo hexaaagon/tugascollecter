@@ -74,6 +74,12 @@ export const englishStrings: LanguageStrings = {
   organizingTasks: "Organizing tasks...",
   performanceTip: "Performance tip",
 
+  // Search functionality
+  searchTasks: "Search Tasks",
+  tasksFound: "{{count}} tasks found",
+  searchPlaceholder: "Search your homework",
+  tryAdjustingSearchTerms: "Try adjusting your search terms",
+
   // Common Actions
   startWorking: "Start Working",
   viewDetails: "View Details",

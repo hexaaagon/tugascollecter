@@ -74,6 +74,12 @@ export interface LanguageStrings {
   organizingTasks: string;
   performanceTip: string;
 
+  // Search functionality
+  searchTasks: string;
+  tasksFound: string; // "{{count}} tasks found"
+  searchPlaceholder: string;
+  tryAdjustingSearchTerms: string;
+
   // Common Actions
   startWorking: string;
   viewDetails: string;

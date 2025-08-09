@@ -29,6 +29,8 @@ import {
 } from "lucide-react-native";
 import { useLanguage } from "@/lib/language";
 import { useColorScheme } from "@/lib/useColorScheme";
+import { useLocalSearchParams } from "expo-router";
+import { toast } from "sonner-native";
 
 // Lazy load the attachment viewer for better performance
 const LazyAttachmentViewer = lazy(() =>
@@ -73,6 +75,9 @@ export default function Tasks() {
   const [editingHomework, setEditingHomework] = useState<HomeworkData | null>(
     null,
   );
+  const [homeworkDialogAppeared, setHomeworkDialogAppeared] = useState(false);
+
+  const { homeworkId } = useLocalSearchParams<{ homeworkId?: string }>();
 
   const { isDarkColorScheme } = useColorScheme();
 
@@ -121,6 +126,17 @@ export default function Tasks() {
 
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (homeworkData.length > 0 && homeworkId && !homeworkDialogAppeared) {
+      setHomeworkDialogAppeared(true);
+      viewHomeworkDetail(homeworkId);
+    }
+
+    return () => {
+      setHomeworkDialogAppeared(false);
+    };
+  }, [homeworkData, homeworkId]);
 
   const filteredHomework = homeworkData
     .filter((homework) => {
@@ -224,9 +240,18 @@ export default function Tasks() {
     setShowHomeworkForm(true);
   };
 
-  const viewHomeworkDetail = (homework: HomeworkData) => {
-    setSelectedHomework(homework);
-    setShowHomeworkDetail(true);
+  const viewHomeworkDetail = (homework: HomeworkData | string) => {
+    if (typeof homework === "string") {
+      console.log(homework, homeworkData);
+      const foundHomework = homeworkData.find((h) => h.id === homework);
+      if (!foundHomework) return toast.error("Homework not found");
+
+      setSelectedHomework(foundHomework);
+      setShowHomeworkDetail(true);
+    } else {
+      setSelectedHomework(homework);
+      setShowHomeworkDetail(true);
+    }
   };
 
   const getPriorityColor = (priority: HomeworkData["priority"]) => {

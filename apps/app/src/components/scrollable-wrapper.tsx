@@ -5,12 +5,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface ScrollableWrapperProps extends ScrollViewProps {
   children: React.ReactNode;
+  noPaddingTop?: boolean;
 }
 
 export const ScrollableWrapper: React.FC<ScrollableWrapperProps> = ({
   children,
   onScroll,
   contentContainerStyle,
+  noPaddingTop = false,
   ...props
 }) => {
   const { handleScroll } = useScroll();
@@ -32,7 +34,7 @@ export const ScrollableWrapper: React.FC<ScrollableWrapperProps> = ({
       scrollEventThrottle={16}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={[
-        { paddingTop: headerHeight },
+        { paddingTop: noPaddingTop ? "auto" : headerHeight },
         contentContainerStyle,
       ]}
       {...props}

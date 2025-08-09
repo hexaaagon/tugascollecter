@@ -75,6 +75,12 @@ export const indonesianStrings: LanguageStrings = {
   performanceTip:
     "Tugas dengan Lampiran Foto/Dokumen akan memuat lebih lama agar performa aplikasi tetap optimal.",
 
+  // Search functionality
+  searchTasks: "Cari Tugas",
+  tasksFound: "{{count}} tugas ditemukan",
+  searchPlaceholder: "Cari tugas kamu",
+  tryAdjustingSearchTerms: "Coba ubah kata pencarian",
+
   // Common Actions
   startWorking: "Mulai Kerjakan",
   viewDetails: "Lihat Detail",

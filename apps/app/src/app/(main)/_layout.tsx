@@ -1,6 +1,6 @@
 import * as React from "react";
-import { View, TouchableOpacity, Animated } from "react-native";
-import { Stack, usePathname } from "expo-router";
+import { View, TouchableOpacity, Animated, Pressable } from "react-native";
+import { Stack, usePathname, useRouter } from "expo-router";
 import {
   DrawerProvider,
   DrawerTrigger,
@@ -10,7 +10,13 @@ import { useColorScheme } from "@/lib/useColorScheme";
 import { useTranslation } from "@/lib/language";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import { PanelLeft, List, ArrowUpDown, CloudOff } from "lucide-react-native";
+import {
+  PanelLeft,
+  List,
+  ArrowUpDown,
+  CloudOff,
+  Undo2,
+} from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { toast } from "sonner-native";
 import { useScrollPosition } from "@/lib/hooks/useScrollPosition";
@@ -47,10 +53,11 @@ const CustomHeader = React.memo(function CustomHeader({
   translateY: Animated.Value;
 }) {
   const { t } = useTranslation();
+  const router = useRouter();
 
   const handleSearchPress = React.useCallback(() => {
-    toast.info("Search feature coming soon!");
-  }, []);
+    router.push("/search");
+  }, [router]);
 
   const handleListPress = React.useCallback(() => {
     toast.warning("Feature Coming Soon!");
@@ -90,9 +97,17 @@ const CustomHeader = React.memo(function CustomHeader({
           elevation: 2,
         }}
       >
-        <DrawerTrigger className="mr-1 py-2 pr-2">
-          <PanelLeft size={16} color={colors.iconColor} />
-        </DrawerTrigger>
+        <View className="mr-1 flex flex-row">
+          <DrawerTrigger className="py-2 pr-2">
+            <PanelLeft size={16} color={colors.iconColor} />
+          </DrawerTrigger>
+
+          {pathname === "/search" && (
+            <Pressable className="p-2" onPress={() => router.back()}>
+              <Undo2 size={16} color={colors.iconColor} />
+            </Pressable>
+          )}
+        </View>
 
         {(pathname === "/" || pathname.startsWith("/tasks")) && (
           <View className="mx-2 flex-1">
