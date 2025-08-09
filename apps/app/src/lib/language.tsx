@@ -26,7 +26,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setCurrentLanguage] = useState<Language>("en");
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Load stored language asynchronously
   React.useEffect(() => {
     const loadStoredLanguage = async () => {
       try {

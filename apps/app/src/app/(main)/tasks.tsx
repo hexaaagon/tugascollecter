@@ -28,6 +28,7 @@ import {
   Rewind,
 } from "lucide-react-native";
 import { useLanguage } from "@/lib/language";
+import { useColorScheme } from "@/lib/useColorScheme";
 
 // Lazy load the attachment viewer for better performance
 const LazyAttachmentViewer = lazy(() =>
@@ -73,6 +74,8 @@ export default function Tasks() {
     null,
   );
 
+  const { isDarkColorScheme } = useColorScheme();
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -88,7 +91,6 @@ export default function Tasks() {
         setHomeworkData(homework);
         setSubjectData(subjects);
 
-        // Mark basic loading as complete
         setLoading(false);
 
         // Then load attachment metadata in background (don't block UI)
@@ -273,7 +275,6 @@ export default function Tasks() {
             </View>
             {/* Animated Loading Text */}
             <View className="flex flex-row items-center space-x-2">
-              <Loader2 size={18} color="#6b7280" />
               <Text className="text-lg font-medium text-foreground">
                 Loading Tasks
               </Text>
@@ -284,20 +285,20 @@ export default function Tasks() {
           </View>
 
           {/* Loading Progress Indicators */}
-          <View className="w-full max-w-xs space-y-3">
-            <View className="flex flex-row items-center space-x-3">
+          <View className="flex w-full max-w-xs flex-col gap-1">
+            <View className="flex flex-row items-center gap-2">
               <View className="h-2 w-2 animate-pulse rounded-full bg-primary" />
               <Text className="text-xs text-muted-foreground">
                 {t("loadingHomeworkData")}
               </Text>
             </View>
-            <View className="flex flex-row items-center space-x-3">
+            <View className="flex flex-row items-center gap-2">
               <View className="h-2 w-2 animate-pulse rounded-full bg-primary/60" />
               <Text className="text-xs text-muted-foreground">
                 {t("loadingSubjects")}
               </Text>
             </View>
-            <View className="flex flex-row items-center space-x-3">
+            <View className="flex flex-row items-center gap-2">
               <View className="h-2 w-2 animate-pulse rounded-full bg-primary/30" />
               <Text className="text-xs text-muted-foreground">
                 {t("organizingTasks")}
@@ -313,32 +314,59 @@ export default function Tasks() {
           </View>
 
           {/* Loading skeleton cards */}
-          <View className="mt-8 w-full space-y-3">
-            {[1, 2, 3].map((i) => (
-              <Card key={i} className="opacity-50">
+          <View className="mt-8 flex w-full flex-col gap-3">
+            {[1, 2].map((i) => (
+              <Card key={i} className="opacity-60">
                 <CardContent className="p-4">
-                  <View className="space-y-3">
-                    {/* Title skeleton */}
-                    <View className="flex flex-row items-center space-x-2">
-                      <View className="h-3 w-3 animate-pulse rounded-full bg-muted" />
-                      <View className="h-4 flex-1 animate-pulse rounded bg-muted" />
-                      <View className="h-4 w-4 animate-pulse rounded bg-muted" />
-                    </View>
+                  <View className="flex flex-row items-start justify-between">
+                    <View className="flex-1">
+                      <View>
+                        {/* Title row skeleton - matches homework card structure */}
+                        <View className="mb-2 flex flex-row items-center gap-2">
+                          <View className="h-3 w-3 animate-pulse rounded-full bg-muted" />
+                          <View className="mr-8 h-4 flex-1 animate-pulse rounded bg-muted" />
+                          <View className="h-4 w-4 animate-pulse rounded bg-muted" />
+                        </View>
 
-                    {/* Description skeleton */}
-                    <View className="h-3 w-3/4 animate-pulse rounded bg-muted" />
+                        {/* Description skeleton */}
+                        <View className="mb-2 h-3 w-4/5 animate-pulse rounded bg-muted" />
 
-                    {/* Metadata skeleton */}
-                    <View className="flex flex-row space-x-4">
-                      <View className="h-3 w-16 animate-pulse rounded bg-muted" />
-                      <View className="h-3 w-20 animate-pulse rounded bg-muted" />
-                    </View>
+                        {/* Metadata row skeleton - subject and due date */}
+                        <View className="mb-3 flex flex-row items-center gap-4">
+                          {/* Subject skeleton */}
+                          <View className="flex flex-row items-center gap-1">
+                            <View className="h-3 w-3 animate-pulse rounded bg-muted" />
+                            <View className="ml-1 h-2 w-2 animate-pulse rounded-full bg-muted" />
+                            <View className="h-3 w-16 animate-pulse rounded bg-muted" />
+                          </View>
+                          {/* Due date skeleton */}
+                          <View className="flex flex-row items-center gap-1">
+                            <View className="h-3 w-3 animate-pulse rounded bg-muted" />
+                            <View className="h-3 w-20 animate-pulse rounded bg-muted" />
+                          </View>
+                        </View>
 
-                    {/* Action buttons skeleton */}
-                    <View className="flex flex-row space-x-2">
-                      <View className="h-8 w-16 animate-pulse rounded bg-muted" />
-                      <View className="h-8 w-8 animate-pulse rounded bg-muted" />
-                      <View className="h-8 w-8 animate-pulse rounded bg-muted" />
+                        {/* Tags skeleton */}
+                        <View className="mb-3 flex flex-row flex-wrap gap-1">
+                          <View className="h-5 w-12 animate-pulse rounded-full bg-muted" />
+                          <View className="h-5 w-16 animate-pulse rounded-full bg-muted" />
+                        </View>
+                      </View>
+
+                      {/* Action buttons skeleton */}
+                      <View className="flex flex-row gap-2">
+                        <View className="h-8 w-24 animate-pulse rounded bg-muted" />
+                        <View className="h-8 w-16 animate-pulse rounded bg-muted" />
+                        <View className="h-8 w-8 animate-pulse rounded bg-muted" />
+                      </View>
+
+                      {/* Attachment skeleton */}
+                      {i === 2 && (
+                        <View className="mt-3 flex flex-row gap-2 border-t border-border pt-3">
+                          <View className="h-3 w-3 animate-pulse rounded bg-muted" />
+                          <View className="h-3 w-20 animate-pulse rounded bg-muted" />
+                        </View>
+                      )}
                     </View>
                   </View>
                 </CardContent>
@@ -379,7 +407,10 @@ export default function Tasks() {
               <Settings size={16} color="#6b7280" />
             </Button>
             <Button size="icon" onPress={() => setShowHomeworkForm(true)}>
-              <Plus size={16} color="#000000" />
+              <Plus
+                size={16}
+                color={isDarkColorScheme ? "#000000" : "#ffffff"}
+              />
             </Button>
           </View>
         </View>
@@ -646,7 +677,14 @@ export default function Tasks() {
                                   </Suspense>
                                 ) : (
                                   <>
-                                    <Paperclip color="white" size={12} />
+                                    <Paperclip
+                                      color={
+                                        isDarkColorScheme
+                                          ? "#ffffff"
+                                          : "#000000"
+                                      }
+                                      size={12}
+                                    />
                                     <Text className="text-xs text-muted-foreground">
                                       {homework.attachments.length} attachment
                                       {homework.attachments.length > 1

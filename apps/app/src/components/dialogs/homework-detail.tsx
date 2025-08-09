@@ -37,6 +37,7 @@ import {
 } from "lucide-react-native";
 import { useColorScheme } from "@/lib/useColorScheme";
 import { useLanguage } from "@/lib/language";
+import { getCurrentLanguage } from "@tugascollecter/language-pack";
 
 interface HomeworkDetailDialogProps {
   visible: boolean;
@@ -292,14 +293,24 @@ export function HomeworkDetailDialog({
                                   : t("statusLevels.overdue")}
                           </Text>
                           <Text className="text-xs text-muted-foreground">
-                            {new Date(
-                              currentHomework.dueDate,
-                            ).toLocaleDateString("en-US", {
-                              weekday: "long",
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })}
+                            {getCurrentLanguage() === "en" &&
+                              new Date(
+                                currentHomework.dueDate,
+                              ).toLocaleDateString("en-US", {
+                                weekday: "long",
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })}
+                            {getCurrentLanguage() === "id" &&
+                              new Date(
+                                currentHomework.dueDate,
+                              ).toLocaleDateString("id-ID", {
+                                weekday: "long",
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })}
                           </Text>
                         </View>
                       </View>
