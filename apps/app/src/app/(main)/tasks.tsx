@@ -10,7 +10,7 @@ import { AttachmentViewer } from "@/components/attachment-viewer";
 import { HomeworkDetailDialog } from "../../components/dialogs/homework-detail";
 import { useState, useEffect, Suspense, lazy } from "react";
 import { StorageManager } from "@/lib/storage";
-import { HomeworkData, SubjectData } from "@/shared/types/storage";
+import { HomeworkData, SubjectData } from "@tugascollecter/types";
 import {
   Plus,
   Filter,

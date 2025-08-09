@@ -16,10 +16,9 @@ import {
   HomeworkData,
   SubjectData,
   AttachmentData,
-} from "@/shared/types/storage";
+} from "@tugascollecter/types";
 import { StorageManager } from "@/lib/storage";
 import { Image } from "expo-image";
-import * as Sharing from "expo-sharing";
 import {
   X,
   Calendar,

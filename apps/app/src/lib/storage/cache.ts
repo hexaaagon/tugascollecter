@@ -1,10 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system";
-import {
-  CacheItem,
-  STORAGE_KEYS,
-  CacheError,
-} from "../../shared/types/storage";
+import { CacheItem, STORAGE_KEYS, CacheError } from "@tugascollecter/types";
 
 export class CacheStorage {
   private static readonly DEFAULT_CACHE_DURATION = 1000 * 60 * 60; // 1 hour

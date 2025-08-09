@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { StorageManager } from "@/lib/storage";
-import { HomeworkData, SubjectData } from "@/shared/types/storage";
+import { HomeworkData, SubjectData } from "@tugascollecter/types";
 import { router } from "expo-router";
 import { BookOpen, Calendar, Clock, TrendingUp } from "lucide-react-native";
 import { useTranslation } from "@/lib/language";

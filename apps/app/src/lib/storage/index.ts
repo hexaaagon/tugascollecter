@@ -1,4 +1,4 @@
-export * from "../../shared/types/storage";
+export * from "@tugascollecter/types";
 
 export { UserDataStorage } from "./userdata";
 export { ExternalStorage } from "./external";
@@ -17,8 +17,7 @@ import {
   SubjectData,
   AttachmentData,
   ExportData,
-  DEFAULT_PREFERENCES,
-} from "../../shared/types/storage";
+} from "@tugascollecter/types";
 
 // Import notification service
 let notificationService: any = null;

@@ -8,7 +8,7 @@ import {
   ExportData,
   STORAGE_KEYS,
   ExternalStorageError,
-} from "../../shared/types/storage";
+} from "@tugascollecter/types";
 
 export class ExternalStorage {
   private static get baseDir(): string {

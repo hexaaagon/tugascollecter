@@ -10,7 +10,7 @@ import {
 } from "lucide-react-native";
 import { useTranslation } from "@/lib/language";
 import { useColorScheme } from "@/lib/useColorScheme";
-import { HomeworkData, SubjectData } from "@/shared/types/storage";
+import { HomeworkData, SubjectData } from "@tugascollecter/types";
 import { StorageManager } from "@/lib/storage";
 import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";

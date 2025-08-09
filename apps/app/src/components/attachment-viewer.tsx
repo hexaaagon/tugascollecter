@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import { View, Pressable, Image as RNImage, Alert } from "react-native";
 import { Text } from "@/components/ui/text";
-import * as FileSystem from "expo-file-system";
-import * as Sharing from "expo-sharing";
-import * as IntentLauncher from "expo-intent-launcher";
-import { AttachmentData } from "@/shared/types/storage";
+import { AttachmentData } from "@tugascollecter/types";
 import { AttachmentPreviewDialog } from "@/components/attachment-preview-dialog";
 import { useColorScheme } from "@/lib/useColorScheme";
 import {

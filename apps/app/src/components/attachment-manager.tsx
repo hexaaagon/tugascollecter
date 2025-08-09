@@ -3,9 +3,8 @@ import { View, Alert, ScrollView, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { AttachmentData } from "@/shared/types/storage";
+import { AttachmentData } from "@tugascollecter/types";
 import { StorageManager } from "@/lib/storage";
-import * as Linking from "expo-linking";
 import * as Sharing from "expo-sharing";
 import {
   Paperclip,

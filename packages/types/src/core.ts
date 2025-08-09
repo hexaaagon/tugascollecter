@@ -19,6 +19,16 @@ export interface CacheItem<T = any> {
   expiresAt: number;
 }
 
+export class CacheError extends Error {
+  constructor(
+    message: string,
+    public code?: string
+  ) {
+    super(message);
+    this.name = "CacheError";
+  }
+}
+
 // Common base interface for entities with timestamps
 export interface TimestampedEntity {
   createdAt?: string; // ISO 8601 format

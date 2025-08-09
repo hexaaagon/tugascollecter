@@ -1,7 +1,7 @@
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { StorageManager } from "./storage";
-import { HomeworkData } from "@/shared/types/storage";
+import { HomeworkData } from "@tugascollecter/types";
 import { t } from "@tugascollecter/language-pack";
 
 // Configure how notifications are handled when app is in foreground

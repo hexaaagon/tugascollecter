@@ -9,7 +9,7 @@ import {
   HomeworkData,
   SubjectData,
   AttachmentData,
-} from "@/shared/types/storage";
+} from "@tugascollecter/types";
 import { AttachmentManager } from "@/components/attachment-manager";
 import { X, Calendar, AlertCircle, BookOpen } from "lucide-react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";

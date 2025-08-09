@@ -3,7 +3,7 @@ import { View, FlatList, TouchableOpacity } from "react-native";
 import { Search, X, Calendar, BookOpen, Clock } from "lucide-react-native";
 import { useTranslation } from "@/lib/language";
 import { useColorScheme } from "@/lib/useColorScheme";
-import { HomeworkData, SubjectData } from "@/shared/types/storage";
+import { HomeworkData, SubjectData } from "@tugascollecter/types";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";

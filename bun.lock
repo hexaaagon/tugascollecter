@@ -31,6 +31,8 @@
         "@rn-primitives/slot": "^1.2.0",
         "@rn-primitives/tooltip": "~1.2.0",
         "@tugascollecter/language-pack": "workspace:*",
+        "@tugascollecter/subject-pack": "workspace:*",
+        "@tugascollecter/types": "workspace:*",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.0",
         "expo": "^53.0.20",
@@ -91,6 +93,17 @@
       "dependencies": {
         "@tugascollecter/language-pack": "workspace:*",
       },
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+      "peerDependencies": {
+        "react": ">=18.0.0",
+        "react-native": ">=0.70.0",
+        "typescript": "^5",
+      },
+    },
+    "packages/types": {
+      "name": "@tugascollecter/types",
       "devDependencies": {
         "@types/bun": "latest",
       },
@@ -533,6 +546,8 @@
     "@tugascollecter/language-pack": ["@tugascollecter/language-pack@workspace:packages/language-pack"],
 
     "@tugascollecter/subject-pack": ["@tugascollecter/subject-pack@workspace:packages/subject-pack"],
+
+    "@tugascollecter/types": ["@tugascollecter/types@workspace:packages/types"],
 
     "@types/babel__core": ["@types/babel__core@7.20.5", "", { "dependencies": { "@babel/parser": "^7.20.7", "@babel/types": "^7.20.7", "@types/babel__generator": "*", "@types/babel__template": "*", "@types/babel__traverse": "*" } }, "sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA=="],
 

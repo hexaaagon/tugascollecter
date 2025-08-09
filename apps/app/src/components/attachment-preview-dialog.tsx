@@ -8,7 +8,7 @@ import {
   Modal,
 } from "react-native";
 import { Text } from "@/components/ui/text";
-import { AttachmentData } from "@/shared/types/storage";
+import { AttachmentData } from "@tugascollecter/types";
 import { X, ExternalLink, Share } from "lucide-react-native";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";

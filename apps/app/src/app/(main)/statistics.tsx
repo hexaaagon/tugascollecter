@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useState, useEffect } from "react";
 import { StorageManager } from "@/lib/storage";
-import { HomeworkData, SubjectData } from "@/shared/types/storage";
+import { HomeworkData, SubjectData } from "@tugascollecter/types";
 import { useLanguage } from "@/lib/language";
 import {
   TrendingUp,

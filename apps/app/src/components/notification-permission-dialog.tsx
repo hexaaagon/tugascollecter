@@ -12,7 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text } from "./ui/text";
 import { useTranslation } from "@/lib/language";
 import { NotificationService } from "@/lib/notifications";
-import { STORAGE_KEYS } from "@/shared/types/storage";
+import { STORAGE_KEYS } from "@tugascollecter/types";
 import { StorageManager } from "@/lib/storage";
 import { toast } from "sonner-native";
 import { useColorScheme } from "@/lib/useColorScheme";

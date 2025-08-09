@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StorageManager } from "@/lib/storage";
-import { SubjectData } from "@/shared/types/storage";
+import { SubjectData } from "@tugascollecter/types";
 import { X, BookOpen, Palette, Plus, Trash2, Edit3 } from "lucide-react-native";
 import ColorPicker, {
   Panel1,

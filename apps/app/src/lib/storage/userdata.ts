@@ -7,7 +7,7 @@ import {
   STORAGE_KEYS,
   DEFAULT_PREFERENCES,
   StorageError,
-} from "../../shared/types/storage";
+} from "@tugascollecter/types";
 
 export class UserDataStorage {
   static async getPreferences(): Promise<UserPreferences> {
