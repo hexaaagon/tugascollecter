@@ -358,14 +358,16 @@ export function AttachmentManager({
 
       {attachments.length === 0 && (
         <Card>
-          <CardContent className="items-center py-6">
-            <Paperclip size={32} color="#6b7280" className="mb-2" />
-            <Text className="text-center text-sm text-muted-foreground">
-              No attachments added yet
-            </Text>
-            <Text className="text-center text-xs text-muted-foreground">
-              Add images, documents, or other files to your homework
-            </Text>
+          <CardContent className="py-6">
+            <View className="items-center">
+              <Paperclip size={32} color="#6b7280" className="mb-2" />
+              <Text className="text-center text-sm text-muted-foreground">
+                No attachments added yet
+              </Text>
+              <Text className="text-center text-xs text-muted-foreground">
+                Add images, documents, or other files to your homework
+              </Text>
+            </View>
           </CardContent>
         </Card>
       )}

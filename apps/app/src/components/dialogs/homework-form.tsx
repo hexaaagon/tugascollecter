@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { View, Alert, Modal, Pressable } from "react-native";
+import { View, Alert, Modal, Pressable, ScrollView } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -73,12 +73,12 @@ export function HomeworkForm({
 
   const handleSave = useCallback(async () => {
     if (!title.trim()) {
-      Alert.alert("Error", "Please enter a title for the homework");
+      Alert.alert(t("error"), t("pleaseEnterTitle"));
       return;
     }
 
     if (!subjectId && subjects.length === 0) {
-      Alert.alert("Error", "Please create a subject first");
+      Alert.alert(t("error"), t("pleaseCreateSubjectFirst"));
       return;
     }
 
@@ -110,7 +110,7 @@ export function HomeworkForm({
       onClose();
     } catch (error) {
       console.error("Error saving homework:", error);
-      Alert.alert("Error", "Failed to save homework");
+      Alert.alert(t("error"), t("failedToSaveHomework"));
     } finally {
       setLoading(false);
     }
@@ -183,145 +183,157 @@ export function HomeworkForm({
       onRequestClose={onClose}
     >
       <View className="flex-1 bg-background">
-        <View className="mx-6 flex-1">
-          <View className="flex flex-row items-center justify-between py-4">
-            <Text className="text-xl font-bold">
-              {editingHomework ? t("editHomework") : t("newHomework")}
-            </Text>
-            <Button variant="ghost" size="icon" onPress={onClose}>
-              <X size={20} />
-            </Button>
-          </View>
-
-          <View className="flex flex-1 flex-col gap-4">
-            <View>
-              <Text className="mb-2 text-sm font-medium">
-                {t("homeworkTitle")} *
+        <ScrollView
+          className="flex-1"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ flexGrow: 1 }}
+        >
+          <View className="mx-6">
+            <View className="flex flex-row items-center justify-between py-4">
+              <Text className="text-xl font-bold">
+                {editingHomework ? t("editHomework") : t("newHomework")}
               </Text>
-              <Input
-                value={title}
-                onChangeText={setTitle}
-                placeholder={t("enterTitle")}
-                className="w-full"
-              />
+              <Button variant="ghost" size="icon" onPress={onClose}>
+                <X size={20} />
+              </Button>
             </View>
 
-            <View>
-              <Text className="mb-2 text-sm font-medium">
-                {t("homeworkDescription")}
-              </Text>
-              <Input
-                value={description}
-                onChangeText={setDescription}
-                placeholder={t("enterDescription")}
-                multiline
-                numberOfLines={3}
-                className="w-full"
-              />
-            </View>
+            <View className="flex flex-col gap-4 pb-6">
+              <View>
+                <Text className="mb-2 text-sm font-medium">
+                  {t("homeworkTitle")} *
+                </Text>
+                <Input
+                  value={title}
+                  onChangeText={setTitle}
+                  placeholder={t("enterTitle")}
+                  className="w-full"
+                />
+              </View>
 
-            <View>
-              <Text className="mb-2 text-sm font-medium">{t("subject")}</Text>
-              {subjects.length > 0 ? (
-                <View className="flex flex-col gap-2">
-                  <View className="flex flex-row flex-wrap gap-2">
-                    {subjects.map((subject) => (
-                      <Pressable
-                        key={subject.id}
-                        onPress={() =>
-                          setSubjectId((before) =>
-                            before === subject.id ? "" : subject.id,
-                          )
-                        }
-                        className={`flex flex-row items-center gap-2 rounded-lg border px-3 py-2 ${
-                          subjectId === subject.id
-                            ? "border-primary bg-primary"
-                            : "border-border bg-secondary"
-                        }`}
-                      >
-                        <View
-                          className="h-2 w-2 rounded-full"
-                          style={{ backgroundColor: subject.color }}
-                        />
-                        <Text
-                          className={`text-sm ${
+              <View>
+                <Text className="mb-2 text-sm font-medium">
+                  {t("homeworkDescription")}
+                </Text>
+                <Input
+                  value={description}
+                  onChangeText={setDescription}
+                  placeholder={t("enterDescription")}
+                  multiline
+                  numberOfLines={3}
+                  className="w-full"
+                />
+              </View>
+
+              <View>
+                <Text className="mb-2 text-sm font-medium">{t("subject")}</Text>
+                {subjects.length > 0 ? (
+                  <View className="flex flex-col gap-2">
+                    <View className="flex flex-row flex-wrap gap-2">
+                      {subjects.map((subject) => (
+                        <Pressable
+                          key={subject.id}
+                          onPress={() =>
+                            setSubjectId((before) =>
+                              before === subject.id ? "" : subject.id,
+                            )
+                          }
+                          className={`flex flex-row items-center gap-2 rounded-lg border px-3 py-2 ${
                             subjectId === subject.id
-                              ? "text-primary-foreground"
-                              : "text-secondary-foreground"
+                              ? "border-primary bg-primary"
+                              : "border-border bg-secondary"
                           }`}
                         >
-                          {subject.name}
-                        </Text>
-                      </Pressable>
-                    ))}
+                          <View
+                            className="h-2 w-2 rounded-full"
+                            style={{ backgroundColor: subject.color }}
+                          />
+                          <Text
+                            className={`text-sm ${
+                              subjectId === subject.id
+                                ? "text-primary-foreground"
+                                : "text-secondary-foreground"
+                            }`}
+                          >
+                            {subject.name}
+                          </Text>
+                        </Pressable>
+                      ))}
+                    </View>
                   </View>
-                </View>
-              ) : (
-                <Card>
-                  <CardContent className="items-center py-6">
-                    <BookOpen size={32} className="mb-2" />
-                    <Text className="text-center text-sm text-muted-foreground">
-                      No subjects available. Create a subject first.
-                    </Text>
-                  </CardContent>
-                </Card>
-              )}
-            </View>
+                ) : (
+                  <Card>
+                    <CardContent className="py-6">
+                      <View className="items-center">
+                        <BookOpen size={32} className="mb-2" />
+                        <Text className="text-center text-sm text-muted-foreground">
+                          {t("noSubjectsAvailableCreateFirst")}
+                        </Text>
+                      </View>
+                    </CardContent>
+                  </Card>
+                )}
+              </View>
 
-            <View>
-              <Text className="mb-2 text-sm font-medium">{t("dueDate")}</Text>
-              <Pressable
-                onPress={showDatePicker}
-                className="flex flex-row items-center gap-2 rounded-lg border border-border bg-background px-3 py-4"
-              >
-                <Calendar size={20} className="text-muted-foreground" />
-                <Text
-                  className={`flex-1 ${dueDate ? "text-foreground" : "text-muted-foreground"}`}
+              <View>
+                <Text className="mb-2 text-sm font-medium">{t("dueDate")}</Text>
+                <Pressable
+                  onPress={showDatePicker}
+                  className="flex flex-row items-center gap-2 rounded-lg border border-border bg-background px-3 py-4"
                 >
-                  {dueDate ? formatDateForInput(dueDate) : t("selectDueDate")}
-                </Text>
-              </Pressable>
-            </View>
-
-            <View>
-              <Text className="mb-2 text-sm font-medium">{t("priority")}</Text>
-              <View className="flex flex-row gap-2">
-                {(["low", "medium", "high"] as const).map((p) => (
-                  <Pressable
-                    key={p}
-                    onPress={() => setPriority(p)}
-                    className={`flex flex-1 flex-row items-center gap-2 rounded-lg border px-3 py-2 ${
-                      priority === p
-                        ? "border-primary bg-primary"
-                        : "border-border bg-secondary"
-                    }`}
+                  <Calendar size={20} className="text-muted-foreground" />
+                  <Text
+                    className={`flex-1 ${dueDate ? "text-foreground" : "text-muted-foreground"}`}
                   >
-                    <View
-                      className={`${getPriorityColor(p)} h-2 w-2 rounded-full`}
-                    />
-                    <Text
-                      className={`text-center text-sm capitalize ${
+                    {dueDate ? formatDateForInput(dueDate) : t("selectDueDate")}
+                  </Text>
+                </Pressable>
+              </View>
+
+              <View>
+                <Text className="mb-2 text-sm font-medium">
+                  {t("priority")}
+                </Text>
+                <View className="flex flex-row gap-2">
+                  {(["low", "medium", "high"] as const).map((p) => (
+                    <Pressable
+                      key={p}
+                      onPress={() => setPriority(p)}
+                      className={`flex flex-1 flex-row items-center gap-2 rounded-lg border px-3 py-2 ${
                         priority === p
-                          ? "text-primary-foreground"
-                          : "text-secondary-foreground"
+                          ? "border-primary bg-primary"
+                          : "border-border bg-secondary"
                       }`}
                     >
-                      {t(`priorityLevels.${p}`)}
-                    </Text>
-                  </Pressable>
-                ))}
+                      <View
+                        className={`${getPriorityColor(p)} h-2 w-2 rounded-full`}
+                      />
+                      <Text
+                        className={`text-center text-sm capitalize ${
+                          priority === p
+                            ? "text-primary-foreground"
+                            : "text-secondary-foreground"
+                        }`}
+                      >
+                        {t(`priorityLevels.${p}`)}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+
+              <View>
+                <AttachmentManager
+                  attachments={attachments}
+                  onAttachmentsChange={setAttachments}
+                  homeworkId={editingHomework?.id}
+                />
               </View>
             </View>
-
-            <View>
-              <AttachmentManager
-                attachments={attachments}
-                onAttachmentsChange={setAttachments}
-                homeworkId={editingHomework?.id}
-              />
-            </View>
           </View>
+        </ScrollView>
 
+        <View className="mx-6">
           <View className="flex flex-row gap-3 py-6">
             <Button variant="outline" className="flex-1" onPress={onClose}>
               <Text>{t("cancel")}</Text>
@@ -331,7 +343,7 @@ export function HomeworkForm({
               onPress={handleSave}
               disabled={loading || !title.trim()}
             >
-              <Text>{loading ? "Saving..." : t("save")}</Text>
+              <Text>{loading ? t("saving") : t("save")}</Text>
             </Button>
           </View>
         </View>

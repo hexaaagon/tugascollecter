@@ -13,6 +13,41 @@ export const englishStrings: LanguageStrings = {
   loading: "Loading",
   error: "Error",
   success: "Success",
+  close: "Close",
+
+  // Error messages
+  pleaseEnterSubjectName: "Please enter a subject name",
+  subjectNameAlreadyExists: "A subject with this name already exists",
+  failedToAddSubject: "Failed to add subject",
+  failedToDeleteSubject: "Failed to delete subject",
+  failedToUpdateSubject: "Failed to update subject",
+  failedToLoadSubjectTemplates: "Failed to load subject templates",
+  failedToImportSubjects: "Failed to import subjects",
+  deleteSubject: "Delete Subject",
+  deleteSubjectConfirmation:
+    "Are you sure you want to delete this subject? This action cannot be undone.",
+  noSubjects: "No Subjects",
+  addFirstSubject: "Add your first subject to start organizing your homework.",
+  noSubjectsAvailableForCombination:
+    "No subjects available for this combination",
+
+  // UI elements
+  chooseColor: "Choose Color",
+  selectedColor: "Selected Color",
+  select: "Select",
+  done: "Done",
+  saving: "Saving...",
+
+  // Additional Subject Manager keys
+  addCustomSubject: "Add Custom Subject",
+  color: "Color",
+  adding: "Adding...",
+  existingSubjects: "Existing Subjects",
+  country: "Country",
+  educationLevel: "Education Level",
+  availableSubjects: "Available Subjects",
+  importingEllipsis: "Importing...",
+  importAllCountSubjects: "Import All {count} Subjects",
 
   // Navigation
   home: "Home",
@@ -111,7 +146,11 @@ export const englishStrings: LanguageStrings = {
   selectDueDate: "Select due date",
   enterTitle: "Enter homework title",
   enterDescription: "Enter homework description (optional)",
-  selectSubject: "Select subject",
+  noSubjectsAvailableCreateFirst:
+    "No subjects available. Create a subject first.",
+  pleaseEnterTitle: "Please enter a title for the homework",
+  pleaseCreateSubjectFirst: "Please create a subject first",
+  failedToSaveHomework: "Failed to save homework",
 
   // Priority levels
   priorityLevels: {
@@ -304,4 +343,29 @@ export const englishStrings: LanguageStrings = {
     allowButton: "Allow Notifications",
     laterButton: "Maybe Later",
   },
+
+  // Subject Manager & Import (additional keys for import functionality)
+  importSubjectTemplates: "Import Subject Templates",
+  importSubjectTemplatesDescription:
+    "Choose your country and education level to import pre-defined subjects based on official curricula.",
+  selectCountry: "Select Country",
+  selectEducationLevel: "Select Education Level",
+  importAll: "Import All",
+  importAllSubjects: "Import All {{count}} Subjects",
+  importing: "Importing...",
+  importSuccessful: "Import Successful",
+  importSuccessfulMessage: "Successfully imported {{count}} subjects",
+  duplicateSubjects: "Duplicate Subjects",
+  duplicateSubjectsMessage:
+    "The following subjects already exist: {{names}}. Do you want to skip duplicates and import the rest?",
+  importOthers: "Import Others",
+  noSubjectsAvailable: "No Subjects Available",
+  noSubjectsAvailableMessage:
+    "No subject templates found for this combination.",
+  noSubjectTemplatesFound: "No subject templates found for this combination.",
+  loadingAvailableSubjects: "Loading available subjects...",
+  educationLevelsAvailable: "{{count}} education levels available",
+  agesAndDuration: "Ages {{minAge}}-{{maxAge}} • {{duration}} years",
+  previewSubjects: "Preview: {{count}} Subjects Available",
+  previewSubjectsAvailable: "Preview: {count} Subjects Available",
 };

@@ -13,6 +13,39 @@ export interface LanguageStrings {
   loading: string;
   error: string;
   success: string;
+  close: string;
+
+  // Error messages
+  pleaseEnterSubjectName: string;
+  subjectNameAlreadyExists: string;
+  failedToAddSubject: string;
+  failedToDeleteSubject: string;
+  failedToUpdateSubject: string;
+  failedToLoadSubjectTemplates: string;
+  failedToImportSubjects: string;
+  deleteSubject: string;
+  deleteSubjectConfirmation: string;
+  noSubjects: string;
+  addFirstSubject: string;
+  noSubjectsAvailableForCombination: string;
+
+  // UI elements
+  chooseColor: string;
+  selectedColor: string;
+  select: string;
+  done: string;
+  saving: string;
+
+  // Additional Subject Manager keys
+  addCustomSubject: string;
+  color: string;
+  adding: string;
+  existingSubjects: string;
+  country: string;
+  educationLevel: string;
+  availableSubjects: string;
+  importingEllipsis: string;
+  importAllCountSubjects: string; // "Import All {count} Subjects"
 
   // Navigation
   home: string;
@@ -101,33 +134,6 @@ export interface LanguageStrings {
     overdue: string;
   };
 
-  // Homework Form
-  newHomework: string;
-  editHomework: string;
-  homeworkTitle: string;
-  homeworkDescription: string;
-  subject: string;
-  dueDate: string;
-  selectDueDate: string;
-  enterTitle: string;
-  enterDescription: string;
-  selectSubject: string;
-
-  // Priority levels
-  priorityLevels: {
-    low: string;
-    medium: string;
-    high: string;
-  };
-
-  // Status levels
-  statusLevels: {
-    pending: string;
-    inProgress: string;
-    completed: string;
-    overdue: string;
-  };
-
   // Settings Screen
   account: string;
   signIn: string;
@@ -188,11 +194,36 @@ export interface LanguageStrings {
   addSubject: string;
   editSubject: string;
   subjectName: string;
-  subjectColor: string;
   enterSubjectName: string;
+  subjectColor: string;
   selected: string;
 
-  // Homework Detail
+  // Homework Form
+  editHomework: string;
+  newHomework: string;
+  homeworkTitle: string;
+  enterTitle: string;
+  homeworkDescription: string;
+  enterDescription: string;
+  subject: string;
+  dueDate: string;
+  selectDueDate: string;
+  noSubjectsAvailableCreateFirst: string;
+  pleaseEnterTitle: string;
+  pleaseCreateSubjectFirst: string;
+  failedToSaveHomework: string;
+  priorityLevels: {
+    low: string;
+    medium: string;
+    high: string;
+  };
+  // Status levels
+  statusLevels: {
+    pending: string;
+    inProgress: string;
+    completed: string;
+    overdue: string;
+  };
   notes: string;
   createdOn: string;
   lastModified: string;
@@ -303,4 +334,26 @@ export interface LanguageStrings {
   viewUpcomingDeadlinesInTasks: string;
   trackProgressInStatistics: string;
   organizeAssignmentsByPriority: string;
+
+  // Subject Manager & Import (additional keys for import functionality)
+  importSubjectTemplates: string;
+  importSubjectTemplatesDescription: string;
+  selectCountry: string;
+  selectEducationLevel: string;
+  importAll: string;
+  importAllSubjects: string; // "Import All {{count}} Subjects"
+  importing: string;
+  importSuccessful: string;
+  importSuccessfulMessage: string; // "Successfully imported {{count}} subjects"
+  duplicateSubjects: string;
+  duplicateSubjectsMessage: string; // "The following subjects already exist: {{names}}. Do you want to skip duplicates and import the rest?"
+  importOthers: string;
+  noSubjectsAvailable: string;
+  noSubjectsAvailableMessage: string;
+  noSubjectTemplatesFound: string;
+  loadingAvailableSubjects: string;
+  educationLevelsAvailable: string; // "{{count}} education levels available"
+  agesAndDuration: string; // "Ages {{minAge}}-{{maxAge}} • {{duration}} years"
+  previewSubjects: string; // "Preview: {{count}} Subjects Available"
+  previewSubjectsAvailable: string; // "Preview: {{count}} Subjects Available"
 }

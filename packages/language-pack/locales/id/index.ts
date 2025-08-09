@@ -13,6 +13,42 @@ export const indonesianStrings: LanguageStrings = {
   loading: "Memuat",
   error: "Error",
   success: "Sukses",
+  close: "Tutup",
+
+  // Error messages
+  pleaseEnterSubjectName: "Silakan masukkan nama mata pelajaran",
+  subjectNameAlreadyExists: "Mata pelajaran dengan nama ini sudah ada",
+  failedToAddSubject: "Gagal menambahkan mata pelajaran",
+  failedToDeleteSubject: "Gagal menghapus mata pelajaran",
+  failedToUpdateSubject: "Gagal memperbarui mata pelajaran",
+  failedToLoadSubjectTemplates: "Gagal memuat template mata pelajaran",
+  failedToImportSubjects: "Gagal mengimport mata pelajaran",
+  deleteSubject: "Hapus Mata Pelajaran",
+  deleteSubjectConfirmation:
+    "Apakah kamu yakin ingin menghapus mata pelajaran ini? Tindakan ini tidak dapat dibatalkan.",
+  noSubjects: "Tidak Ada Mata Pelajaran",
+  addFirstSubject:
+    "Tambahkan mata pelajaran pertama untuk mulai mengorganisir tugas.",
+  noSubjectsAvailableForCombination:
+    "Tidak ada mata pelajaran tersedia untuk kombinasi ini",
+
+  // UI elements
+  chooseColor: "Pilih Warna",
+  selectedColor: "Warna Terpilih",
+  select: "Pilih",
+  done: "Selesai",
+  saving: "Menyimpan...",
+
+  // Additional Subject Manager keys
+  addCustomSubject: "Tambah Mata Pelajaran Kustom",
+  color: "Warna",
+  adding: "Menambahkan...",
+  existingSubjects: "Mata Pelajaran yang Ada",
+  country: "Negara",
+  educationLevel: "Jenjang Pendidikan",
+  availableSubjects: "Mata Pelajaran Tersedia",
+  importingEllipsis: "Mengimport...",
+  importAllCountSubjects: "Import Semua {count} Mata Pelajaran",
 
   // Navigation
   home: "Home",
@@ -112,7 +148,11 @@ export const indonesianStrings: LanguageStrings = {
   selectDueDate: "Pilih tanggal deadline kamu",
   enterTitle: "Tuliskan judul tugas kamu",
   enterDescription: "Tuliskan deskripsi tugas kamu (Opsional)",
-  selectSubject: "Pilih mata pelajaran kamu",
+  noSubjectsAvailableCreateFirst:
+    "Belum ada mata pelajaran. Buat mata pelajaran dulu.",
+  pleaseEnterTitle: "Harap masukkan judul tugas",
+  pleaseCreateSubjectFirst: "Harap buat mata pelajaran terlebih dahulu",
+  failedToSaveHomework: "Gagal menyimpan tugas",
 
   // Priority levels
   priorityLevels: {
@@ -313,4 +353,30 @@ export const indonesianStrings: LanguageStrings = {
     allowButton: "Izinkan Notifikasi",
     laterButton: "Nanti Saja",
   },
+
+  // Subject Manager Import (additional keys for import functionality)
+  importSubjectTemplates: "Import Template Mata Pelajaran",
+  importSubjectTemplatesDescription:
+    "Pilih negara dan jenjang pendidikan untuk mengimport mata pelajaran yang sudah disiapkan berdasarkan kurikulum resmi.",
+  selectCountry: "Pilih Negara",
+  selectEducationLevel: "Pilih Jenjang Pendidikan",
+  importAll: "Import Semua",
+  importAllSubjects: "Import Semua {{count}} Mata Pelajaran",
+  importing: "Sedang mengimport...",
+  importSuccessful: "Import Berhasil",
+  importSuccessfulMessage: "Berhasil mengimport {{count}} mata pelajaran",
+  duplicateSubjects: "Mata Pelajaran Duplikat",
+  duplicateSubjectsMessage:
+    "Mata pelajaran berikut sudah ada: {{names}}. Apakah kamu ingin melewati duplikat dan mengimport yang lain?",
+  importOthers: "Import Lainnya",
+  noSubjectsAvailable: "Tidak Ada Mata Pelajaran",
+  noSubjectsAvailableMessage:
+    "Tidak ditemukan template mata pelajaran untuk kombinasi ini.",
+  noSubjectTemplatesFound:
+    "Tidak ditemukan template mata pelajaran untuk kombinasi ini.",
+  loadingAvailableSubjects: "Memuat mata pelajaran yang tersedia...",
+  educationLevelsAvailable: "{{count}} jenjang pendidikan tersedia",
+  agesAndDuration: "Usia {{minAge}}-{{maxAge}} • {{duration}} tahun",
+  previewSubjects: "Preview: {{count}} Mata Pelajaran Tersedia",
+  previewSubjectsAvailable: "Preview: {count} Mata Pelajaran Tersedia",
 };

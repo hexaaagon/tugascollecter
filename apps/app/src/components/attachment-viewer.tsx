@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Pressable, Image as RNImage, Alert } from "react-native";
 import { Text } from "@/components/ui/text";
 import { AttachmentData } from "@tugascollecter/types";
-import { AttachmentPreviewDialog } from "@/components/attachment-preview-dialog";
+import { AttachmentPreviewDialog } from "@/components/attachment-preview";
 import { useColorScheme } from "@/lib/useColorScheme";
 import {
   FileText,

@@ -5,8 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { HomeworkForm } from "@/components/dialogs/homework-form";
-import { SubjectManager } from "@/components/subject-manager";
-import { AttachmentViewer } from "@/components/attachment-viewer";
+import { SubjectManager } from "@/components/dialogs/subject-manager";
 import { HomeworkDetailDialog } from "../../components/dialogs/homework-detail";
 import { useState, useEffect, Suspense, lazy } from "react";
 import { StorageManager } from "@/lib/storage";
@@ -31,13 +30,6 @@ import { useLanguage } from "@/lib/language";
 import { useColorScheme } from "@/lib/useColorScheme";
 import { useLocalSearchParams } from "expo-router";
 import { toast } from "sonner-native";
-
-// Lazy load the attachment viewer for better performance
-const LazyAttachmentViewer = lazy(() =>
-  import("@/components/attachment-viewer").then((module) => ({
-    default: module.AttachmentViewer,
-  })),
-);
 
 // Loading fallback component for attachments
 const AttachmentLoadingFallback = () => {
