@@ -282,4 +282,20 @@ export const englishStrings: LanguageStrings = {
   viewUpcomingDeadlinesInTasks: "View upcoming deadlines in Tasks",
   trackProgressInStatistics: "Track progress in Statistics",
   organizeAssignmentsByPriority: "Organize assignments by priority",
+
+  // Notification Messages
+  notificationMessages: {
+    homeworkReminder: "📚 Homework Reminder",
+    dueInTime: '"{{title}}" is due in {{time}}',
+    dueTodayTitle: "⏰ Due Today!",
+    dueTodayMessage: '"{{title}}" is due today! Don\'t forget',
+  },
+
+  // Notification Permission Dialog
+  notificationPermission: {
+    title: "Enable Notifications",
+    description: "Get reminders for your tasks so you never miss a deadline",
+    allowButton: "Allow Notifications",
+    laterButton: "Maybe Later",
+  },
 };

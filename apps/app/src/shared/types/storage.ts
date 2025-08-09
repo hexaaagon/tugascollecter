@@ -43,6 +43,7 @@ export const STORAGE_KEYS = {
   THEME: "@tugascollecter_theme_preference",
   HOMEWORK: "@tugascollecter_homework",
   SUBJECTS: "@tugascollecter_subjects",
+  FIRST_LAUNCH: "@tugascollecter_first_launch",
 
   CACHE_PREFIX: "@tugascollecter_cache_",
 

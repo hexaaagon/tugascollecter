@@ -54,6 +54,7 @@ import { useTranslation, useLanguage } from "@/lib/language";
 import type { Language } from "@tugascollecter/language-pack";
 import { notificationService } from "@/lib/notifications";
 import * as Notifications from "expo-notifications";
+import { useNotificationPermissionContext } from "@/contexts/NotificationPermissionContext";
 
 interface SettingsItemProps {
   icon: React.ReactNode;
@@ -169,6 +170,8 @@ export default function SettingsScreen() {
   } = useColorScheme();
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguage();
+  const { showDialog: showNotificationPermissionDialog } =
+    useNotificationPermissionContext();
 
   const [preferences, setPreferences] =
     React.useState<UserPreferences>(DEFAULT_PREFERENCES);
@@ -210,8 +213,8 @@ export default function SettingsScreen() {
         const hasPermission = await notificationService.initialize();
 
         if (!hasPermission) {
-          // Request permission
-          const granted = await notificationService.requestPermission();
+          // Request permission directly for now
+          const granted = await notificationService.requestPermissions();
 
           if (!granted) {
             Alert.alert(

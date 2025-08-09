@@ -245,6 +245,22 @@ export interface LanguageStrings {
     };
   };
 
+  // Notification Messages
+  notificationMessages: {
+    homeworkReminder: string;
+    dueInTime: string; // "{{title}}" is due in {{time}}
+    dueTodayTitle: string;
+    dueTodayMessage: string; // "{{title}}" is due today! Don't forget
+  };
+
+  // Notification Permission Dialog
+  notificationPermission: {
+    title: string;
+    description: string;
+    allowButton: string;
+    laterButton: string;
+  };
+
   // Statistics Screen
   loadingStatistics: string;
   yourHomeworkPerformanceOverview: string;

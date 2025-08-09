@@ -65,6 +65,14 @@ import { router, usePathname } from "expo-router";
 import { toast } from "sonner-native";
 import { LanguageProvider } from "@/lib/language";
 import { StorageManager } from "@/lib/storage";
+import {
+  NotificationPermissionDialog,
+  useNotificationPermissionDialog,
+} from "@/components/notification-permission-dialog";
+import {
+  NotificationPermissionProvider,
+  useNotificationPermissionContext,
+} from "@/contexts/NotificationPermissionContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -92,7 +100,9 @@ export default function RootLayout() {
   return (
     <LanguageProvider>
       <ColorSchemeProvider>
-        <RootLayoutContent />
+        <NotificationPermissionProvider>
+          <RootLayoutContent />
+        </NotificationPermissionProvider>
       </ColorSchemeProvider>
     </LanguageProvider>
   );
@@ -140,6 +150,16 @@ function RootLayoutContent() {
   const exitTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
+
+  // Use notification permission dialog hook
+  const { showDialog, hideDialog, showDialogManually } =
+    useNotificationPermissionDialog();
+  const { registerDialogTrigger } = useNotificationPermissionContext();
+
+  // Register the dialog trigger so settings can use it
+  React.useEffect(() => {
+    registerDialogTrigger(showDialogManually);
+  }, [registerDialogTrigger, showDialogManually]);
 
   React.useEffect(() => {
     if (fontsLoaded) {
@@ -284,6 +304,12 @@ function RootLayoutContent() {
           />
         </Stack>
         <PortalHost />
+
+        {/* Notification Permission Dialog */}
+        <NotificationPermissionDialog
+          isVisible={showDialog}
+          onRequestClose={hideDialog}
+        />
       </ThemeProvider>
       <View
         style={{

@@ -2,6 +2,7 @@ import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { StorageManager } from "./storage";
 import { HomeworkData } from "@/shared/types/storage";
+import { t } from "@tugascollecter/language-pack";
 
 // Configure how notifications are handled when app is in foreground
 Notifications.setNotificationHandler({
@@ -49,53 +50,63 @@ export class NotificationService {
     }
 
     try {
-      // Check current permissions
+      // Only check current permissions, don't request yet
       const { status: existingStatus } =
         await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
 
-      // Request permissions if not granted
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-
-      this._hasPermission = finalStatus === "granted";
+      this._hasPermission = existingStatus === "granted";
       this._isInitialized = true;
 
-      if (this._hasPermission) {
-        // Set up notification channel for Android
-        if (Platform.OS === "android") {
-          await Notifications.setNotificationChannelAsync(
-            "homework-reminders",
-            {
-              name: "Homework Reminders",
-              importance: Notifications.AndroidImportance.HIGH,
-              vibrationPattern: [0, 250, 250, 250],
-              lightColor: "#3b82f6",
-              description: "Notifications for homework due dates and reminders",
-            },
-          );
-        }
+      // If we already have permission, set up the notification channel
+      if (this._hasPermission && Platform.OS === "android") {
+        await this.setupAndroidNotificationChannel();
       }
 
       return this._hasPermission;
     } catch (error) {
-      console.error("Error initializing notifications:", error);
+      console.error("Error initializing notification service:", error);
       this._isInitialized = true;
       this._hasPermission = false;
       return false;
     }
   }
 
-  async requestPermission(): Promise<boolean> {
+  async requestPermissions(): Promise<boolean> {
+    if (!this._isInitialized) {
+      await this.initialize();
+    }
+
+    if (this._hasPermission) {
+      return true; // Already have permission
+    }
+
     try {
+      // Now request permissions
       const { status } = await Notifications.requestPermissionsAsync();
       this._hasPermission = status === "granted";
+
+      if (this._hasPermission && Platform.OS === "android") {
+        await this.setupAndroidNotificationChannel();
+      }
+
       return this._hasPermission;
     } catch (error) {
-      console.error("Error requesting notification permission:", error);
+      console.error("Error requesting notification permissions:", error);
       return false;
+    }
+  }
+
+  private async setupAndroidNotificationChannel(): Promise<void> {
+    try {
+      await Notifications.setNotificationChannelAsync("homework-reminders", {
+        name: "Homework Reminders",
+        importance: Notifications.AndroidImportance.HIGH,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#3b82f6",
+        description: "Notifications for homework due dates and reminders",
+      });
+    } catch (error) {
+      console.error("Error setting up Android notification channel:", error);
     }
   }
 
@@ -134,6 +145,31 @@ export class NotificationService {
       console.log(
         `Homework "${homework.title}" is due in ${daysUntilDue.toFixed(2)} days (${hoursUntilDue.toFixed(2)} hours)`,
       );
+
+      // Check if due today and schedule special "due today" notification
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const dueDateOnly = new Date(dueDate);
+      dueDateOnly.setHours(0, 0, 0, 0);
+
+      if (dueDateOnly.getTime() === today.getTime()) {
+        // Schedule "due today" notification for 8 AM if not already passed
+        const dueTodayTime = new Date(dueDate);
+        dueTodayTime.setHours(8, 0, 0, 0);
+
+        if (dueTodayTime > now) {
+          console.log(
+            `Scheduling "due today" notification for ${dueTodayTime.toLocaleString()}`,
+          );
+          const dueTodayId = await this.scheduleSpecialDueTodayNotification(
+            homework,
+            dueTodayTime,
+          );
+          if (dueTodayId) {
+            notificationIds.push(dueTodayId);
+          }
+        }
+      }
 
       // Schedule notifications for each reminder interval
       for (const interval of this.REMINDER_INTERVALS) {
@@ -188,6 +224,72 @@ export class NotificationService {
     }
   }
 
+  async scheduleSpecialDueTodayNotification(
+    homework: HomeworkData,
+    notificationTime: Date,
+  ): Promise<string | null> {
+    if (!this._hasPermission || !homework.dueDate) {
+      return null;
+    }
+
+    try {
+      const now = new Date();
+
+      // Don't schedule if the notification time has already passed
+      if (notificationTime <= now) {
+        console.log("Not scheduling due today notification - time has passed");
+        return null;
+      }
+
+      // Don't schedule for completed tasks
+      if (homework.status === "completed") {
+        return null;
+      }
+
+      const secondsFromNow = Math.max(
+        300, // Minimum 5 minutes from now to avoid immediate firing
+        Math.floor((notificationTime.getTime() - now.getTime()) / 1000),
+      );
+
+      // Get localized strings for "due today" notification
+      const title = t("notificationMessages.dueTodayTitle");
+      const body = t("notificationMessages.dueTodayMessage", {
+        title: homework.title,
+      });
+
+      console.log(
+        `Scheduling "due today" notification in ${secondsFromNow} seconds at ${new Date(Date.now() + secondsFromNow * 1000).toLocaleString()}: ${body}`,
+      );
+
+      const trigger: Notifications.TimeIntervalTriggerInput = {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: secondsFromNow,
+      };
+
+      const notificationId = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: title,
+          body: body,
+          data: {
+            homeworkId: homework.id,
+            type: "homework_due_today",
+            scheduledFor: notificationTime.toISOString(),
+          },
+        },
+        trigger: trigger,
+      });
+
+      console.log(
+        `Successfully created "due today" notification with ID: ${notificationId}`,
+      );
+
+      return notificationId;
+    } catch (error) {
+      console.error("Error scheduling due today notification:", error);
+      return null;
+    }
+  }
+
   async scheduleHomeworkReminder(
     homework: HomeworkData,
     reminderTime: Date,
@@ -219,18 +321,15 @@ export class NotificationService {
         Math.floor((reminderTime.getTime() - now.getTime()) / 1000),
       );
 
-      // Create a more natural notification message
-      let notificationBody = "";
-      if (timeLabel.includes("hour")) {
-        notificationBody = `"${homework.title}" is due in ${timeLabel}`;
-      } else if (timeLabel.includes("day")) {
-        notificationBody = `"${homework.title}" is due in ${timeLabel}`;
-      } else {
-        notificationBody = `"${homework.title}" deadline reminder: ${timeLabel}`;
-      }
+      // Get localized notification strings
+      const title = t("notificationMessages.homeworkReminder");
+      const body = t("notificationMessages.dueInTime", {
+        title: homework.title,
+        time: timeLabel,
+      });
 
       console.log(
-        `Scheduling notification in ${secondsFromNow} seconds (${Math.floor(secondsFromNow / 60)} minutes) at ${new Date(Date.now() + secondsFromNow * 1000).toLocaleString()}: ${notificationBody}`,
+        `Scheduling notification in ${secondsFromNow} seconds (${Math.floor(secondsFromNow / 60)} minutes) at ${new Date(Date.now() + secondsFromNow * 1000).toLocaleString()}: ${body}`,
       );
 
       // Use the correct TIME_INTERVAL trigger format as per Expo docs
@@ -241,8 +340,8 @@ export class NotificationService {
 
       const notificationId = await Notifications.scheduleNotificationAsync({
         content: {
-          title: "📚 Homework Reminder",
-          body: notificationBody,
+          title: title,
+          body: body,
           data: {
             homeworkId: homework.id,
             type: "homework_reminder",

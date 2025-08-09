@@ -290,4 +290,21 @@ export const indonesianStrings: LanguageStrings = {
   viewUpcomingDeadlinesInTasks: "Lihat deadline mendatang di halaman Tugas",
   trackProgressInStatistics: "Lacak progress di halaman Statistik",
   organizeAssignmentsByPriority: "Atur tugas berdasarkan prioritas",
+
+  // Notification Messages
+  notificationMessages: {
+    homeworkReminder: "📚 Pengingat Tugas",
+    dueInTime: '"{{title}}" akan deadline dalam {{time}}',
+    dueTodayTitle: "⏰ Deadline Hari Ini!",
+    dueTodayMessage: '"{{title}}" deadline hari ini! Jangan lupa kerjakan',
+  },
+
+  // Notification Permission Dialog
+  notificationPermission: {
+    title: "Aktifkan Notifikasi",
+    description:
+      "Dapatkan pengingat untuk tugas-tugas kamu agar tidak terlewat deadline",
+    allowButton: "Izinkan Notifikasi",
+    laterButton: "Nanti Saja",
+  },
 };

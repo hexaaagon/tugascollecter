@@ -176,7 +176,7 @@ export default function Statistics() {
                     {pendingTasks + inProgressTasks}
                   </Text>
                   <Text className="text-xs text-muted-foreground">
-                    {t("active")}
+                    {t("totalTasks")}
                   </Text>
                 </View>
               </View>
