@@ -20,6 +20,18 @@ import {
   DEFAULT_PREFERENCES,
 } from "../../shared/types/storage";
 
+// Import notification service
+let notificationService: any = null;
+
+// Dynamic import to avoid circular dependencies
+const getNotificationService = async () => {
+  if (!notificationService) {
+    const { notificationService: ns } = await import("../notifications");
+    notificationService = ns;
+  }
+  return notificationService;
+};
+
 export class StorageManager {
   static async initialize(): Promise<void> {
     try {
@@ -27,6 +39,10 @@ export class StorageManager {
         ExternalStorage.initializeDirectories(),
         CacheStorage.cleanupExpiredItems(),
       ]);
+
+      // Initialize notification service
+      const ns = await getNotificationService();
+      await ns.initialize();
     } catch (error) {
       console.error("Error initializing storage systems:", error);
     }
@@ -38,6 +54,17 @@ export class StorageManager {
 
   static async setPreferences(preferences: UserPreferences): Promise<void> {
     await UserDataStorage.setPreferences(preferences);
+
+    // Reschedule notifications if preference changed
+    try {
+      const ns = await getNotificationService();
+      await ns.rescheduleAllHomeworkNotifications();
+    } catch (error) {
+      console.error(
+        "Error updating notifications after preference change:",
+        error,
+      );
+    }
   }
 
   static async getTheme(): Promise<ThemeType> {
@@ -54,21 +81,94 @@ export class StorageManager {
 
   static async saveHomework(homework: HomeworkData[]): Promise<void> {
     await UserDataStorage.setHomework(homework);
+
+    // Reschedule all notifications
+    try {
+      const ns = await getNotificationService();
+      await ns.rescheduleAllHomeworkNotifications();
+    } catch (error) {
+      console.error("Error updating notifications after homework save:", error);
+    }
   }
 
   static async addHomework(homework: HomeworkData): Promise<void> {
     await UserDataStorage.addHomework(homework);
+
+    // Schedule notifications for this homework if notifications are enabled and homework is pending
+    try {
+      const preferences = await this.getPreferences();
+      if (preferences.notifications && homework.status === "pending") {
+        const ns = await getNotificationService();
+        await ns.scheduleHomeworkReminders(homework);
+      }
+    } catch (error) {
+      console.error("Error scheduling notifications for new homework:", error);
+    }
   }
 
   static async updateHomework(
     id: string,
     updates: Partial<HomeworkData>,
   ): Promise<void> {
+    // Get current homework data before update
+    const allHomework = await UserDataStorage.getHomework();
+    const currentHomework = allHomework.find((hw) => hw.id === id);
+
     await UserDataStorage.updateHomework(id, updates);
+
+    // Handle notification updates
+    try {
+      const ns = await getNotificationService();
+      const preferences = await this.getPreferences();
+
+      if (!preferences.notifications) {
+        return; // Notifications are disabled
+      }
+
+      // If status changed to completed, cancel all notifications for this homework
+      if (updates.status === "completed") {
+        await ns.cancelHomeworkNotifications(id);
+        return;
+      }
+
+      // If due date changed or status changed (and not completed), reschedule notifications
+      if (
+        updates.dueDate !== undefined ||
+        (updates.status !== undefined && updates.status === "pending")
+      ) {
+        // Cancel existing notifications for this homework
+        await ns.cancelHomeworkNotifications(id);
+
+        // Get updated homework data
+        const updatedHomework = await UserDataStorage.getHomework();
+        const homework = updatedHomework.find((hw) => hw.id === id);
+
+        // Reschedule if homework is pending
+        if (homework && homework.status === "pending") {
+          await ns.scheduleHomeworkReminders(homework);
+        }
+      }
+    } catch (error) {
+      console.error(
+        "Error updating notifications after homework update:",
+        error,
+      );
+    }
   }
 
   static async deleteHomework(id: string): Promise<void> {
     await UserDataStorage.deleteHomework(id);
+
+    // Cancel notifications for this specific homework
+    try {
+      const ns = await getNotificationService();
+      await ns.cancelHomeworkNotifications(id);
+    } catch (error) {
+      console.error(
+        "Error canceling notifications after homework deletion:",
+        error,
+      );
+    }
   }
 
   static async getSubjects(): Promise<SubjectData[]> {

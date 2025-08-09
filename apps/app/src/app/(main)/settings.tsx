@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Switch,
   Alert,
+  Linking,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
@@ -51,6 +52,8 @@ import { ScrollableWrapper } from "@/components/scrollable-wrapper";
 import { router } from "expo-router";
 import { useTranslation, useLanguage } from "@/lib/language";
 import type { Language } from "@tugascollecter/language-pack";
+import { notificationService } from "@/lib/notifications";
+import * as Notifications from "expo-notifications";
 
 interface SettingsItemProps {
   icon: React.ReactNode;
@@ -170,6 +173,7 @@ export default function SettingsScreen() {
   const [preferences, setPreferences] =
     React.useState<UserPreferences>(DEFAULT_PREFERENCES);
   const [showLanguageDialog, setShowLanguageDialog] = React.useState(false);
+  const [notificationsLoading, setNotificationsLoading] = React.useState(false);
 
   React.useEffect(() => {
     const loadPreferences = async () => {
@@ -180,6 +184,11 @@ export default function SettingsScreen() {
     loadPreferences();
   }, []);
 
+  React.useEffect(() => {
+    // Initialize notification service when component mounts
+    notificationService.initialize();
+  }, []);
+
   const handlePreferenceChange = (key: keyof UserPreferences) => {
     return (value: boolean) => {
       setPreferences((prev) => {
@@ -188,6 +197,83 @@ export default function SettingsScreen() {
         return newPreferences;
       });
     };
+  };
+
+  const handleNotificationToggle = async (value: boolean) => {
+    if (value) {
+      setNotificationsLoading(true);
+      try {
+        // Force cleanup any existing notifications first
+        await notificationService.forceCleanupAllNotifications();
+
+        // Initialize and request permissions
+        const hasPermission = await notificationService.initialize();
+
+        if (!hasPermission) {
+          // Request permission
+          const granted = await notificationService.requestPermission();
+
+          if (!granted) {
+            Alert.alert(
+              t("notifications"),
+              "To receive homework reminders, please enable notifications in your device settings.",
+              [
+                { text: "Cancel", style: "cancel" },
+                {
+                  text: "Open Settings",
+                  onPress: async () => {
+                    try {
+                      await Linking.openSettings();
+                    } catch (error) {
+                      toast.info(
+                        "Please enable notifications in device settings",
+                      );
+                    }
+                  },
+                },
+              ],
+            );
+            setNotificationsLoading(false);
+            return;
+          }
+        }
+
+        // Update preferences
+        const newPreferences = { ...preferences, notifications: true };
+        setPreferences(newPreferences);
+        await storage.setPreferences(newPreferences);
+
+        // Schedule notifications for existing homework
+        await notificationService.rescheduleAllHomeworkNotifications();
+
+        toast.success("Notifications enabled", {
+          description: "You'll receive reminders for homework due dates",
+        });
+      } catch (error) {
+        console.error("Error enabling notifications:", error);
+        toast.error("Failed to enable notifications");
+      } finally {
+        setNotificationsLoading(false);
+      }
+    } else {
+      // Disable notifications
+      setNotificationsLoading(true);
+      try {
+        const newPreferences = { ...preferences, notifications: false };
+        setPreferences(newPreferences);
+        await storage.setPreferences(newPreferences);
+
+        // Force cleanup all scheduled notifications
+        await notificationService.forceCleanupAllNotifications();
+
+        toast.success("Notifications disabled");
+      } catch (error) {
+        console.error("Error disabling notifications:", error);
+        toast.error("Failed to disable notifications");
+      } finally {
+        setNotificationsLoading(false);
+      }
+    }
   };
 
   const handleThemeChange = () => {
@@ -234,10 +320,62 @@ export default function SettingsScreen() {
             try {
               await StorageManager.saveHomework([]);
               await StorageManager.saveSubjects([]);
+
+              // Also clear all notifications when clearing data
+              await notificationService.forceCleanupAllNotifications();
+
               toast.success("All data cleared successfully");
             } catch (error) {
               console.error("Error clearing data:", error);
               toast.error("Failed to clear data");
+            }
+          },
+        },
+      ],
+    );
+  };
+
+  const handleForceCleanNotifications = () => {
+    Alert.alert(
+      "Clear All Notifications",
+      "This will remove all scheduled homework reminder notifications. You can re-enable them by toggling notifications off and on.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Clear All",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await notificationService.forceCleanupAllNotifications();
+              toast.success("All notifications cleared");
+            } catch (error) {
+              console.error("Error clearing notifications:", error);
+              toast.error("Failed to clear notifications");
+            }
+          },
+        },
+        {
+          text: "Test 5min",
+          onPress: async () => {
+            try {
+              await notificationService.forceCleanupAllNotifications();
+
+              // Schedule a single test notification for 5 minutes from now
+              await Notifications.scheduleNotificationAsync({
+                content: {
+                  title: "Test Notification",
+                  body: "This is a 5-minute test notification",
+                },
+                trigger: {
+                  seconds: 300, // 5 minutes
+                  repeats: false,
+                } as any,
+              });
+
+              toast.success("Test notification scheduled for 5 minutes");
+            } catch (error) {
+              console.error("Error scheduling test notification:", error);
+              toast.error("Failed to schedule test notification");
             }
           },
         },
@@ -312,6 +450,14 @@ export default function SettingsScreen() {
         />
         <SettingsSeparator />
         <SettingsItem
+          icon={<Bell size={24} color="#f59e0b" />}
+          title="Clear Notifications"
+          description="Remove all scheduled homework reminders"
+          onPress={handleForceCleanNotifications}
+          showChevron
+        />
+        <SettingsSeparator />
+        <SettingsItem
           icon={<Trash2 size={24} color="#ef4444" />}
           title={t("clearAllData")}
           description={t("clearAllDataDescription")}
@@ -327,8 +473,8 @@ export default function SettingsScreen() {
           title={t("notifications")}
           description={t("notificationsDescription")}
           value={preferences.notifications}
-          onValueChange={handlePreferenceChange("notifications")}
-          disabled
+          onValueChange={handleNotificationToggle}
+          disabled={notificationsLoading}
         />
         <SettingsSeparator />
         <SettingsItem

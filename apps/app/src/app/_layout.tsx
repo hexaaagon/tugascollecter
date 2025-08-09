@@ -64,6 +64,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { router, usePathname } from "expo-router";
 import { toast } from "sonner-native";
 import { LanguageProvider } from "@/lib/language";
+import { StorageManager } from "@/lib/storage";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -145,6 +146,51 @@ function RootLayoutContent() {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
+
+  // Initialize storage and notification service
+  React.useEffect(() => {
+    const initializeStorage = async () => {
+      try {
+        await StorageManager.initialize();
+      } catch (error) {
+        console.error("Error initializing StorageManager:", error);
+      }
+    };
+
+    initializeStorage();
+  }, []);
+
+  // Handle notification responses
+  React.useEffect(() => {
+    let notificationResponseSubscription: any;
+
+    const setupNotificationHandlers = async () => {
+      try {
+        const { NotificationService } = await import("@/lib/notifications");
+
+        // Listen for notification responses (when user taps notification)
+        notificationResponseSubscription =
+          NotificationService.addNotificationResponseListener((response) => {
+            const { homeworkId } =
+              response.notification.request.content.data || {};
+
+            if (homeworkId) {
+              // Navigate to the specific homework or tasks screen
+              router.push("/(main)/tasks");
+              toast.success("Opening homework details...");
+            }
+          });
+      } catch (error) {
+        console.error("Error setting up notification handlers:", error);
+      }
+    };
+
+    setupNotificationHandlers();
+
+    return () => {
+      notificationResponseSubscription?.remove();
+    };
+  }, []);
 
   // Reset back press state when app comes to foreground
   React.useEffect(() => {
