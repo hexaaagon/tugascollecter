@@ -13,7 +13,7 @@ import { Text } from "@/components/ui/text";
 import { PanelLeft, List, ArrowUpDown, CloudOff } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { toast } from "sonner-native";
-import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { useScrollPosition } from "@/lib/hooks/useScrollPosition";
 import { NavigationBarOverlay } from "@/components/navigation-bar-overlay";
 
 const ScrollContext = React.createContext<{
