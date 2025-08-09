@@ -38,12 +38,12 @@ export const indonesianStrings: LanguageStrings = {
   // Dynamic strings with placeholders
   youHaveTasksRemaining: "Kamu punya {{count}} tugas yang belum selesai",
   readyToStartOrganizing: "Ayo mulai atur tugas kamu!",
-  dueTodayText: "Deadline hari ini",
-  dueTomorrowText: "Deadline besok",
-  daysLeftText: "{{days}} hari lagi",
-  daysAfterDueText: "{{days}} hari yang lalu",
-  noDueDateText: "Tidak ada deadline",
-  loadingText: "Sedang Memuat...",
+  dueToday: "Deadline hari ini",
+  dueTomorrow: "Deadline besok",
+  daysLeft: "{{days}} hari lagi",
+  daysAfterDue: "{{days}} hari yang lalu",
+  noDueDate: "Tidak ada deadline",
+  dottedLoading: "Sedang Memuat...",
   dueLabel: "Deadline:",
 
   // Task Detail Dialog

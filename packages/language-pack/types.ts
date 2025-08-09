@@ -38,12 +38,12 @@ export interface LanguageStrings {
   // Dynamic strings with placeholders
   youHaveTasksRemaining: string; // "You have {{count}} tasks remaining"
   readyToStartOrganizing: string;
-  dueTodayText: string; // "Due today"
-  dueTomorrowText: string; // "Due tomorrow"
-  daysLeftText: string; // "{{days}} days left"
-  daysAfterDueText: string; // "{{days}} days ago"
-  noDueDateText: string; // "No due date"
-  loadingText: string;
+  dueToday: string; // "Due today"
+  dueTomorrow: string; // "Due tomorrow"
+  daysLeft: string; // "{{days}} days left"
+  daysAfterDue: string; // "{{days}} days ago"
+  noDueDate: string; // "No due date"
+  dottedLoading: string;
   dueLabel: string; // "Due:"
 
   // Task Detail Dialog

@@ -183,7 +183,7 @@ export default function Home() {
       <ScrollableWrapper className="flex-1">
         <View className="mx-6 flex-1 items-center justify-center">
           <Text className="text-lg text-muted-foreground">
-            {t("loadingText")}
+            {t("dottedLoading")}
           </Text>
         </View>
       </ScrollableWrapper>
@@ -339,15 +339,15 @@ export default function Home() {
                             }`}
                           >
                             {daysUntilDue === 0
-                              ? t("dueTodayText")
+                              ? t("dueToday")
                               : daysUntilDue === 1
-                                ? t("dueTomorrowText")
-                                : t("daysLeftText", { days: daysUntilDue })}
+                                ? t("dueTomorrow")
+                                : t("daysLeft", { days: daysUntilDue })}
                           </Text>
                         )}
                         {!homework.dueDate && (
                           <Text className="text-xs text-muted-foreground">
-                            {t("noDueDateText")}
+                            {t("noDueDate")}
                           </Text>
                         )}
                       </View>
@@ -424,15 +424,15 @@ export default function Home() {
                             }`}
                           >
                             {daysUntilDue === 0
-                              ? t("dueTodayText")
+                              ? t("dueToday")
                               : daysUntilDue === 1
-                                ? t("dueTomorrowText")
-                                : t("daysLeftText", { days: daysUntilDue })}
+                                ? t("dueTomorrow")
+                                : t("daysLeft", { days: daysUntilDue })}
                           </Text>
                         )}
                         {!homework.dueDate && (
                           <Text className="text-xs text-muted-foreground">
-                            {t("noDueDateText")}
+                            {t("noDueDate")}
                           </Text>
                         )}
                       </View>

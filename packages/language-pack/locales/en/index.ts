@@ -38,12 +38,12 @@ export const englishStrings: LanguageStrings = {
   // Dynamic strings with placeholders
   youHaveTasksRemaining: "You have {{count}} tasks remaining",
   readyToStartOrganizing: "Ready to start organizing your homework!",
-  dueTodayText: "Due today",
-  dueTomorrowText: "Due tomorrow",
-  daysLeftText: "{{days}} days left",
-  daysAfterDueText: "{{days}} days ago",
-  noDueDateText: "No due date",
-  loadingText: "Loading...",
+  dueToday: "Due today",
+  dueTomorrow: "Due tomorrow",
+  daysLeft: "{{days}} days left",
+  daysAfterDue: "{{days}} days ago",
+  noDueDate: "No due date",
+  dottedLoading: "Loading...",
   dueLabel: "Due:",
 
   // Task Detail Dialog

@@ -284,11 +284,11 @@ export function HomeworkDetailDialog({
                             }`}
                           >
                             {daysUntilDue === 0
-                              ? t("dueTodayText")
+                              ? t("dueToday")
                               : daysUntilDue === 1
-                                ? t("dueTomorrowText")
+                                ? t("dueTomorrow")
                                 : daysUntilDue && daysUntilDue > 0
-                                  ? t("daysLeftText", { days: daysUntilDue })
+                                  ? t("daysLeft", { days: daysUntilDue })
                                   : t("statusLevels.overdue")}
                           </Text>
                           <Text className="text-xs text-muted-foreground">

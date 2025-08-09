@@ -534,11 +534,11 @@ export default function Tasks() {
                                     }`}
                                   >
                                     {daysUntilDue === 0
-                                      ? t("dueTodayText")
+                                      ? t("dueToday")
                                       : daysUntilDue === 1
-                                        ? t("dueTomorrowText")
+                                        ? t("dueTomorrow")
                                         : daysUntilDue && daysUntilDue > 0
-                                          ? t("daysLeftText", {
+                                          ? t("daysLeft", {
                                               days: daysUntilDue,
                                             })
                                           : new Date(
