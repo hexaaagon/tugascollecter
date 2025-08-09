@@ -36,10 +36,6 @@ const greeting = t("greeting.morning"); // "Good Morning" or "Selamat Pagi"
 3. Update the `Language` type in `types.ts`
 4. Add the new language to the `translations` object in `index.ts`
 
-## Indonesian Translation Status
-
-The Indonesian translation file (`locales/id/index.ts`) contains placeholder English text with TODO comments. Please manually translate each string marked with "// TODO: Translate to Indonesian".
-
 ## Translation Keys
 
 The translation keys are organized into logical groups:

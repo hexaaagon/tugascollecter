@@ -57,6 +57,7 @@ export interface LanguageStrings {
   attachments: string;
   loadingAttachments: string;
   priority: string;
+  priorityWithLevel: string; // "{{level}} Priority"
 
   // Tasks Screen - Additional strings
   tasksCount: string; // "{{count}} of {{total}} tasks"

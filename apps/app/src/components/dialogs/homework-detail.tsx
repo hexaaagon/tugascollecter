@@ -99,10 +99,19 @@ export function HomeworkDetailDialog({
 
   const subject = subjects.find((s) => s.id === currentHomework.subjectId);
   const daysUntilDue = currentHomework.dueDate
-    ? Math.ceil(
-        (new Date(currentHomework.dueDate).getTime() - new Date().getTime()) /
-          (1000 * 60 * 60 * 24),
-      )
+    ? (() => {
+        // Normalize dates to compare only the date part (ignoring time)
+        const dueDate = new Date(currentHomework.dueDate);
+        const today = new Date();
+
+        // Set both dates to start of day for accurate comparison
+        dueDate.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0);
+
+        return Math.ceil(
+          (dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+        );
+      })()
     : null;
 
   const getPriorityColor = (priority: HomeworkData["priority"]) => {
@@ -211,23 +220,24 @@ export function HomeworkDetailDialog({
                     <Text className="flex-1 text-2xl font-bold">
                       {currentHomework.title}
                     </Text>
-                    {getStatusIcon(currentHomework.status)}
+                    <View className="flex flex-row items-center gap-2">
+                      <Badge
+                        variant="secondary"
+                        className={`self-start capitalize ${
+                          currentHomework.status === "completed"
+                            ? "bg-green-100 text-green-800"
+                            : currentHomework.status === "in-progress"
+                              ? "bg-blue-100 text-blue-800"
+                              : currentHomework.status === "overdue"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {currentHomework.status.replace("-", " ")}
+                      </Badge>
+                      {getStatusIcon(currentHomework.status)}
+                    </View>
                   </View>
-
-                  <Badge
-                    variant="secondary"
-                    className={`self-start capitalize ${
-                      currentHomework.status === "completed"
-                        ? "bg-green-100 text-green-800"
-                        : currentHomework.status === "in-progress"
-                          ? "bg-blue-100 text-blue-800"
-                          : currentHomework.status === "overdue"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-gray-100 text-gray-800"
-                    }`}
-                  >
-                    {currentHomework.status.replace("-", " ")}
-                  </Badge>
                 </View>
 
                 {/* Description */}
@@ -299,8 +309,11 @@ export function HomeworkDetailDialog({
                     <View className="flex flex-row items-center gap-3">
                       <AlertCircle size={16} color="#6b7280" />
                       <Text className="font-medium capitalize">
-                        {t(`priorityLevels.${currentHomework.priority}`)}{" "}
-                        {t("priority")}
+                        {t("priorityWithLevel", {
+                          level: t(
+                            `priorityLevels.${currentHomework.priority}`,
+                          ),
+                        })}
                       </Text>
                     </View>
                   </CardContent>

@@ -1,4 +1,4 @@
-import { View, Pressable } from "react-native";
+import { View, Pressable, AppState } from "react-native";
 import { Text } from "@/components/ui/text";
 import { getGreeting } from "@/lib/greeting";
 import { ScrollableWrapper } from "@/components/scrollable-wrapper";
@@ -11,26 +11,66 @@ import { HomeworkData, SubjectData } from "@/shared/types/storage";
 import { router } from "expo-router";
 import { BookOpen, Calendar, Clock, TrendingUp } from "lucide-react-native";
 import { useTranslation } from "@/lib/language";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
 export default function Home() {
   const [homeworkData, setHomeworkData] = useState<HomeworkData[]>([]);
   const [subjectData, setSubjectData] = useState<SubjectData[]>([]);
   const [loading, setLoading] = useState(true);
   const [greeting, setGreeting] = useState("");
+  const [currentDate, setCurrentDate] = useState(new Date());
   const { t } = useTranslation();
+
+  // Update current date when app comes into focus or when app state changes
+  useFocusEffect(
+    useCallback(() => {
+      const updateDateIfNeeded = () => {
+        const now = new Date();
+        const currentDateString = currentDate.toDateString();
+        const nowDateString = now.toDateString();
+
+        if (currentDateString !== nowDateString) {
+          setCurrentDate(now);
+        }
+      };
+
+      updateDateIfNeeded();
+
+      const handleAppStateChange = (nextAppState: string) => {
+        if (nextAppState === "active") {
+          updateDateIfNeeded();
+        }
+      };
+
+      const subscription = AppState.addEventListener(
+        "change",
+        handleAppStateChange,
+      );
+
+      return () => subscription?.remove();
+    }, [currentDate]),
+  );
 
   useEffect(() => {
     const updateOverdueTasks = (homeworkList: HomeworkData[]) => {
-      const now = new Date();
+      const today = new Date(currentDate);
+      today.setHours(0, 0, 0, 0); // Normalize to start of day
+
       const updatedHomework = homeworkList.map((homework) => {
         // Check if task is not completed and has a due date that has passed
         if (
           homework.status !== "completed" &&
           homework.dueDate &&
-          new Date(homework.dueDate) < now &&
           homework.status !== "overdue"
         ) {
-          return { ...homework, status: "overdue" as const };
+          const dueDate = new Date(homework.dueDate);
+          dueDate.setHours(0, 0, 0, 0); // Normalize to start of day
+
+          // Task is overdue if the due date is before today
+          if (dueDate < today) {
+            return { ...homework, status: "overdue" as const };
+          }
         }
         return homework;
       });
@@ -66,7 +106,7 @@ export default function Home() {
     };
 
     loadData();
-  }, [t]);
+  }, [t, currentDate]);
   const stats = {
     total: homeworkData.length,
     completed: homeworkData.filter((h) => h.status === "completed").length,
@@ -91,14 +131,22 @@ export default function Home() {
         h.status !== "overdue",
     )
     .sort((a, b) => {
-      const now = new Date();
-      const getDaysUntilDue = (date?: string) =>
-        date
-          ? Math.ceil(
-              (new Date(date).getTime() - now.getTime()) /
-                (1000 * 60 * 60 * 24),
-            )
-          : null;
+      const now = currentDate;
+      const getDaysUntilDue = (date?: string) => {
+        if (!date) return null;
+
+        // Normalize dates to compare only the date part (ignoring time)
+        const dueDate = new Date(date);
+        const today = new Date(now);
+
+        // Set both dates to start of day for accurate comparison
+        dueDate.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0);
+
+        return Math.ceil(
+          (dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+        );
+      };
 
       const aDays = getDaysUntilDue(a.dueDate);
       const bDays = getDaysUntilDue(b.dueDate);
@@ -243,11 +291,20 @@ export default function Home() {
                     (s) => s.id === homework.subjectId,
                   );
                   const daysUntilDue = homework.dueDate
-                    ? Math.ceil(
-                        (new Date(homework.dueDate).getTime() -
-                          new Date().getTime()) /
-                          (1000 * 60 * 60 * 24),
-                      )
+                    ? (() => {
+                        // Normalize dates to compare only the date part (ignoring time)
+                        const dueDate = new Date(homework.dueDate);
+                        const today = new Date(currentDate);
+
+                        // Set both dates to start of day for accurate comparison
+                        dueDate.setHours(0, 0, 0, 0);
+                        today.setHours(0, 0, 0, 0);
+
+                        return Math.ceil(
+                          (dueDate.getTime() - today.getTime()) /
+                            (1000 * 60 * 60 * 24),
+                        );
+                      })()
                     : null;
                   return (
                     <Pressable
@@ -324,11 +381,20 @@ export default function Home() {
                     (s) => s.id === homework.subjectId,
                   );
                   const daysUntilDue = homework.dueDate
-                    ? Math.ceil(
-                        (new Date(homework.dueDate).getTime() -
-                          new Date().getTime()) /
-                          (1000 * 60 * 60 * 24),
-                      )
+                    ? (() => {
+                        // Normalize dates to compare only the date part (ignoring time)
+                        const dueDate = new Date(homework.dueDate);
+                        const today = new Date(currentDate);
+
+                        // Set both dates to start of day for accurate comparison
+                        dueDate.setHours(0, 0, 0, 0);
+                        today.setHours(0, 0, 0, 0);
+
+                        return Math.ceil(
+                          (dueDate.getTime() - today.getTime()) /
+                            (1000 * 60 * 60 * 24),
+                        );
+                      })()
                     : null;
 
                   return (

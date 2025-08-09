@@ -462,11 +462,20 @@ export default function Tasks() {
                   (s) => s.id === homework.subjectId,
                 );
                 const daysUntilDue = homework.dueDate
-                  ? Math.ceil(
-                      (new Date(homework.dueDate).getTime() -
-                        new Date().getTime()) /
-                        (1000 * 60 * 60 * 24),
-                    )
+                  ? (() => {
+                      // Normalize dates to compare only the date part (ignoring time)
+                      const dueDate = new Date(homework.dueDate);
+                      const today = new Date();
+
+                      // Set both dates to start of day for accurate comparison
+                      dueDate.setHours(0, 0, 0, 0);
+                      today.setHours(0, 0, 0, 0);
+
+                      return Math.ceil(
+                        (dueDate.getTime() - today.getTime()) /
+                          (1000 * 60 * 60 * 24),
+                      );
+                    })()
                   : null;
 
                 return (

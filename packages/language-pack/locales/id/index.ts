@@ -57,6 +57,7 @@ export const indonesianStrings: LanguageStrings = {
   attachments: "Lampiran Foto/Dokumen",
   loadingAttachments: "Memuat lampiran...",
   priority: "Prioritas",
+  priorityWithLevel: "Prioritas {{level}}",
 
   // Tasks Screen - Additional strings
   tasksCount: "{{count}} dari {{total}} PR",

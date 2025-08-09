@@ -57,6 +57,7 @@ export const englishStrings: LanguageStrings = {
   attachments: "Attachments",
   loadingAttachments: "Loading attachments...",
   priority: "Priority",
+  priorityWithLevel: "{{level}} Priority",
 
   // Tasks Screen - Additional strings
   tasksCount: "{{count}} of {{total}} tasks",
