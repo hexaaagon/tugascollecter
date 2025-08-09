@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "tugascollecter",
+    "name": "Tugas Collecter",
     "slug": "tugas-collecter",
     "description": "A mobile application for managing your school homework and tasks.",
     "owner": "hexaa",
@@ -22,8 +22,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/icon_black.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./src/assets/images/icon_foreground.png",
+        "backgroundColor": "#3b82f6"
       },
       "package": "sh.hexaa.tugascollecter",
       "permissions": [
@@ -31,7 +31,7 @@
         "android.permission.VIBRATE"
       ],
       "notification": {
-        "icon": "./src/assets/images/icon_white.png",
+        "icon": "./src/assets/images/icon_foreground.png",
         "color": "#3b82f6"
       }
     },
