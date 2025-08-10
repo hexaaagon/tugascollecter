@@ -311,19 +311,7 @@ function RootLayoutContent() {
           onRequestClose={hideDialog}
         />
       </ThemeProvider>
-      <View
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 10000,
-          pointerEvents: "none",
-        }}
-      >
-        <Toaster position="bottom-center" richColors />
-      </View>
+      <Toaster position="bottom-center" richColors closeButton />
     </GestureHandlerRootView>
   );
 }

@@ -193,8 +193,8 @@ export function HomeworkForm({
               <Text className="text-xl font-bold">
                 {editingHomework ? t("editHomework") : t("newHomework")}
               </Text>
-              <Button variant="ghost" size="icon" onPress={onClose}>
-                <X size={20} />
+              <Button variant="outline" size="icon" onPress={onClose}>
+                <X size={20} color="#6b7280" />
               </Button>
             </View>
 

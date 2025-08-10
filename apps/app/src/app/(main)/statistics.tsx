@@ -312,7 +312,7 @@ export default function Statistics() {
                           className="h-2 w-2 rounded-full"
                           style={{ backgroundColor: stat.color }}
                         />
-                        <Text className="text-sm font-medium">
+                        <Text className="line-clamp-1 max-w-[60vw] text-sm font-medium">
                           {stat.subject}
                         </Text>
                       </View>
@@ -386,7 +386,7 @@ export default function Statistics() {
                     >
                       <Award size={16} color="#eab308" />
                       <View className="flex-1">
-                        <Text className="text-sm font-medium">
+                        <Text className="line-clamp-1 max-w-[80vw] text-sm font-medium">
                           {homework.title}
                         </Text>
                         <Text className="text-xs text-muted-foreground">
