@@ -35,6 +35,7 @@ import {
 } from "@tugascollecter/subject-pack";
 import { useLanguage } from "@/lib/language";
 import { useColorScheme } from "@/lib/useColorScheme";
+import { getCurrentLanguage } from "@tugascollecter/language-pack";
 
 interface SubjectManagerProps {
   visible: boolean;
@@ -487,7 +488,8 @@ export function SubjectManager({
                                   : "text-foreground"
                               }`}
                             >
-                              {level.localizedName?.id || level.name}
+                              {level.localizedName?.[getCurrentLanguage()] ||
+                                level.name}
                             </Text>
                           </Pressable>
                         ))}
