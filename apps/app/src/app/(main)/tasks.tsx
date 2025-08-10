@@ -458,7 +458,10 @@ export default function Tasks() {
                           : "text-secondary-foreground"
                       }`}
                     >
-                      {t(`filterOptions.${status}`)} ({filterCounts[status]})
+                      {t(
+                        `filterOptions.${status === "in-progress" ? "inProgress" : status}`,
+                      )}{" "}
+                      ({filterCounts[status]})
                     </Text>
                   </Pressable>
                 ))}

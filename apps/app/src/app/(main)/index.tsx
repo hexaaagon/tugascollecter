@@ -314,7 +314,9 @@ export default function Home() {
                     >
                       <View className="absolute right-3 top-3 h-2 w-2 rounded-full bg-red-500" />
                       <View className="flex-1">
-                        <Text className="font-medium">{homework.title}</Text>
+                        <Text className="line-clamp-1 max-w-[16rem] font-medium">
+                          {homework.title}
+                        </Text>
                         <View className="flex flex-row items-center gap-1.5">
                           <View
                             className="h-2 w-2 rounded-full"
@@ -322,7 +324,7 @@ export default function Home() {
                               backgroundColor: subject?.color || "#ccc",
                             }}
                           />
-                          <Text className="text-xs text-muted-foreground">
+                          <Text className="line-clamp-1 max-w-[12rem] text-xs text-muted-foreground">
                             {subject?.name}
                           </Text>
                         </View>
@@ -437,7 +439,9 @@ export default function Home() {
                         )}
                       </View>
                       <View className="flex-1">
-                        <Text className="font-medium">{homework.title}</Text>
+                        <Text className="line-clamp-1 max-w-[16rem] font-medium">
+                          {homework.title}
+                        </Text>
                         <View className="flex flex-row items-center gap-1.5">
                           <View
                             className="h-2 w-2 rounded-full"
@@ -445,7 +449,7 @@ export default function Home() {
                               backgroundColor: subject?.color || "#ccc",
                             }}
                           />
-                          <Text className="text-xs text-muted-foreground">
+                          <Text className="line-clamp-1 max-w-[12rem] text-xs text-muted-foreground">
                             {subject?.name}
                           </Text>
                         </View>

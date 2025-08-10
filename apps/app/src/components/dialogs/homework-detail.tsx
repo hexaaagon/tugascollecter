@@ -266,7 +266,9 @@ export function HomeworkDetailDialog({
                             className="h-3 w-3 rounded-full"
                             style={{ backgroundColor: subject.color }}
                           />
-                          <Text className="font-medium">{subject.name}</Text>
+                          <Text className="line-clamp-2 max-w-[70vw] font-medium">
+                            {subject.name}
+                          </Text>
                         </View>
                       </View>
                     )}
