@@ -19,12 +19,10 @@ import {
   AlertCircle,
   CheckCircle2,
   PlayCircle,
-  X,
   Edit,
-  Settings,
   Paperclip,
-  Loader2,
   Rewind,
+  BookMarked,
 } from "lucide-react-native";
 import { useLanguage } from "@/lib/language";
 import { useColorScheme } from "@/lib/useColorScheme";
@@ -421,7 +419,7 @@ export default function Tasks() {
               size="icon"
               onPress={() => setShowSubjectManager(true)}
             >
-              <Settings size={16} color="#6b7280" />
+              <BookMarked size={16} color="#6b7280" />
             </Button>
             <Button size="icon" onPress={() => setShowHomeworkForm(true)}>
               <Plus

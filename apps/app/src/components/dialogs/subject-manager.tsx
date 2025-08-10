@@ -89,6 +89,8 @@ export function SubjectManager({
     import: false,
   });
 
+  const { isDarkColorScheme } = useColorScheme();
+
   const onColorChange = (color: string) => {
     setResultColor(color);
   };
@@ -746,14 +748,19 @@ export function SubjectManager({
                                 size="icon"
                                 onPress={() => startEditSubject(subject)}
                               >
-                                <Edit3 size={16} />
+                                <Edit3
+                                  size={16}
+                                  color={
+                                    isDarkColorScheme ? "#000000" : "#ffffff"
+                                  }
+                                />
                               </Button>
                               <Button
                                 variant="destructive"
                                 size="icon"
                                 onPress={() => deleteSubject(subject.id)}
                               >
-                                <Trash2 size={16} color={"white"} />
+                                <Trash2 size={16} color="#ffffff" />
                               </Button>
                             </View>
                           </View>
