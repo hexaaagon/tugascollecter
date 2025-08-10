@@ -667,13 +667,6 @@ export default function Tasks() {
                                 </Text>
                               </Button>
                             )}
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onPress={() => editHomework(homework)}
-                            >
-                              <Edit size={12} color="#6b7280" />
-                            </Button>
                           </View>
 
                           {homework.attachments &&

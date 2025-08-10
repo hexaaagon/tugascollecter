@@ -150,6 +150,14 @@ function RootLayoutContent() {
   const exitTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
+  const lastBackPressTimeRef = React.useRef(0);
+  const shouldExitRef = React.useRef(false);
+
+  React.useEffect(() => {
+    if (shouldExitRef.current && pathname !== "/") {
+      BackHandler.exitApp();
+    }
+  }, [pathname]);
 
   // Use notification permission dialog hook
   const { showDialog, hideDialog, showDialogManually } =
@@ -216,8 +224,10 @@ function RootLayoutContent() {
   React.useEffect(() => {
     const handleAppStateChange = (nextAppState: string) => {
       if (nextAppState === "active") {
-        // App came to foreground, reset back press state
+        // Reset all exit-related state when app becomes active
         backPressCountRef.current = 0;
+        lastBackPressTimeRef.current = 0;
+        shouldExitRef.current = false;
         if (exitTimeoutRef.current) {
           clearTimeout(exitTimeoutRef.current);
           exitTimeoutRef.current = null;
@@ -240,33 +250,55 @@ function RootLayoutContent() {
     if (Platform.OS !== "android") return;
 
     const handleBackPress = () => {
+      const currentTime = Date.now();
+
       const isOnHome =
-        pathname === "/" || pathname === "/(main)" || pathname === "/(main)/";
+        pathname === "/" ||
+        pathname === "/(main)" ||
+        pathname === "/(main)/" ||
+        pathname === "/(main)/index";
 
       if (!isOnHome) {
-        // If not on home, navigate to home
-        router.push("/");
-        return true; // Prevent default back action
+        backPressCountRef.current = 0;
+        lastBackPressTimeRef.current = 0;
+        shouldExitRef.current = false;
+        if (exitTimeoutRef.current) {
+          clearTimeout(exitTimeoutRef.current);
+          exitTimeoutRef.current = null;
+        }
+        router.push("/(main)");
       } else {
-        // On home screen - handle double tap to exit
-        if (backPressCountRef.current === 0) {
+        const timeDiff = currentTime - lastBackPressTimeRef.current;
+
+        if (timeDiff > 2000 || backPressCountRef.current === 0) {
           backPressCountRef.current = 1;
+          lastBackPressTimeRef.current = currentTime;
+
           toast("Press back again to exit", {
             description: "Tap back once more to close the app",
           });
 
-          // Reset counter after 2 seconds
+          // Reset counter
           exitTimeoutRef.current = setTimeout(() => {
             backPressCountRef.current = 0;
+            lastBackPressTimeRef.current = 0;
+            shouldExitRef.current = false;
           }, 2000);
 
-          return true; // Prevent default back action
+          return true;
         } else {
-          // Second press - allow app to exit
           if (exitTimeoutRef.current) {
             clearTimeout(exitTimeoutRef.current);
           }
-          return false; // Allow default back action (exit app)
+          backPressCountRef.current = 0;
+          lastBackPressTimeRef.current = 0;
+          shouldExitRef.current = true;
+
+          setTimeout(() => {
+            BackHandler.exitApp();
+          }, 10);
+
+          return false;
         }
       }
     };
