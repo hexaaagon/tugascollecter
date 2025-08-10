@@ -60,6 +60,7 @@ export interface LanguageStrings {
     afternoon: string;
     evening: string;
   };
+  noTasksDescription: string;
   todaysHomework: string;
   upcomingTasks: string;
   addFirstTask: string;

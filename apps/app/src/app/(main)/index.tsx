@@ -462,7 +462,7 @@ export default function Home() {
               <View className="items-center py-8">
                 <Calendar size={48} color="#6b7280" className="mb-2" />
                 <Text className="text-muted-foreground">
-                  {t("addFirstTask")}!
+                  {t("noTasksDescription")}
                 </Text>
                 <Button
                   variant="outline"

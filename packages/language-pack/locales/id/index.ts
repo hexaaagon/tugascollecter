@@ -63,6 +63,7 @@ export const indonesianStrings: LanguageStrings = {
     afternoon: "Selamat Siang",
     evening: "Selamat Malam",
   },
+  noTasksDescription: "Tidak ada tugas ditemukan. Mulai tambahkan Tugas kamu!",
   todaysHomework: "Tugas kamu hari ini",
   upcomingTasks: "Tugas Mendatang",
   addFirstTask: "Tambahkan Tugas Pertama kamu",
