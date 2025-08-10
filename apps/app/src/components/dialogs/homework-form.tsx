@@ -265,7 +265,7 @@ export function HomeworkForm({
                   <Card>
                     <CardContent className="py-6">
                       <View className="items-center">
-                        <BookOpen size={32} className="mb-2" />
+                        <BookOpen size={32} color="#6b7280" className="mb-2" />
                         <Text className="text-center text-sm text-muted-foreground">
                           {t("noSubjectsAvailableCreateFirst")}
                         </Text>
